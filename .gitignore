@@ -1,0 +1,23 @@
+#node js Dependencies
+**/node_modules
+
+#enivornment variable dependencies
+**/.env
+
+#logs
+*.log
+#npm debug files
+npm-debug.log*
+yarn-debug.log*
+yarn-error-log*
+
+#OS files
+.DS_Store
+Thumbs.db 
+
+#build output
+/dist
+/build
+
+
+
