@@ -40,8 +40,8 @@ function Header({
         )}
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex flex-wrap gap-4 items-center justify-end w-full sm:w-auto">
+      {/* Action Buttons - Desktop Only */}
+      <div className="sm:flex hidden flex-wrap gap-4 items-center justify-end w-full sm:w-auto">
         {/* Show / Close Task */}
         <button
           onClick={handleToggleTask}
@@ -77,6 +77,13 @@ function Header({
           <CgMediaLive size={18} />
         </button>
       </div>
+      <button
+          onClick={() => navigate(`/project/live/${projectId}`)}
+          className="flex sm:hidden p-3 rounded-full bg-gradient-to-r from-violet-700 to-indigo-700 hover:from-violet-800 hover:to-indigo-800 text-white shadow-lg transition-all duration-300 transform hover:scale-110"
+          title="Start Live Coding Session"
+        >
+          <CgMediaLive size={18} />
+        </button>
     </header>
   );
 }

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { IoCreateSharp } from "react-icons/io5";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -83,106 +84,136 @@ function Createproject() {
     }
   };
 
+  // Optimized handlers with useCallback
+  const handleOpenModal = useCallback(() => {
+    console.log("Button clicked, opening modal");
+    setIsModalOpen(true);
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
+
   return (
-    <div className="p-10">
-      <div
-        onClick={() => setIsModalOpen(true)}
-        className="p-2 bg-primary text-md font-semibold rounded-xl gap-2 border-[2px] border-zinc-200 cursor-pointer w-fit flex items-center"
-      >
-        <MdCreateNewFolder className="h-10 w-10 text-lime-500" />
-        Create Project
+    <>
+      <div className="relative">
+        {/* Optimized Create Project Button */}
+        <div
+          onClick={handleOpenModal}
+          className="group relative overflow-hidden bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer border border-purple-400/50"
+        >
+          {/* Simplified Background Animation */}
+          <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+          
+          {/* Content */}
+          <div className="relative z-10 flex items-center gap-3">
+            <div className="p-2 bg-white/20 rounded-xl group-hover:scale-105 transition-transform duration-200">
+              <MdCreateNewFolder className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <div className="text-lg font-bold">Create New Project</div>
+              <div className="text-sm text-purple-100">Start building something amazing</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <AnimatePresence>
-        {isModalOpen && (
+
+      {/* Optimized Modal - Using Portal */}
+      {isModalOpen && createPortal(
+        <AnimatePresence>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/20 backdrop-blur-lg p-4"
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/70 p-4"
+            onClick={handleCloseModal}
           >
-            {/* Dialog */}
+            {/* Simplified Dialog */}
             <motion.div
-              key="dialog"
-              initial={{ y: 40, scale: 0.95, opacity: 0 }}
-              animate={{ y: 0, scale: 1, opacity: 1 }}
-              exit={{ y: 40, scale: 0.95, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              className="w-full max-w-md rounded-2xl bg-gradient-to-br from-white via-violet-50 to-slate-50 shadow-2xl ring-1 ring-slate-200/60"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="w-full max-w-lg rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 shadow-xl border border-purple-500/30 relative"
+              onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-                <h2 className="font-extrabold text-lg text-violet-600 tracking-wide">
-                  Create&nbsp;Project
-                </h2>
+              <div className="flex items-center justify-between p-6 border-b border-purple-500/30">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+                    <MdCreateNewFolder className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-white">
+                      Create New Project
+                    </h2>
+                    <p className="text-sm text-purple-300">Transform your vision into reality</p>
+                  </div>
+                </div>
                 <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="text-slate-400 hover:text-slate-600 transition"
+                  onClick={handleCloseModal}
+                  className="p-2 rounded-lg bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-700/50 transition-colors duration-200"
                 >
-                  <span className="sr-only">Close</span>✕
+                  <span className="text-lg">✕</span>
                 </button>
               </div>
 
-              {/* Form */}
+              {/* Optimized Form */}
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
                   createprojecthandler();
                 }}
-                className="px-6 py-6 space-y-6"
+                className="p-6 space-y-6"
               >
-                {/* Project name */}
-                <div>
+                {/* Project Name Input */}
+                <div className="space-y-2">
                   <label
                     htmlFor="project-name"
-                    className="block text-sm font-medium text-slate-600 mb-1"
+                    className="block text-sm font-semibold text-purple-200"
                   >
-                    Project&nbsp;Name
+                    Project Name
                   </label>
-                  <input
-                    id="project-name"
-                    type="text"
-                    value={projectName}
-                    onChange={(e) => setProjectName(e.target.value)}
-                    placeholder="e.g. Next‑gen AI dashboard"
-                    className="
-                      w-full px-3 py-2
-                    
-                      border-2
-                      rounded-lg
-                      outline-none
-                      border-slate-300
-                      focus:border-violet-500
-                      focus:ring-2 focus:ring-violet-500 focus:ring-offset-1
-                      text-sm placeholder-slate-400
-                      transition duration-150 ease-in-out
-                      text-slate-700
-                    "
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      id="project-name"
+                      type="text"
+                      value={projectName}
+                      onChange={(e) => setProjectName(e.target.value)}
+                      placeholder="e.g. AI-Powered Dashboard, Social Media App..."
+                      className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600/50 rounded-xl outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20 text-white placeholder-slate-400 transition-colors duration-200 font-medium"
+                      required
+                    />
+                  </div>
+                  <p className="text-xs text-slate-400">
+                    Choose a descriptive name that reflects your project's purpose
+                  </p>
                 </div>
 
-                {/* Actions */}
-                <div className="flex justify-end gap-3 pt-2">
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
                   <button
                     type="button"
-                    onClick={() => setIsModalOpen(false)}
-                    className="inline-flex items-center justify-center rounded-lg bg-slate-200/60 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-300/70 focus:outline-none focus:ring-2 focus:ring-slate-400"
+                    onClick={handleCloseModal}
+                    className="flex-1 py-3 px-4 bg-slate-700/50 text-slate-300 rounded-xl font-semibold hover:bg-slate-600/50 hover:text-white transition-colors duration-200 border border-slate-600/50"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="inline-flex items-center justify-center rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                    disabled={!projectName.trim()}
+                    className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3 px-4 rounded-xl transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Create
+                    🚀 Create Project
                   </button>
                 </div>
               </form>
             </motion.div>
           </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+        </AnimatePresence>,
+        document.body
+      )}
+    </>
   );
 }
 

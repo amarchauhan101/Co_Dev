@@ -1,416 +1,3 @@
-// import React, { useState, useEffect, useRef } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import axios from "axios";
-// import Getmyproject from "../components/Getmyproject";
-// import Createproject from "./Createproject";
-// import Getprojects from "./Getprojects";
-// import UserGuide from "./UserGuide";
-// import { CgProfile } from "react-icons/cg";
-// import { Link } from "react-router-dom";
-// import { RiMenu2Line } from "react-icons/ri";
-// import { RxCross2 } from "react-icons/rx";
-// import { updateUser } from "../../new/authslice";
-// import { FaBell } from "react-icons/fa";
-// import { useForm } from "react-hook-form";
-// import { toast } from "react-toastify";
-// import { useProject } from "../../context/ProjectContext";
-// import { useAuth } from "../../context/AuthContext";
-
-// // Define steps outside component to prevent re-creation on every render
-// const guideSteps = [
-//   {
-//     selector: "#welcome-header",
-//     title: "Welcome!",
-//     content:
-//       "This is your project dashboard where you'll manage all your work.",
-//   },
-//   {
-//     selector: "#profile-link",
-//     title: "Your Profile",
-//     content: "Access your personal information and settings here.",
-//   },
-//   {
-//     selector: "#create-project-section",
-//     title: "Create Projects",
-//     content: "Start new projects from scratch using this section.",
-//   },
-//   {
-//     selector: "#my-projects-section",
-//     title: "Your Projects",
-//     content: "All projects you've created appear here for quick access.",
-//   },
-//   // {
-//   //   selector: '#all-projects-section',
-//   //   title: 'Explore',
-//   //   content: 'Discover projects created by other users in the community.'
-//   // },
-//   {
-//     selector: "#main-menu-button",
-//     title: "Navigation",
-//     content: "Access all app features through this menu.",
-//   },
-// ];
-
-// function Home() {
-//   // const { userWithToken } = useSelector((state) => state.userauth?.user || {});
-
-//   // const user = userWithToken;
-//   const {user,loading} = useAuth();
-//   console.log("user in home=>", user);
-//   console.log("user in home=>", user.userWithToken.token);
-//   const token = user.userWithToken.token;
-//   const [menuopen, setmenuopen] = useState(false);
-//   const [isGuideActive, setIsGuideActive] = useState(false);
-//   const [isUpdating, setIsUpdating] = useState(false);
-//   const [elementsReady, setElementsReady] = useState(false);
-//   const [userData, setUserData] = useState();
-//   const checkInterval = useRef(null);
-//   const dispatch = useDispatch();
-//   const [showModal, setShowModal] = useState(false);
-//   const { reset } = useForm();
-//   const { Projects, addProject, fetchProjects } = useProject();
-
-//   const handleRespond = async (requestId, response) => {
-//     try {
-//       console.log("inside handlerespond");
-//       console.log("requestid", requestId);
-//       console.log("ressponse=>", response);
-//       const res = await axios.post(
-//         "http://localhost:8000/api/v1/request/respond",
-//         { requestId, response },
-//         { headers: { authorization: `Bearer ${token}` } }
-//       );
-
-//       if (res.status === 200) {
-//         toast.success(`Request ${response}`);
-//         setUserData((prev) => ({
-//           ...prev,
-//           profile: {
-//             ...prev.profile,
-//             requests: prev.profile.requests.filter((r) => r._id !== requestId),
-//           },
-//         }));
-//         if (userData.profile.requests.length === 1) setShowModal(false);
-//         console.log("Response handled successfully:", res.data);
-//         fetchProjects();
-//       }
-//     } catch (err) {
-//       toast.error(`Failed to ${response} request`);
-//     }
-//   };
-
-//   console.log("userdata after respond=>", userData);
-//   // Check if all required elements exist in the DOM
-//   useEffect(() => {
-//     if (!user || user.userWithToken.hascompletedGuideline !== false) return;
-
-//     const checkElements = () => {
-//       const allExist = guideSteps.every((step) =>
-//         document.querySelector(step.selector)
-//       );
-
-//       if (allExist) {
-//         clearInterval(checkInterval.current);
-//         setElementsReady(true);
-//       }
-//     };
-
-//     // Initial check
-//     checkElements();
-
-//     // If not all elements are ready, start polling
-//     if (!elementsReady) {
-//       checkInterval.current = setInterval(checkElements, 100);
-//     }
-
-//     return () => {
-//       if (checkInterval.current) {
-//         clearInterval(checkInterval.current);
-//       }
-//     };
-//   }, [user, elementsReady]);
-
-//   // Start guide once elements are ready
-//   useEffect(() => {
-//     console.log("user in home=>", user);
-//     if (elementsReady && user && user.userWithToken.hascompletedGuideline === false) {
-//       setIsGuideActive(true);
-//     }
-//   }, [elementsReady, user]);
-
-//   const handleGuideComplete = async () => {
-//     if (isUpdating || !user) return;
-
-//     setIsUpdating(true);
-//     try {
-//       const res = await axios.put(
-//         `http://localhost:8000/api/v1/updateguide`,
-//         {},
-//         { headers: { Authorization: `Bearer ${token}` } }
-//       );
-//       console.log("res in handlecompled=>", res.data.data);
-//       dispatch(updateUser(res?.data?.data));
-//     } catch (error) {
-//       console.error(
-//         "Update failed:",
-//         error.response?.data?.message || error.message
-//       );
-//     } finally {
-//       setIsGuideActive(false);
-//       setIsUpdating(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     const fetchProfile = async () => {
-//       console.log("userINfetchedprofile=>", token);
-//       try {
-//         const res = await axios.get("http://localhost:8000/api/v1/getprofile", {
-//           headers: { authorization: `Bearer ${token}` },
-//         });
-//         console.log("res in home=>", res.data);
-//         const users = res.data.userdata;
-//         console.log("user in side home is ", users);
-
-//         reset({
-//           ...users,
-//           profile: {
-//             ...users.profile,
-//             skills: users.profile?.skills?.join(", ") || "",
-//             social: users.profile?.social || {},
-//           },
-//         });
-
-//         setUserData(users);
-//         setLoading(false);
-//       } catch (err) {
-//         console.error("Error fetching profile:", err);
-//         setLoading(false);
-//       }
-//     };
-//     fetchProfile();
-//   }, []);
-
-//   console.log("userdata in home=>", userData);
-//   return (
-//     <>
-//       <style>{`
-//         .tour-highlight {
-//           box-shadow: 0 0 0 3px #8B5CF6;
-//           border-radius: 8px;
-//           transition: all 0.3s ease;
-//           z-index: 999;
-//           position: relative;
-//           animation: pulse 2s infinite;
-//         }
-
-//         @keyframes pulse {
-//           0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); }
-//           70% { box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
-//           100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
-//         }
-//       `}</style>
-
-//       {isGuideActive && (
-//         <UserGuide
-//           steps={guideSteps}
-//           onComplete={handleGuideComplete}
-//           isLoading={isUpdating}
-//         />
-//       )}
-
-//       <div className="min-h-screen bg-[#1E1E2F] text-gray-200">
-//         <header className="w-full h-20 flex items-center justify-between px-6 bg-gray-800 shadow-md fixed top-0 left-0 right-0 z-50">
-//           <div className="flex items-center gap-4">
-//             <div id="main-menu-button" className="p-1">
-//               {!menuopen ? (
-//                 <RiMenu2Line
-//                   onClick={() => setmenuopen(true)}
-//                   className="h-6 w-6 cursor-pointer text-purple-400 hover:text-purple-300 transition-colors"
-//                 />
-//               ) : (
-//                 <RxCross2
-//                   onClick={() => setmenuopen(false)}
-//                   className="h-6 w-6 cursor-pointer text-purple-400 hover:text-purple-300 transition-colors"
-//                 />
-//               )}
-//             </div>
-//             <h1
-//               id="welcome-header"
-//               className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent"
-//             >
-//               Welcome {user?.username}
-//             </h1>
-//           </div>
-
-//           <div className="rightheader flex items-center gap-4 sm:gap-8">
-//             <div className="relative">
-//               <FaBell
-//                 className="h-6 w-6 text-purple-400 cursor-pointer"
-//                 onClick={() => setShowModal(true)}
-//               />
-//               {userData?.profile?.requests?.length > 0 && (
-//                 <span className="absolute top-[-4px] right-[-6px] bg-red-500 text-white text-xs rounded-full px-1">
-//                   {userData?.profile.requests.length}
-//                 </span>
-//               )}
-//             </div>
-//             <div id="profile-link" className="p-1">
-//               <Link
-//                 to="/getprofile"
-//                 className="cursor-pointer hover:opacity-80 transition-opacity"
-//               >
-//                 <CgProfile className="h-8 w-8 text-purple-400" />
-//               </Link>
-//             </div>
-//           </div>
-//         </header>
-
-//         {menuopen && (
-//           <div className="fixed top-20 left-0 w-64 h-full bg-gray-800 shadow-lg z-40 p-6 space-y-4 transition-all duration-300">
-//             <p className="text-lg font-semibold text-purple-400">Menu</p>
-//             <Link
-//               to="/getprofile"
-//               className="block hover:text-indigo-400 transition-colors"
-//             >
-//               Profile
-//             </Link>
-//             <Link
-//               to="/getproject"
-//               className="block hover:text-indigo-400 transition-colors"
-//             >
-//               My Projects
-//             </Link>
-//             <Link
-//               to="/getallusers"
-//               className="block hover:text-indigo-400 transition-colors"
-//             >
-//               Developers
-//             </Link>
-//             <Link
-//               to="/leaderboard"
-//               className="block hover:text-indigo-400 transition-colors"
-//             >
-//               Leaderboard
-//             </Link>
-//             <Link
-//               to="/login"
-//               className="block hover:text-indigo-400 transition-colors"
-//             >
-//               Logout
-//             </Link>
-//           </div>
-//         )}
-
-//         {showModal && (
-//           <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/60 px-2 sm:px-4">
-//             <div className="bg-[#1E1E2F] border border-gray-700 shadow-2xl rounded-2xl w-full max-w-2xl p-4 sm:p-6 relative">
-//               {/* Close Icon Button */}
-//               <button
-//                 className="absolute -top-4 -right-4 sm:top-4 sm:right-6 bg-gray-800 hover:bg-red-500 text-white rounded-full p-2 shadow-md transition duration-200"
-//                 onClick={() => setShowModal(false)}
-//               >
-//                 <RxCross2 className="w-5 h-5" />
-//               </button>
-
-//               {/* Modal Heading */}
-//               <h2 className="text-xl sm:text-2xl font-bold text-purple-400 mb-4 sm:mb-6 text-center tracking-wide">
-//                 Incoming Project Requests
-//               </h2>
-
-//               {/* Request List */}
-//               {userData?.profile?.requests?.length > 0 ? (
-//                 <div className="space-y-4 sm:space-y-6 max-h-[70vh] overflow-y-auto pr-1 sm:pr-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
-//                   {userData.profile.requests.map((request, index) => (
-//                     <div
-//                       key={index}
-//                       className="bg-[#2A2A40] border border-gray-600 rounded-xl p-4 sm:p-5 transition-shadow shadow-md hover:shadow-purple-500/20"
-//                     >
-//                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 gap-1 sm:gap-0">
-//                         <h3 className="text-base sm:text-lg font-semibold text-white">
-//                           {request.project?.name || "Untitled Project"}
-//                         </h3>
-//                         <span className="text-sm text-gray-400">
-//                           from{" "}
-//                           <span className="text-purple-400">
-//                             {request.sender?.username}
-//                           </span>
-//                         </span>
-//                       </div>
-//                       <p className="text-gray-300 text-sm mb-3">
-//                         {request.project?.description ||
-//                           "No description provided."}
-//                       </p>
-//                       <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
-//                         <button
-//                           onClick={() => handleRespond(request._id, "rejected")}
-//                           className="bg-gradient-to-tr from-red-500 to-pink-500 hover:brightness-110 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-md hover:shadow-red-500/40 transition w-full sm:w-auto"
-//                         >
-//                           ❌ Reject
-//                         </button>
-//                         <button
-//                           onClick={() => handleRespond(request._id, "accepted")}
-//                           className="bg-gradient-to-tr from-green-500 to-emerald-400 hover:brightness-110 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-md hover:shadow-green-500/40 transition w-full sm:w-auto"
-//                         >
-//                           ✔️ Accept
-//                         </button>
-//                       </div>
-//                     </div>
-//                   ))}
-//                 </div>
-//               ) : (
-//                 <p className="text-center text-gray-400">
-//                   No pending requests at the moment.
-//                 </p>
-//               )}
-//             </div>
-//           </div>
-//         )}
-
-//         <main
-//           className={`pt-24 px-4 pb-10 transition-all duration-300 ${
-//             menuopen ? "ml-0 md:ml-64" : ""
-//           }`}
-//         >
-//           <div className="space-y-10 max-w-6xl mx-auto">
-//             <section
-//               id="create-project-section"
-//               className="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700"
-//             >
-//               <h2 className="text-xl font-semibold mb-4 text-purple-400">
-//                 Create a New Project
-//               </h2>
-//               <Createproject />
-//             </section>
-
-//             <section
-//               id="my-projects-section"
-//               className="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700"
-//             >
-//               <h2 className="text-xl font-semibold mb-4 text-purple-400">
-//                 My Projects
-//               </h2>
-//               <Getmyproject />
-//             </section>
-
-//             <section
-//               id="all-projects-section"
-//               className="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700"
-//             >
-//               <h2 className="text-xl font-semibold mb-4 text-purple-400">
-//                 All Projects
-//               </h2>
-//               <Getprojects />
-//             </section>
-//           </div>
-//         </main>
-//       </div>
-//     </>
-//   );
-// }
-
-// export default Home;
-
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -419,6 +6,7 @@ import Createproject from "./Createproject";
 import Getprojects from "./Getprojects";
 import UserGuide from "./UserGuide";
 import { CgProfile } from "react-icons/cg";
+
 import { Link } from "react-router-dom";
 import { RiMenu2Line } from "react-icons/ri";
 import { RxCross2 } from "react-icons/rx";
@@ -430,38 +18,66 @@ import { useProject } from "../../context/ProjectContext";
 import { useAuth } from "../../context/AuthContext";
 import { InView } from "react-intersection-observer";
 
-// Define steps outside component to prevent re-creation on every render
+// Define comprehensive guide steps that follow content flow
 const guideSteps = [
   {
     selector: "#welcome-header",
-    title: "Welcome!",
-    content:
-      "This is your project dashboard where you'll manage all your work.",
+    title: "Welcome to Your Dashboard! 👋",
+    content: "This is your personal project dashboard where you'll manage all your collaborative work and track your progress. Let's explore all the amazing features available to you!",
+    position: "bottom-center"
+  },
+  {
+    selector: "#main-menu-button", 
+    title: "Navigation Hub 🚀",
+    content: "Your gateway to all app features! Click here to access your profile, browse projects, discover developers, check the leaderboard, and more. This menu adapts to your screen size for the best experience.",
+    position: "bottom-right"
   },
   {
     selector: "#profile-link",
-    title: "Your Profile",
-    content: "Access your personal information and settings here.",
+    title: "Your Profile Center 👤", 
+    content: "Access your personal dashboard, update your information, manage settings, and customize your developer profile. This is where you showcase your skills and connect with others.",
+    position: "bottom-left"
   },
   {
-    selector: "#create-project-section",
-    title: "Create Projects",
-    content: "Start new projects from scratch using this section.",
+    selector: "#create-project-section .flex.items-center.gap-4",
+    title: "Project Creation Hub ✨",
+    content: "Start your next big idea here! This is where innovation begins. Create collaborative projects, set up teams, and bring your vision to life with powerful project management tools.",
+    position: "top-center"
   },
   {
-    selector: "#my-projects-section",
-    title: "Your Projects",
-    content: "All projects you've created appear here for quick access.",
+    selector: "#create-project-tools",
+    title: "Project Creation Tools 🛠️",
+    content: "Use these intuitive tools to set up your project. Define your goals, select technologies, invite team members, and configure your workspace - all in one place!",
+    position: "top-center"
   },
   {
-    selector: "#main-menu-button",
-    title: "Navigation",
-    content: "Access all app features through this menu.",
+    selector: "#my-projects-section .flex.items-center.gap-4", 
+    title: "Your Project Universe 🌟",
+    content: "All your created and joined projects live here. This is your project command center where you can manage, track progress, and collaborate with team members across all your initiatives.",
+    position: "top-center"
+  },
+  {
+    selector: "#my-projects-dashboard",
+    title: "Project Management Dashboard 📊",
+    content: "Your personal project overview displays active projects, recent activity, team updates, and progress metrics. Stay organized and keep track of all your collaborative work.",
+    position: "top-center"
+  },
+  {
+    selector: "#all-projects-section .flex.items-center.gap-4",
+    title: "Discover & Collaborate 🌍", 
+    content: "Explore incredible projects from our global community of creators and innovators. Find new opportunities to contribute, learn from others, and expand your network!",
+    position: "top-center"
+  },
+  {
+    selector: "#community-projects-browser",
+    title: "Community Projects 🤝",
+    content: "Browse through community projects, filter by technology or interests, and join exciting collaborations. This is where you'll discover your next contribution opportunity!",
+    position: "top-center"
   },
 ];
 
 function Home() {
-  const { user, loading } = useAuth();
+  const { user, loading, refreshUser } = useAuth();
   console.log("user in home=>", user);
   console.log("user in home=>", user.userWithToken.token);
   const token = user.userWithToken.token;
@@ -511,25 +127,49 @@ function Home() {
     if (!user || user.userWithToken.hascompletedGuideline !== false) return;
 
     const checkElements = () => {
-      const allExist = guideSteps.every((step) =>
-        document.querySelector(step.selector)
-      );
+      const allExist = guideSteps.every((step) => {
+        const element = document.querySelector(step.selector);
+        // Check if element exists and is actually visible (not just in DOM)
+        return element && 
+               element.offsetParent !== null && 
+               element.getBoundingClientRect().width > 0 &&
+               element.getBoundingClientRect().height > 0;
+      });
 
       if (allExist) {
         clearInterval(checkInterval.current);
         setElementsReady(true);
+        console.log("UserGuide: All elements are ready and visible");
+      } else {
+        const missingElements = guideSteps
+          .filter(step => !document.querySelector(step.selector))
+          .map(step => step.selector);
+        if (missingElements.length > 0) {
+          console.log("UserGuide: Missing elements:", missingElements);
+        }
       }
     };
 
-    // Initial check
-    checkElements();
-
-    // If not all elements are ready, start polling
-    if (!elementsReady) {
-      checkInterval.current = setInterval(checkElements, 100);
-    }
+    // Initial check with longer delay to ensure DOM is fully ready
+    const initialTimer = setTimeout(() => {
+      checkElements();
+      
+      // If not all elements are ready, start polling with longer intervals
+      if (!elementsReady) {
+        checkInterval.current = setInterval(checkElements, 300);
+        
+        // Stop polling after 10 seconds to avoid infinite loops
+        setTimeout(() => {
+          if (checkInterval.current) {
+            clearInterval(checkInterval.current);
+            console.log("UserGuide: Stopped polling for elements after timeout");
+          }
+        }, 10000);
+      }
+    }, 1000); // Increased initial delay
 
     return () => {
+      clearTimeout(initialTimer);
       if (checkInterval.current) {
         clearInterval(checkInterval.current);
       }
@@ -542,24 +182,34 @@ function Home() {
     if (
       elementsReady &&
       user &&
-      user.userWithToken.hascompletedGuideline === false
+      user.userWithToken.hascompletedGuideline == false
     ) {
       setIsGuideActive(true);
     }
-  }, [elementsReady, user]);
+  }, [elementsReady, user, user?.userWithToken.hascompletedGuideline]);
 
   const handleGuideComplete = async () => {
     if (isUpdating || !user) return;
 
     setIsUpdating(true);
     try {
+      // Update guide completion status
       const res = await axios.put(
         `http://localhost:8000/api/v1/updateguide`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
       console.log("res in handlecompled=>", res.data.data);
-      dispatch(updateUser(res?.data?.data));
+      
+      // Refresh user data from server using AuthContext
+      const refreshedUser = await refreshUser();
+      if (refreshedUser) {
+        console.log("User data refreshed successfully after guide completion");
+      }
+      
+      // Also refresh projects
+      fetchProjects();
+      
     } catch (error) {
       console.error(
         "Update failed:",
@@ -606,119 +256,7 @@ function Home() {
 
   return (
     <>
-      {/* <style>{`
-  .tour-highlight {
-    box-shadow: 0 0 0 3px #8B5CF6;
-    border-radius: 8px;
-    z-index: 999;
-    position: relative;
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.6); }
-    70% { box-shadow: 0 0 0 8px rgba(139, 92, 246, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
-  }
-
-  .floating-orbs::before,
-  .floating-orbs::after {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    z-index: -1;
-  }
-
-  .floating-orbs::before {
-    top: -10%;
-    left: -10%;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.05), transparent 70%);
-    animation: float 25s ease-in-out infinite;
-  }
-
-  .floating-orbs::after {
-    top: 40%;
-    right: -15%;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(236, 72, 153, 0.05), transparent 70%);
-    animation: float 30s ease-in-out infinite reverse;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0) translateX(0); }
-    50% { transform: translateY(-20px) translateX(15px); }
-  }
-
-  .glass-morphism {
-    background: rgba(30, 30, 47, 0.8);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(139, 92, 246, 0.15);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  }
-
-  .scrollbar-thin {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(139, 92, 246, 0.4) transparent;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: rgba(139, 92, 246, 0.4);
-    border-radius: 4px;
-  }
-
-  .hero-gradient {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    background-size: 200% 200%;
-    animation: gradientShift 10s ease infinite;
-  }
-
-  @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  .hover-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .hover-lift:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
-  }
-
-  .text-shimmer {
-    background: linear-gradient(45deg, #8B5CF6, #EC4899, #3B82F6, #8B5CF6);
-    background-size: 250% 250%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shimmer 3s ease-in-out infinite;
-  }
-
-  @keyframes shimmer {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-
-  .notification-badge {
-    animation: bounceIn 0.5s ease-out;
-  }
-
-  @keyframes bounceIn {
-    0% { transform: scale(0); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-  }
-`}</style> */}
-
-      {isGuideActive && (
+      {isGuideActive && userData.hascompletedGuideline==false && (
         <UserGuide
           steps={guideSteps}
           onComplete={handleGuideComplete}
@@ -727,21 +265,7 @@ function Home() {
       )}
 
       <div className="min-h-screen overflow-y-auto bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-gray-100 floating-orbs relative">
-        {/* <div className="absolute inset-0 opacity-10">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `
-              radial-gradient(circle at 25px 25px, rgba(139, 92, 246, 0.2) 2px, transparent 0),
-              radial-gradient(circle at 75px 75px, rgba(236, 72, 153, 0.2) 2px, transparent 0)
-            `,
-              backgroundSize: "100px 100px",
-              animation: "float 30s linear infinite",
-            }}
-          />
-        </div> */}
-
-        <header className="w-full h-20 flex items-center justify-between px-6 glass-morphism shadow-md fixed top-0 left-0 right-0 z-50 border-b border-purple-500/20">
+        <header className="w-full h-20   flex items-center justify-between px-6 glass-morphism shadow-md fixed top-0 left-0 right-0 z-50 border-b border-purple-500/20">
           <div className="flex items-center gap-6">
             <div
               id="main-menu-button"
@@ -801,48 +325,12 @@ function Home() {
           </div>
         </header>
 
-        {/* {menuopen && (
-          <div className="fixed top-20 left-0 w-80 h-full glass-morhphism shadow-md z-40 menu-slide-in border-r border-purple-500/30">
-            <div className="p-8 space-y-6">
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-shimmer mb-2">
-                  Navigation
-                </h2>
-                <div className="w-16 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full" />
-              </div>
-
-              <div className="space-y-4">
-                {[
-                  { to: "/getprofile", label: "Profile", icon: "👤" },
-                  { to: "/getproject", label: "My Projects", icon: "📁" },
-                  { to: "/getallusers", label: "Developers", icon: "👥" },
-                  { to: "/leaderboard", label: "Leaderboard", icon: "🏆" },
-                  { to: "/login", label: "Logout", icon: "🚪" },
-                ].map((item, index) => (
-                  <Link
-                    key={index}
-                    to={item.to}
-                    className="group flex items-center gap-4 p-4 rounded-xl hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-pink-500/20 transition-all duration-300 hover:transform hover:translateX-2"
-                  >
-                    <span className="text-2xl group-hover:scale-110 transition-transform duration-300">
-                      {item.icon}
-                    </span>
-                    <span className="text-lg font-medium text-gray-300 group-hover:text-white transition-colors duration-300">
-                      {item.label}
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-          
-        )} */}
         {menuopen && (
           <>
             {/* Mobile overlay for better contrast */}
             <div
               className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden"
-              onClick={() => setMenuopen(false)}
+              onClick={() => setmenuopen(false)}
             />
 
             {/* Sidebar */}
@@ -1024,7 +512,9 @@ function Home() {
                       Transform your vision into reality. Start building
                       something amazing today.
                     </p>
-                    <Createproject />
+                    <div id="create-project-tools">
+                      <Createproject />
+                    </div>
                   </div>
                 </section>
               )}
@@ -1055,7 +545,9 @@ function Home() {
                       Manage and track all your projects in one beautiful,
                       intuitive space.
                     </p>
-                    <Getmyproject />
+                    <div id="my-projects-dashboard">
+                      <Getmyproject />
+                    </div>
                   </div>
                 </section>
               )}
@@ -1086,7 +578,9 @@ function Home() {
                       Explore incredible projects from our global community of
                       creators and innovators.
                     </p>
-                    <Getprojects />
+                    <div id="community-projects-browser">
+                      <Getprojects />
+                    </div>
                   </div>
                 </section>
               )}

@@ -9,17 +9,6 @@ const UserGuide = ({ steps, onComplete, isLoading }) => {
   const tooltipRef = useRef(null);
   const isFirstRender = useRef(true);
 
-  // Cleanup effect for when component unmounts or steps change
-  useEffect(() => {
-    return () => {
-      // Clean up highlights
-      document.querySelectorAll(".tour-highlight").forEach((el) => {
-        el.classList.remove("tour-highlight");
-        el.style.zIndex = ""; // Reset z-index
-      });
-    };
-  }, [currentStep]);
-
   useLayoutEffect(() => {
     if (!steps || steps.length === 0) return;
 
@@ -54,7 +43,7 @@ const UserGuide = ({ steps, onComplete, isLoading }) => {
       };
 
       waitForElement().then(() => {
-        // Enhanced scroll element into view logic with bottom element handling
+        // Enhanced scroll element into view logic
         const scrollElement = () => {
           const rect = element.getBoundingClientRect();
           const headerHeight = 80;
@@ -63,53 +52,37 @@ const UserGuide = ({ steps, onComplete, isLoading }) => {
           const sidebarElement = document.querySelector('[class*="menu-slide-in"]');
           const sidebarWidth = sidebarElement && window.innerWidth >= 1024 ? 320 : 0;
           
-          // Enhanced visibility check for bottom elements
+          // Check if element is properly visible
           const isVisible = rect.top >= headerHeight && 
-                            rect.bottom <= window.innerHeight - 250 && // Extra buffer for tooltip
+                            rect.bottom <= window.innerHeight - 20 && 
                             rect.left >= sidebarWidth && 
                             rect.right <= window.innerWidth - 20;
 
           if (!isVisible) {
-            // Smart scrolling strategy for bottom elements
-            const isBottomElement = rect.bottom > window.innerHeight - 300;
+            // Smart scrolling to center element considering content flow
+            const elementCenter = rect.top + rect.height / 2;
+            const viewportCenter = (window.innerHeight - headerHeight) / 2 + headerHeight;
+            const scrollOffset = elementCenter - viewportCenter;
             
-            if (isBottomElement) {
-              // For bottom elements, scroll to show them in upper portion of screen
-              const targetTop = window.innerHeight * 0.3; // Position at 30% from top
-              const scrollOffset = rect.top - targetTop;
-              
-              window.scrollBy({
-                top: scrollOffset,
-                behavior: 'smooth'
-              });
-            } else {
-              // Standard centering for other elements
-              const elementCenter = rect.top + rect.height / 2;
-              const viewportCenter = (window.innerHeight - headerHeight) / 2 + headerHeight;
-              const scrollOffset = elementCenter - viewportCenter;
-              
-              window.scrollBy({
-                top: scrollOffset,
-                behavior: 'smooth'
-              });
-            }
+            // Smooth scroll with content-aware offset
+            window.scrollBy({
+              top: scrollOffset,
+              behavior: 'smooth'
+            });
             
-            return new Promise((resolve) => setTimeout(resolve, 500)); // Longer wait for smooth scroll
+            return new Promise((resolve) => setTimeout(resolve, 400));
           }
           return Promise.resolve();
         };
-        const isMobile = window.innerWidth < 768;
+
         // Scroll first, then position tooltip
         scrollElement().then(() => {
           setTimeout(() => {
-            // Add highlight to the target element
             element.classList.add("tour-highlight");
-            
-            // Remove any overlay creation - keep it simple
             const rect = element.getBoundingClientRect();
             
             // Responsive tooltip dimensions
-           
+            const isMobile = window.innerWidth < 768;
             const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
             
             let tooltipWidth, tooltipHeight;
@@ -124,18 +97,16 @@ const UserGuide = ({ steps, onComplete, isLoading }) => {
               tooltipHeight = 200;
             }
 
-            // Smart positioning calculation with full visibility guarantee
+            // Enhanced positioning calculation that follows content flow
             const headerHeight = 80;
             const sidebarElement = document.querySelector('[class*="menu-slide-in"]');
             const sidebarWidth = sidebarElement && window.innerWidth >= 1024 ? 320 : 0;
             const padding = isMobile ? 15 : 25;
-            const bottomBuffer = 60; // Space at bottom for better visibility
             
             // Get preferred position from step definition
             const preferredPosition = step.position || "auto";
             
-            // Calculate available space
-            const spaceBelow = window.innerHeight - rect.bottom - padding - bottomBuffer;
+            const spaceBelow = window.innerHeight - rect.bottom - padding;
             const spaceAbove = rect.top - headerHeight - padding;
             const spaceLeft = rect.left - sidebarWidth - padding;
             const spaceRight = window.innerWidth - rect.right - padding;
@@ -143,78 +114,50 @@ const UserGuide = ({ steps, onComplete, isLoading }) => {
             let top, left;
             let newPlacement = "bottom";
 
-            // Check if element is in bottom area of screen
-            const isInBottomArea = rect.bottom > (window.innerHeight * 0.7);
-            const isInTopArea = rect.top < (window.innerHeight * 0.3);
-
-            // Smart positioning with visibility priority
+            // Position based on preferred direction with content awareness
             switch (preferredPosition) {
               case "top-center":
-                if (spaceAbove >= tooltipHeight || isInBottomArea) {
+                if (spaceAbove >= tooltipHeight) {
                   top = rect.top - tooltipHeight - 20;
                   newPlacement = "top";
-                } else if (spaceBelow >= tooltipHeight) {
+                } else {
                   top = rect.bottom + 20;
                   newPlacement = "bottom";
-                } else if (spaceRight >= tooltipWidth && !isMobile) {
-                  top = Math.max(headerHeight + padding, rect.top + rect.height / 2 - tooltipHeight / 2);
-                  left = rect.right + 20;
-                  newPlacement = "right";
-                } else if (spaceLeft >= tooltipWidth && !isMobile) {
-                  top = Math.max(headerHeight + padding, rect.top + rect.height / 2 - tooltipHeight / 2);
-                  left = rect.left - tooltipWidth - 20;
-                  newPlacement = "left";
-                } else {
-                  // Force top with available space
-                  top = Math.max(headerHeight + padding, rect.top - tooltipHeight - 20);
-                  newPlacement = "top";
                 }
                 break;
 
               case "bottom-center":
-                if (spaceBelow >= tooltipHeight && !isInBottomArea) {
+                if (spaceBelow >= tooltipHeight) {
                   top = rect.bottom + 20;
                   newPlacement = "bottom";
-                } else if (spaceAbove >= tooltipHeight) {
-                  top = rect.top - tooltipHeight - 20;
-                  newPlacement = "top";
-                } else if (spaceRight >= tooltipWidth && !isMobile) {
-                  top = Math.max(headerHeight + padding, rect.top + rect.height / 2 - tooltipHeight / 2);
-                  left = rect.right + 20;
-                  newPlacement = "right";
-                } else if (spaceLeft >= tooltipWidth && !isMobile) {
-                  top = Math.max(headerHeight + padding, rect.top + rect.height / 2 - tooltipHeight / 2);
-                  left = rect.left - tooltipWidth - 20;
-                  newPlacement = "left";
                 } else {
-                  // Force top positioning
-                  top = Math.max(headerHeight + padding, rect.top - tooltipHeight - 20);
+                  top = rect.top - tooltipHeight - 20;
                   newPlacement = "top";
                 }
                 break;
 
               case "bottom-left":
-              case "bottom-right":
-                if (spaceBelow >= tooltipHeight && !isInBottomArea) {
+                if (spaceBelow >= tooltipHeight) {
                   top = rect.bottom + 20;
-                  newPlacement = preferredPosition;
+                  newPlacement = "bottom";
                 } else {
-                  // Switch to top variant
-                  top = Math.max(headerHeight + padding, rect.top - tooltipHeight - 20);
-                  newPlacement = preferredPosition.replace("bottom", "top");
+                  top = rect.top - tooltipHeight - 20;
+                  newPlacement = "top";
                 }
                 break;
 
-              default: // "auto" - intelligent positioning
-                if (isInBottomArea) {
-                  // Force top placement for bottom elements
-                  top = Math.max(headerHeight + padding, rect.top - tooltipHeight - 20);
-                  newPlacement = "top";
-                } else if (isInTopArea && spaceBelow >= tooltipHeight) {
-                  // Force bottom placement for top elements
+              case "bottom-right":
+                if (spaceBelow >= tooltipHeight) {
                   top = rect.bottom + 20;
                   newPlacement = "bottom";
-                } else if (spaceBelow >= tooltipHeight) {
+                } else {
+                  top = rect.top - tooltipHeight - 20;
+                  newPlacement = "top";
+                }
+                break;
+
+              default: // "auto" - smart positioning that flows with content
+                if (spaceBelow >= tooltipHeight) {
                   top = rect.bottom + 20;
                   newPlacement = "bottom";
                 } else if (spaceAbove >= tooltipHeight) {
@@ -222,93 +165,73 @@ const UserGuide = ({ steps, onComplete, isLoading }) => {
                   newPlacement = "top";
                 } else if (spaceRight >= tooltipWidth && !isMobile) {
                   top = Math.max(headerHeight + padding, rect.top + rect.height / 2 - tooltipHeight / 2);
+                  top = Math.min(top, window.innerHeight - tooltipHeight - padding);
                   left = rect.right + 20;
                   newPlacement = "right";
                 } else if (spaceLeft >= tooltipWidth && !isMobile) {
                   top = Math.max(headerHeight + padding, rect.top + rect.height / 2 - tooltipHeight / 2);
+                  top = Math.min(top, window.innerHeight - tooltipHeight - padding);
                   left = rect.left - tooltipWidth - 20;
                   newPlacement = "left";
                 } else {
-                  // Fallback: position where there's most space
-                  if (spaceAbove > spaceBelow) {
-                    top = Math.max(headerHeight + padding, rect.top - tooltipHeight - 20);
-                    newPlacement = "top";
-                  } else {
-                    top = Math.min(rect.bottom + 20, window.innerHeight - tooltipHeight - bottomBuffer);
-                    newPlacement = "bottom";
-                  }
+                  top = rect.bottom + 20;
+                  newPlacement = "bottom-constrained";
+                  const maxHeight = Math.max(150, spaceBelow - 20);
+                  tooltipHeight = Math.min(tooltipHeight, maxHeight);
                 }
                 break;
             }
 
-            // Calculate horizontal position for top/bottom placements
-            if (newPlacement === "bottom" || newPlacement === "top") {
+            // Calculate horizontal position for top/bottom placements with content flow awareness
+            if (newPlacement === "bottom" || newPlacement === "top" || newPlacement === "bottom-constrained") {
               const minLeft = sidebarWidth + padding;
               const maxLeft = window.innerWidth - tooltipWidth - padding;
               
               // Position based on preferred horizontal alignment
               if (preferredPosition === "bottom-left" || preferredPosition === "top-left") {
-                // Align towards left side of element
-                left = Math.max(minLeft, Math.min(rect.left - tooltipWidth / 4, maxLeft));
+                left = Math.max(minLeft, rect.left - tooltipWidth / 4);
               } else if (preferredPosition === "bottom-right" || preferredPosition === "top-right") {
-                // Align towards right side of element
-                left = Math.max(minLeft, Math.min(rect.right - (tooltipWidth * 3/4), maxLeft));
+                left = Math.min(maxLeft, rect.right - (tooltipWidth * 3/4));
               } else {
-                // Center on element
+                // Center on element (flows naturally with content)
                 let preferredLeft = rect.left + rect.width / 2 - tooltipWidth / 2;
                 left = Math.max(minLeft, Math.min(preferredLeft, maxLeft));
               }
               
               // Mobile adjustments
               if (isMobile) {
-                left = Math.max(15, Math.min(left, window.innerWidth - tooltipWidth - 15));
+                left = Math.max(10, Math.min(left, window.innerWidth - tooltipWidth - 10));
               }
             }
 
-            // Final boundary checks to ensure full visibility
+            // Final boundary checks to ensure tooltip stays within content area
             if (top < headerHeight + padding) {
               top = headerHeight + padding;
             }
-            
-            if (top + tooltipHeight > window.innerHeight - bottomBuffer) {
-              // Move tooltip up to fit completely
-              top = window.innerHeight - tooltipHeight - bottomBuffer;
-              
-              // If still overlapping with header, it means screen is too small
-              if (top < headerHeight + padding) {
-                top = headerHeight + padding;
-                // In this case, tooltip might be partially cut, but we prioritize readability
-              }
+            if (top + tooltipHeight > window.innerHeight - padding) {
+              top = Math.max(headerHeight + padding, window.innerHeight - tooltipHeight - padding);
             }
-            
-            // Horizontal boundary checks
             if (left < sidebarWidth + padding) {
               left = sidebarWidth + padding;
             }
-            
             if (left + tooltipWidth > window.innerWidth - padding) {
               left = window.innerWidth - tooltipWidth - padding;
             }
 
             setTooltipPosition(newPlacement);
             
-            // Apply tooltip positioning with smooth animation
+            // Apply tooltip positioning with smooth content-following animation
             if (tooltipRef.current) {
               Object.assign(tooltipRef.current.style, {
                 top: `${top}px`,
                 left: `${left}px`,
                 width: `${tooltipWidth}px`,
-                height: "auto",
                 opacity: "1",
                 transform: "translateY(0)",
-                maxHeight: "none",
-                overflow: "visible",
+                maxHeight: newPlacement === "bottom-constrained" ? `${tooltipHeight}px` : "none",
+                overflow: newPlacement === "bottom-constrained" ? "auto" : "visible",
                 position: "fixed",
                 transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                zIndex: "1001",
-                pointerEvents: "auto",
-                display: "block",
-                visibility: "visible",
               });
             }
           }, isMobile ? 150 : 100);
@@ -348,11 +271,8 @@ const UserGuide = ({ steps, onComplete, isLoading }) => {
       clearTimeout(scrollTimer);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("scroll", handleScroll);
-      
-      // Enhanced cleanup
       document.querySelectorAll(".tour-highlight").forEach((el) => {
         el.classList.remove("tour-highlight");
-        el.style.zIndex = ""; // Reset z-index
       });
     };
   }, [currentStep, steps]);
@@ -361,8 +281,6 @@ const UserGuide = ({ steps, onComplete, isLoading }) => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Clean up before completing
-      cleanupHighlights();
       onComplete();
     }
   };
@@ -380,17 +298,7 @@ const UserGuide = ({ steps, onComplete, isLoading }) => {
 
   const confirmSkip = () => {
     setShowSkipConfirm(false);
-    // Clean up before completing
-    cleanupHighlights();
     onComplete();
-  };
-
-  // Helper function to clean up highlights
-  const cleanupHighlights = () => {
-    document.querySelectorAll(".tour-highlight").forEach((el) => {
-      el.classList.remove("tour-highlight");
-      el.style.zIndex = ""; // Reset z-index
-    });
   };
 
   if (!steps || steps.length === 0 || !isVisible) return null;
@@ -399,10 +307,10 @@ const UserGuide = ({ steps, onComplete, isLoading }) => {
   if (!currentStepData) return null;
 
   return (
-    <>
+    <div className="fixed inset-0 z-[1000] bg-black/60 backdrop-blur-sm">
       {/* Skip Confirmation Dialog */}
       {showSkipConfirm && (
-        <div className="fixed inset-0 z-[1001] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[1001] flex items-center justify-center p-4">
           <div className="bg-gray-800/95 backdrop-blur-xl rounded-xl p-6 max-w-md w-full border border-purple-500/30 shadow-2xl">
             <h3 className="text-xl font-bold text-purple-400 mb-3">
               Skip Tutorial?
@@ -433,19 +341,18 @@ const UserGuide = ({ steps, onComplete, isLoading }) => {
       {/* Dynamic Content-Following Tooltip */}
       <div
         ref={tooltipRef}
-        className="fixed bg-gray-800/95 backdrop-blur-xl text-white rounded-2xl shadow-2xl border border-purple-500/30 p-6 z-[1001] opacity-0 transform translate-y-2 transition-all duration-300 ease-out"
+        className="fixed bg-gray-800/95 backdrop-blur-xl text-white rounded-2xl shadow-2xl border border-purple-500/30 p-6 z-[1000] opacity-0 transform translate-y-2 transition-all duration-300 ease-out"
         style={{
           minHeight: "180px",
           maxWidth: "400px",
-          minWidth: "250px",
         }}
       >
-        {/* Dynamic Arrow */}
+        {/* Dynamic Arrow that follows content */}
         <div
           className={`absolute w-0 h-0 transition-all duration-300 ${
             tooltipPosition === "top"
               ? "bottom-[-8px] left-1/2 transform -translate-x-1/2 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-8 border-t-gray-800/95"
-              : tooltipPosition === "bottom"
+              : tooltipPosition === "bottom" || tooltipPosition === "bottom-constrained"
               ? "top-[-8px] left-1/2 transform -translate-x-1/2 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-8 border-b-gray-800/95"
               : tooltipPosition === "left"
               ? "right-[-8px] top-1/2 transform -translate-y-1/2 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-8 border-l-gray-800/95"
@@ -525,13 +432,6 @@ const UserGuide = ({ steps, onComplete, isLoading }) => {
           z-index: 999 !important;
           animation: pulse-highlight 2s infinite !important;
         }
-        
-        /* Ensure tooltip content is always readable */
-        .fixed.bg-gray-800\\/95 {
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
-          backdrop-filter: blur(16px) !important;
-          -webkit-backdrop-filter: blur(16px) !important;
-        }
 
         @keyframes pulse-highlight {
           0%, 100% {
@@ -543,23 +443,8 @@ const UserGuide = ({ steps, onComplete, isLoading }) => {
             box-shadow: 0 0 40px rgba(236, 72, 153, 0.5);
           }
         }
-        
-        /* Ensure tooltip stays above all other elements */
-        .z-\\[1001\\] {
-          z-index: 1001 !important;
-        }
-        
-        /* Responsive text sizing for better visibility */
-        @media (max-width: 360px) {
-          .text-lg {
-            font-size: 1rem !important;
-          }
-          .text-sm {
-            font-size: 0.8rem !important;
-          }
-        }
       `}</style>
-    </>
+    </div>
   );
 };
 

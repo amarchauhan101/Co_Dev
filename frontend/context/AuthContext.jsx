@@ -33,8 +33,46 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("user");
   };
 
+  // New function to refresh user data from server
+  const refreshUser = async () => {
+    if (!user?.userWithToken?.token) return;
+    
+    try {
+      const response = await fetch("http://localhost:8000/api/v1/getprofile", {
+        headers: { 
+          authorization: `Bearer ${user.userWithToken.token}` 
+        },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Refreshed user data:", data);
+        
+        // Update the user context with fresh data
+        const updatedUser = {
+          ...user,
+          userWithToken: {
+            ...user.userWithToken,
+            ...data.data.user // Merge fresh user data
+          }
+        };
+        
+        setuser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        
+        return updatedUser;
+      } else {
+        console.error("Failed to refresh user data");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error refreshing user:", error);
+      return null;
+    }
+  };
+
   return (
-    <Authcontext.Provider value={{ user, login, logout, loading }}>
+    <Authcontext.Provider value={{ user, login, logout, loading, refreshUser }}>
       {children}
     </Authcontext.Provider>
   );
