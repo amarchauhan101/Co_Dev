@@ -1,431 +1,3 @@
-// import React, { useState } from 'react';
-// import { FaBell, FaYoutube, FaLinkedin, FaTwitter, FaGithub, FaCode, FaServer, FaDatabase, FaPalette } from 'react-icons/fa';
-// import { AiFillInstagram } from 'react-icons/ai';
-// import { BsGithub } from 'react-icons/bs';
-// import { ResponsiveContainer, LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, AreaChart, Area, PieChart, Pie, Cell } from 'recharts';
-// import { Graph } from './Graph';
-
-// const ProfileDev = ({profile}) => {
-//   const [isEditing, setIsEditing] = useState(false);
-//   const [showModal, setShowModal] = useState(false);
-
-//   // Mock user data
-// //   const profile = {
-// //     profileImage: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-// //     username: 'Alex Morgan',
-// //     email: 'alex.morgan@dev.com',
-// //     profile: {
-// //       bio: 'Senior Full-Stack Developer with 8+ years of experience building scalable web applications. Specialized in React, Node.js, and cloud architecture.',
-// //       education: 'M.S. Computer Science, Stanford University',
-// //       experience: 'Lead Developer @ TechCorp (2018-Present)',
-// //       skills: ['React', 'Node.js', 'TypeScript', 'GraphQL', 'AWS', 'Docker', 'MongoDB'],
-// //       social: {
-// //         linkedin: 'https://linkedin.com/in/alexmorgan',
-// //         github: 'https://github.com/alexmorgan',
-// //         twitter: 'https://twitter.com/alexmorgan_dev',
-// //       },
-// //       projects: [
-// //         {
-// //           name: 'Project Nexus',
-// //           description: 'A distributed task management system for enterprise teams',
-// //           technologies: 'React, Node.js, MongoDB, Redis',
-// //           githubLink: 'https://github.com/alexmorgan/nexus',
-// //           liveDemoLink: 'https://nexus-demo.com',
-// //         },
-// //         {
-// //           name: 'CodeCollab',
-// //           description: 'Real-time collaborative code editor with video chat',
-// //           technologies: 'WebSockets, React, Express, WebRTC',
-// //           githubLink: 'https://github.com/alexmorgan/codecollab',
-// //         },
-// //         {
-// //           name: 'CloudDeploy',
-// //           description: 'Automated cloud deployment pipeline for microservices',
-// //           technologies: 'AWS, Kubernetes, Terraform, GitHub Actions',
-// //           githubLink: 'https://github.com/alexmorgan/clouddeploy',
-// //         }
-// //       ],
-// //       requests: [
-// //         {
-// //           _id: '1',
-// //           project: {
-// //             name: 'Fintech Dashboard',
-// //             description: 'Real-time financial analytics dashboard for investment firms'
-// //           },
-// //           sender: {
-// //             username: 'Sarah Johnson'
-// //           }
-// //         },
-// //         {
-// //           _id: '2',
-// //           project: {
-// //             name: 'HealthTech API',
-// //             description: 'Secure API for healthcare data exchange'
-// //           },
-// //           sender: {
-// //             username: 'Michael Chen'
-// //           }
-// //         }
-// //       ],
-// //       stats: {
-// //         reliability: 94,
-// //         responseTime: '2.1 hours',
-// //         taskCompletion: 89,
-// //         weeklyLogins: [12, 15, 13, 17, 14, 16, 18],
-// //         skillDistribution: [
-// //           { name: 'Frontend', value: 40 },
-// //           { name: 'Backend', value: 35 },
-// //           { name: 'Database', value: 15 },
-// //           { name: 'DevOps', value: 10 }
-// //         ],
-// //         weeklyActivity: [
-// //           { day: 'Mon', commits: 12, prs: 3 },
-// //           { day: 'Tue', commits: 8, prs: 2 },
-// //           { day: 'Wed', commits: 15, prs: 4 },
-// //           { day: 'Thu', commits: 10, prs: 3 },
-// //           { day: 'Fri', commits: 18, prs: 5 },
-// //           { day: 'Sat', commits: 5, prs: 1 },
-// //           { day: 'Sun', commits: 2, prs: 0 }
-// //         ],
-// //         experienceTimeline: [
-// //           { year: '2016', position: 'Junior Developer', company: 'StartUp Inc' },
-// //           { year: '2018', position: 'Full Stack Dev', company: 'WebSolutions' },
-// //           { year: '2020', position: 'Senior Developer', company: 'TechCorp' },
-// //           { year: '2022', position: 'Tech Lead', company: 'TechCorp' },
-// //         ]
-// //       }
-// //     }
-// //   };
-
-// //   const profile = profile.profile;
-
-// //   // Handle form submission
-// //   const handleSubmit = (e) => {
-// //     e.preventDefault();
-// //     setIsEditing(false);
-// //   };
-
-// //   // Handle notification actions
-// //   const handleRespond = (id, action) => {
-// //     console.log(`Responded to ${id} with ${action}`);
-// //     setShowModal(false);
-// //   };
-
-// //   // Chart colors
-//   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
-//   const SKILL_COLORS = {
-//     Frontend: '#6366F1',
-//     Backend: '#10B981',
-//     Database: '#F59E0B',
-//     DevOps: '#EF4444'
-//   };
-
-// //   // Skill icons
-//   const SkillIcon = ({ name }) => {
-//     const icons = {
-//       Frontend: <FaCode className="text-indigo-500" />,
-//       Backend: <FaServer className="text-emerald-500" />,
-//       Database: <FaDatabase className="text-amber-500" />,
-//       DevOps: <FaPalette className="text-red-500" />
-//     };
-//     return icons[name] || <FaCode />;
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-gray-200 py-8 px-4 flex flex-col items-center">
-//       {/* Header */}
-//       <div className="w-full max-w-6xl flex justify-between items-center mb-8">
-//         <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
-//           Developer Profile
-//         </h1>
-//         <div className="relative">
-//           <button
-//             onClick={() => setShowModal(true)}
-//             className="relative p-2 bg-gray-800 rounded-full hover:bg-gray-700 transition-colors"
-//           >
-//             <FaBell className="w-6 h-6 text-blue-400" />
-//             {profile.requests.length > 0 && (
-//               <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-//                 {profile.requests.length}
-//               </span>
-//             )}
-//           </button>
-//         </div>
-//       </div>
-
-//       <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-3 gap-6">
-//         {/* Profile Card */}
-//         <div className="lg:col-span-2 bg-gray-800 rounded-xl shadow-xl p-6">
-//           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-//             <div className="relative">
-//               <img
-//                 src={profile.profileImage}
-//                 alt="Profile"
-//                 className="w-32 h-32 rounded-xl border-4 border-blue-500/50 object-cover shadow-lg"
-//               />
-//               <div className="absolute -bottom-2 -right-2 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">
-//                 PRO
-//               </div>
-//             </div>
-//             <div className="flex-1 text-center md:text-left">
-//               <h2 className="text-2xl font-bold text-white">
-//                 {profile.username}
-//               </h2>
-//               <p className="text-blue-400">{profile.email}</p>
-//               <p className="mt-3 text-gray-300">
-//                 {profile.bio}
-//               </p>
-
-//               <div className="mt-4 flex flex-wrap justify-center md:justify-start gap-2">
-//                 {profile.skills.map((skill, index) => (
-//                   <span
-//                     key={index}
-//                     className="px-3 py-1 bg-gray-700 rounded-full text-sm font-medium text-blue-300"
-//                   >
-//                     {skill}
-//                   </span>
-//                 ))}
-//               </div>
-//             </div>
-//           </div>
-
-//           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-//             <div className="bg-gray-900/50 p-4 rounded-lg">
-//               <h3 className="text-lg font-semibold text-blue-400 mb-2">Education</h3>
-//               <p className="text-gray-300">{profile.education}</p>
-//             </div>
-//             <div className="bg-gray-900/50 p-4 rounded-lg">
-//               <h3 className="text-lg font-semibold text-blue-400 mb-2">Experience</h3>
-//               <p className="text-gray-300">{profile.experience}</p>
-//             </div>
-//           </div>
-
-//           <div className="mt-6">
-//             <h3 className="text-lg font-semibold text-white mb-3">Connect</h3>
-//             <div className="flex gap-4">
-//               {profile.social.linkedin && (
-//                 <a
-//                   href={profile.social.linkedin}
-//                   className="p-3 bg-gray-700 rounded-lg hover:bg-blue-600 transition-colors"
-//                   target="_blank"
-//                   rel="noreferrer"
-//                 >
-//                   <FaLinkedin className="text-2xl text-white" />
-//                 </a>
-//               )}
-//               {profile.social.github && (
-//                 <a
-//                   href={profile.social.github}
-//                   className="p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
-//                   target="_blank"
-//                   rel="noreferrer"
-//                 >
-//                   <FaGithub className="text-2xl text-white" />
-//                 </a>
-//               )}
-//               {profile.social.twitter && (
-//                 <a
-//                   href={profile.social.twitter}
-//                   className="p-3 bg-gray-700 rounded-lg hover:bg-blue-400 transition-colors"
-//                   target="_blank"
-//                   rel="noreferrer"
-//                 >
-//                   <FaTwitter className="text-2xl text-white" />
-//                 </a>
-//               )}
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Stats Card */}
-
-//       </div>
-
-//       {/* Activity Charts */}
-//       <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-//         {/* Weekly Activity */}
-//         <div className="bg-gray-800 rounded-xl shadow-xl p-6">
-//           <h3 className="text-lg font-bold text-white mb-4">Weekly Activity</h3>
-//           <div className="h-64">
-//             <ResponsiveContainer width="100%" height="100%">
-//               <AreaChart data={profile.weeklyLogins}>
-//                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-//                 <XAxis dataKey="day" stroke="#9CA3AF" />
-//                 <YAxis stroke="#9CA3AF" />
-//                 <Tooltip
-//                   contentStyle={{ backgroundColor: '#1F2937', borderColor: '#374151' }}
-//                   itemStyle={{ color: 'white' }}
-//                 />
-//                 <Area
-//                   type="monotone"
-//                   dataKey="commits"
-//                   name="Commits"
-//                   stackId="1"
-//                   stroke="#6366F1"
-//                   fill="url(#colorCommits)"
-//                 />
-//                 <Area
-//                   type="monotone"
-//                   dataKey="prs"
-//                   name="PRs"
-//                   stackId="1"
-//                   stroke="#10B981"
-//                   fill="url(#colorPRs)"
-//                 />
-//                 <defs>
-//                   <linearGradient id="colorCommits" x1="0" y1="0" x2="0" y2="1">
-//                     <stop offset="5%" stopColor="#6366F1" stopOpacity={0.8}/>
-//                     <stop offset="95%" stopColor="#6366F1" stopOpacity={0.1}/>
-//                   </linearGradient>
-//                   <linearGradient id="colorPRs" x1="0" y1="0" x2="0" y2="1">
-//                     <stop offset="5%" stopColor="#10B981" stopOpacity={0.8}/>
-//                     <stop offset="95%" stopColor="#10B981" stopOpacity={0.1}/>
-//                   </linearGradient>
-//                 </defs>
-//               </AreaChart>
-//             </ResponsiveContainer>
-//           </div>
-//         </div>
-
-//         {/* Skill Distribution */}
-//         <div className="bg-gray-800 rounded-xl shadow-xl p-6">
-//           <h3 className="text-lg font-bold text-white mb-4">Experience Timeline</h3>
-//           <div className="space-y-4">
-//             {/* {profile.experience.map((exp, index) => (
-//               <div key={index} className="flex">
-//                 <div className="flex flex-col items-center mr-4">
-//                   <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
-//                     {exp.year}
-//                   </div>
-//                   {index < profile.experience.length - 1 && (
-//                     <div className="h-full w-1 bg-gradient-to-b from-blue-500 to-emerald-500"></div>
-//                   )}
-//                 </div>
-//                 <div className="pb-6">
-//                   <h4 className="text-white font-semibold">{exp.position}</h4>
-//                   <p className="text-gray-400">{exp.company}</p>
-//                 </div>
-//               </div>
-//             ))} */}
-
-//           </div>
-//         </div>
-//       </div>
-//     <Graph profile={profile} />
-//       {/* Projects */}
-//       <div className="w-full max-w-6xl mt-6">
-//         <div className="bg-gray-800 rounded-xl shadow-xl p-6">
-//           <div className="flex justify-between items-center mb-6">
-//             <h2 className="text-xl font-bold text-white">Projects</h2>
-//             <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-//               New Project
-//             </button>
-//           </div>
-
-//           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-//             {profile.projects.map((project, index) => (
-//               <div
-//                 key={index}
-//                 className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-lg p-5 hover:border-blue-500/50 transition-all hover:shadow-lg"
-//               >
-//                 <h3 className="text-lg font-bold text-white mb-2">{project.name}</h3>
-//                 <p className="text-gray-300 text-sm mb-4">{project.description}</p>
-//                 <p className="text-xs text-gray-400 mb-4">
-//                   <span className="font-medium text-gray-300">Technologies:</span> {project.technologies}
-//                 </p>
-//                 <div className="flex gap-3">
-//                   {project.githubLink && (
-//                     <a
-//                       href={project.githubLink}
-//                       className="flex items-center gap-1 text-sm text-gray-300 hover:text-white"
-//                       target="_blank"
-//                       rel="noreferrer"
-//                     >
-//                       <FaGithub />
-//                       GitHub
-//                     </a>
-//                   )}
-//                   {project.liveDemoLink && (
-//                     <a
-//                       href={project.liveDemoLink}
-//                       className="flex items-center gap-1 text-sm text-gray-300 hover:text-white"
-//                       target="_blank"
-//                       rel="noreferrer"
-//                     >
-//                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-//                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-//                       </svg>
-//                       Live Demo
-//                     </a>
-//                   )}
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Notification Modal */}
-//       {showModal && (
-//         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-//           <div className="bg-gray-800 rounded-xl w-full max-w-lg mx-4 p-6 relative">
-//             <button
-//               className="absolute top-4 right-4 text-gray-400 hover:text-white text-xl"
-//               onClick={() => setShowModal(false)}
-//             >
-//               ×
-//             </button>
-//             <h2 className="text-xl font-bold text-white mb-4">
-//               Project Requests
-//             </h2>
-//             {profile.requests.length > 0 ? (
-//               <div className="space-y-4">
-//                 {profile.requests.map((request, index) => (
-//                   <div key={index} className="bg-gray-900 p-4 rounded-lg">
-//                     <p className="text-white font-semibold">
-//                       {request.project.name}
-//                     </p>
-//                     <p className="text-gray-300 text-sm mt-1">
-//                       {request.project.description}
-//                     </p>
-//                     <p className="text-gray-400 text-sm mt-2">
-//                       From: {request.sender.username}
-//                     </p>
-//                     <div className="flex gap-3 mt-3">
-//                       <button
-//                         onClick={() => handleRespond(request._id, "accepted")}
-//                         className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg flex items-center justify-center gap-2"
-//                       >
-//                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-//                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-//                         </svg>
-//                         Accept
-//                       </button>
-//                       <button
-//                         onClick={() => handleRespond(request._id, "rejected")}
-//                         className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-2 rounded-lg flex items-center justify-center gap-2"
-//                       >
-//                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-//                           <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-//                         </svg>
-//                         Reject
-//                       </button>
-//                     </div>
-//                   </div>
-//                 ))}
-//               </div>
-//             ) : (
-//               <p className="text-gray-400 py-8 text-center">No requests found.</p>
-//             )}
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default ProfileDev;
-
 import {
   PieChart,
   Pie,
@@ -435,20 +7,26 @@ import {
   ResponsiveContainer,
   XAxis,
 } from "recharts";
-import { FaCode, FaServer, FaDatabase } from "react-icons/fa";
+import { FaCode, FaServer, FaDatabase, FaRocket, FaShieldAlt, FaBolt, FaCheckCircle, FaBrain } from "react-icons/fa";
 import { FaPalette } from "react-icons/fa6";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
+import './AnalyticsStyles.css';
 
 // Format milliseconds to "X min Y sec"
 
 const SKILL_COLORS = {
-  HTML: "#F97316",
-  CSS: "#3B82F6",
-  JS: "#FACC15",
-  Frontend: "#6366F1",
-  Backend: "#10B981",
-  Database: "#F59E0B",
-  DevOps: "#EF4444",
+  HTML: "#FF6B35",
+  CSS: "#4338CA",
+  JS: "#F59E0B",
+  Frontend: "#8B5CF6",
+  Backend: "#059669",
+  Database: "#DC2626",
+  DevOps: "#EC4899",
+  Python: "#3776AB",
+  React: "#61DAFB",
+  Node: "#339933",
+  MongoDB: "#47A248",
+  MySQL: "#4479A1",
 };
 
 const SkillIcon = ({ name }) => {
@@ -499,274 +77,280 @@ const ProfileDev = ({ profile }) => {
   const improved = change > 0;
 
   return (
-    // <div className="bg-gray-800 rounded-xl shadow-xl p-6">
-    //   <h2 className="text-xl font-bold text-white mb-6">Developer Analytics</h2>
+    <div className="relative overflow-hidden">
+      {/* Animated background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 opacity-95"></div>
+      <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 via-purple-500/10 to-pink-500/10"></div>
+      
+      {/* Floating background elements */}
+      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-purple-500/20 rounded-full blur-xl animate-pulse"></div>
+      <div className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 w-8 h-8 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-cyan-500/20 rounded-full blur-xl animate-pulse delay-1000"></div>
+      
+      <div className="relative z-10 glass-card-enhanced rounded-2xl lg:rounded-3xl shadow-2xl p-3 sm:p-6 lg:p-8 font-['Inter'] text-white transition-all duration-500">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mb-4 sm:mb-6 lg:mb-8 text-center sm:text-left">
+          <div className="p-2 sm:p-3 bg-gradient-to-br from-orange-500 to-pink-500 rounded-xl lg:rounded-2xl shadow-lg icon-float">
+            <FaRocket className="text-lg sm:text-xl lg:text-2xl text-white icon-glow" />
+          </div>
+          <div>
+            <h2 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 bg-clip-text text-transparent leading-tight">
+              🚀 Developer Analytics
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-400">Real-time performance insights</p>
+          </div>
+        </div>
 
-    //   <div className="space-y-5">
-    //     {/* Reliability Score */}
-    //     <div className="bg-gradient-to-r from-gray-900 to-gray-800 p-4 rounded-lg border border-gray-700">
-    //       <h3 className="text-sm font-semibold text-blue-400 mb-2">
-    //         RELIABILITY SCORE
-    //       </h3>
-    //       <div className="flex items-end justify-between">
-    //         <span className="text-3xl font-bold text-white">
-    //           {reliabilityScore}%
-    //         </span>
-    //         <div className="w-16 h-16">
-    //           <ResponsiveContainer width="100%" height="100%">
-    //             <PieChart>
-    //               <Pie
-    //                 data={[
-    //                   { name: "Completed", value: reliabilityScore },
-    //                   { name: "Remaining", value: 100 - reliabilityScore },
-    //                 ]}
-    //                 cx="50%"
-    //                 cy="50%"
-    //                 innerRadius={20}
-    //                 outerRadius={30}
-    //                 dataKey="value"
-    //                 paddingAngle={2}
-    //               >
-    //                 <Cell fill="#10B981" />
-    //                 <Cell fill="#374151" />
-    //               </Pie>
-    //             </PieChart>
-    //           </ResponsiveContainer>
-    //         </div>
-    //       </div>
-    //       <p className="text-xs text-green-400 mt-2">
-    //         Based on project delivery and peer reviews
-    //       </p>
-    //     </div>
-
-    //     {/* Average Response Time */}
-    //     <div className="bg-gradient-to-r from-gray-900 to-gray-800 p-4 rounded-lg border border-gray-700">
-    //       <h3 className="text-sm font-semibold text-blue-400 mb-2">
-    //         AVG. RESPONSE TIME
-    //       </h3>
-    //       <div className="flex items-center justify-between">
-    //         <span className="text-3xl font-bold text-white">
-    //           {responseTime}
-    //         </span>
-    //         <div className="text-green-500 text-sm bg-green-900/30 px-2 py-1 rounded">
-    //           <span>▼ 12%</span>
-    //         </div>
-    //       </div>
-    //       <p className="text-xs text-green-400 mt-2">
-    //         Time to respond to messages and PRs
-    //       </p>
-    //     </div>
-
-    //     {/* Task Completion Rate */}
-    //     <div className="bg-gradient-to-r from-gray-900 to-gray-800 p-4 rounded-lg border border-gray-700">
-    //       <h3 className="text-sm font-semibold text-blue-400 mb-2">
-    //         TASK COMPLETION RATE
-    //       </h3>
-    //       <div className="flex items-center">
-    //         <span className="text-3xl font-bold text-white">
-    //           {taskCompletion}%
-    //         </span>
-    //         <div className="ml-4 flex-1">
-    //           <div className="w-full bg-gray-700 rounded-full h-2.5">
-    //             <div
-    //               className="bg-gradient-to-r from-blue-500 to-emerald-500 h-2.5 rounded-full"
-    //               style={{ width: `${taskCompletion}%` }}
-    //             ></div>
-    //           </div>
-    //         </div>
-    //       </div>
-    //       <p className="text-xs text-gray-400 mt-2">Tasks completed on time</p>
-    //     </div>
-
-    //     {/* Skill Distribution */}
-    //     <div className="bg-gradient-to-r from-gray-900 to-gray-800 p-4 rounded-lg border border-gray-700">
-    //       <h3 className="text-sm font-semibold text-blue-400 mb-2">
-    //         SKILL DISTRIBUTION
-    //       </h3>
-
-    //       {/* Bar Chart with horizontal scroll */}
-    //       <div className="mt-3 overflow-x-auto">
-    //         <div
-    //           style={{ width: `${skillsData.length * 60}px`, minWidth: "100%" }}
-    //         >
-    //           <ResponsiveContainer width="100%" height={120}>
-    //             <BarChart data={skillsData}>
-    //               <XAxis
-    //                 dataKey="name"
-    //                 tick={{ fill: "#ccc", fontSize: 10 }}
-    //                 axisLine={false}
-    //                 tickLine={false}
-    //               />
-
-    //               <Bar dataKey="value">
-    //                 {skillsData.map((entry, index) => (
-    //                   <Cell
-    //                     key={`cell-${index}`}
-    //                     fill={SKILL_COLORS[entry.name] || "#8884d8"}
-    //                   />
-    //                 ))}
-    //               </Bar>
-    //             </BarChart>
-    //           </ResponsiveContainer>
-    //         </div>
-    //       </div>
-
-    //       {/* Icon Grid Scrollable */}
-    //       {/* <div className="mt-4 overflow-x-auto">
-    //         <div className="flex gap-4 min-w-max">
-    //           {skillsData.map((skill, index) => (
-    //             <div key={index} className="flex flex-col items-center">
-    //               <div className="p-2 rounded-lg bg-gray-700">
-    //                 <SkillIcon name={skill.name} />
-    //               </div>
-    //               <span className="text-xs mt-1 text-gray-300">
-    //                 {skill.name}
-    //               </span>
-    //             </div>
-    //           ))}
-    //         </div>
-    //       </div> */}
-    //     </div>
-    //   </div>
-    // </div>
-    <div className="bg-[#1E1B26] rounded-2xl shadow-2xl p-8 font-['Poppins'] text-white">
-      <h2 className="text-2xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-300">
-        🚀 Developer Analytics
-      </h2>
-
-      <div className="space-y-6">
-        {/* RELIABILITY SCORE */}
-        <div className="bg-[#2A2238]/80 backdrop-blur-md rounded-xl p-5 border border-[#3A2F4F] shadow-lg hover:shadow-orange-400/30 transition">
-          <h3 className="text-sm font-semibold text-orange-300 mb-2">
-            🛡️ RELIABILITY SCORE
-          </h3>
-          <div className="flex items-end justify-between">
-            <span className="text-4xl font-bold text-white">
-              {reliabilityScore}%
-            </span>
-            <div className="w-16 h-16">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={[
-                      { name: "Completed", value: reliabilityScore },
-                      { name: "Remaining", value: 100 - reliabilityScore },
-                    ]}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={20}
-                    outerRadius={30}
-                    dataKey="value"
+        {/* Metrics Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6 w-full">
+          {/* RELIABILITY SCORE */}
+          <div className="metric-card group relative bg-gradient-to-br from-orange-500/10 to-orange-600/5 backdrop-blur-sm rounded-xl lg:rounded-2xl p-3 sm:p-4 lg:p-6 border border-orange-500/20 hover:border-orange-400/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-orange-500/20 w-full min-w-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent rounded-xl lg:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            
+            {/* Decorative elements */}
+            <div className="absolute top-1 right-1 sm:top-2 sm:right-2 w-3 h-3 sm:w-4 sm:h-4 lg:w-6 lg:h-6 bg-orange-500/30 rounded-full blur-sm"></div>
+            
+            <div className="relative z-10 w-full">
+              <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                <div className="p-1.5 sm:p-2 bg-gradient-to-br from-orange-500/30 to-orange-600/20 rounded-lg backdrop-blur-sm">
+                  <FaShieldAlt className="text-xs sm:text-sm lg:text-base text-orange-300" />
+                </div>
+                <h3 className="text-xs sm:text-sm font-bold text-orange-300 uppercase tracking-wider">
+                  🛡️ Reliability
+                </h3>
+              </div>
+              
+              <div className="text-center mb-3 sm:mb-4">
+                <div className="flex items-center justify-center gap-1 mb-2">
+                  <span className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-black bg-gradient-to-br from-white to-orange-100 bg-clip-text text-transparent">
+                    {reliabilityScore}
+                  </span>
+                  <span className="text-sm sm:text-base lg:text-xl text-orange-400 font-bold">%</span>
+                </div>
+                
+                {/* Mini pie chart */}
+                <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 mx-auto mb-3">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: "Completed", value: reliabilityScore },
+                          { name: "Remaining", value: 100 - reliabilityScore },
+                        ]}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={12}
+                        outerRadius={20}
+                        dataKey="value"
+                        startAngle={90}
+                        endAngle={-270}
+                      >
+                        <Cell fill="url(#orangeGradient)" />
+                        <Cell fill="#374151" />
+                      </Pie>
+                      <defs>
+                        <linearGradient id="orangeGradient" x1="0" y1="0" x2="1" y2="1">
+                          <stop offset="0%" stopColor="#FB923C" />
+                          <stop offset="50%" stopColor="#F97316" />
+                          <stop offset="100%" stopColor="#EA580C" />
+                        </linearGradient>
+                      </defs>
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+              
+              {/* Progress bar */}
+              <div className="mb-2">
+                <div className="w-full bg-gray-700/50 rounded-full h-1.5 sm:h-2 progress-bar overflow-hidden">
+                  <div 
+                    className="bg-gradient-to-r from-orange-500 via-orange-400 to-orange-300 h-1.5 sm:h-2 rounded-full transition-all duration-1000 ease-out relative"
+                    style={{ width: `${reliabilityScore}%` }}
                   >
-                    <Cell fill="#F97316" />
-                    <Cell fill="#1F2937" />
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-          <p className="text-xs text-orange-200 mt-2 italic">
-            Based on project delivery and peer reviews
-          </p>
-        </div>
-
-        {/* RESPONSE TIME */}
-        {/* <div className="bg-[#2A2238]/80 backdrop-blur-md rounded-xl p-5 border border-[#3A2F4F] shadow-lg hover:shadow-green-500/30 transition">
-          <h3 className="text-sm font-semibold text-green-300 mb-2">
-            ⚡ AVG. RESPONSE TIME
-          </h3>
-          <div className="flex items-center justify-between">
-            <span className="text-4xl font-bold">{responseTime}</span>
-            <div className="text-green-400 text-xs bg-green-800/20 px-3 py-1 rounded-full">
-              ▼ 12%
-            </div>
-          </div>
-          <p className="text-xs text-green-200 mt-2 italic">
-            Average time to respond to PRs and messages
-          </p>
-        </div> */}
-        <div className="bg-[#2A2238]/80 backdrop-blur-md rounded-xl p-5 border border-[#3A2F4F] shadow-lg hover:shadow-green-500/30 transition">
-          <h3 className="text-sm font-semibold text-green-300 mb-2">
-            ⚡ AVG. RESPONSE TIME
-          </h3>
-
-          <div className="flex items-center justify-between">
-            <span className="text-4xl font-bold text-white">
-              {formatResponseTime(current)}
-            </span>
-
-            {changePercent !== null && (
-              <div
-                className={`text-xs px-3 py-1 rounded-full flex items-center gap-1 ${
-                  improved
-                    ? "text-green-400 bg-green-800/20"
-                    : "text-red-400 bg-red-800/20"
-                }`}
-              >
-                {improved ? <FaArrowDown /> : <FaArrowUp />}
-                <span>{changePercent}%</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
+                  </div>
+                </div>
               </div>
-            )}
+              
+              <div className="text-center">
+                <span className="text-xs bg-orange-500/20 text-orange-300 px-2 py-1 rounded-full border border-orange-500/30 font-medium">
+                  Excellent
+                </span>
+              </div>
+            </div>
           </div>
 
-          <p className="text-xs text-green-200 mt-2 italic">
-            Average time to respond to messages and pull requests
-          </p>
-        </div>
+          {/* RESPONSE TIME */}
+          <div className="metric-card group relative bg-gradient-to-br from-green-500/10 to-green-600/5 backdrop-blur-sm rounded-xl lg:rounded-2xl p-3 sm:p-4 lg:p-6 border border-green-500/20 hover:border-green-400/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-green-500/20 w-full min-w-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent rounded-xl lg:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            
+            {/* Decorative elements */}
+            <div className="absolute top-1 right-1 sm:top-2 sm:right-2 w-3 h-3 sm:w-4 sm:h-4 lg:w-6 lg:h-6 bg-green-500/30 rounded-full blur-sm"></div>
+            <div className="absolute bottom-1 left-1 sm:bottom-2 sm:left-2 w-2 h-2 sm:w-3 sm:h-3 bg-green-400/40 rounded-full animate-pulse"></div>
+            
+            <div className="relative z-10 w-full">
+              <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                <div className="p-1.5 sm:p-2 bg-gradient-to-br from-green-500/30 to-green-600/20 rounded-lg backdrop-blur-sm">
+                  <FaBolt className="text-xs sm:text-sm lg:text-base text-green-300" />
+                </div>
+                <h3 className="text-xs sm:text-sm font-bold text-green-300 uppercase tracking-wider">
+                  ⚡ Response
+                </h3>
+              </div>
 
-        {/* TASK COMPLETION */}
-        <div className="bg-[#2A2238]/80 backdrop-blur-md rounded-xl p-5 border border-[#3A2F4F] shadow-lg hover:shadow-blue-400/30 transition">
-          <h3 className="text-sm font-semibold text-blue-300 mb-2">
-            ✅ TASK COMPLETION RATE
-          </h3>
-          <div className="flex items-center">
-            <span className="text-4xl font-bold">{taskCompletion}%</span>
-            <div className="ml-4 flex-1">
-              <div className="w-full bg-gray-700 rounded-full h-2.5">
+              <div className="text-center mb-3 sm:mb-4">
+                <div className="mb-3">
+                  <span className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-black bg-gradient-to-br from-white to-green-100 bg-clip-text text-transparent">
+                    {formatResponseTime(current)}
+                  </span>
+                </div>
+
+                {changePercent !== null && (
+                  <div
+                    className={`text-xs px-2 py-1 rounded-full flex items-center justify-center gap-1 font-semibold backdrop-blur-sm max-w-fit mx-auto ${
+                      improved
+                        ? "text-green-300 bg-green-500/20 border border-green-500/30"
+                        : "text-red-300 bg-red-500/20 border border-red-500/30"
+                    }`}
+                  >
+                    {improved ? <FaArrowDown className="text-xs" /> : <FaArrowUp className="text-xs" />}
+                    <span>{changePercent}%</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="text-center">
+                <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full border border-green-500/30 font-medium">
+                  {improved ? "Improving" : "Needs Focus"}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* TASK COMPLETION */}
+          <div className="metric-card group relative bg-gradient-to-br from-blue-500/10 to-blue-600/5 backdrop-blur-sm rounded-xl lg:rounded-2xl p-3 sm:p-4 lg:p-6 border border-blue-500/20 hover:border-blue-400/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-500/20 w-full min-w-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent rounded-xl lg:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            
+            {/* Decorative elements */}
+            <div className="absolute top-1 right-1 sm:top-2 sm:right-2 w-3 h-3 sm:w-4 sm:h-4 lg:w-6 lg:h-6 bg-blue-500/30 rounded-full blur-sm"></div>
+            <div className="absolute bottom-1 left-1 sm:bottom-2 sm:left-2 w-2 h-2 sm:w-3 sm:h-3 bg-blue-400/40 rounded-full animate-bounce"></div>
+            
+            <div className="relative z-10 w-full">
+              <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                <div className="p-1.5 sm:p-2 bg-gradient-to-br from-blue-500/30 to-blue-600/20 rounded-lg backdrop-blur-sm">
+                  <FaCheckCircle className="text-xs sm:text-sm lg:text-base text-blue-300" />
+                </div>
+                <h3 className="text-xs sm:text-sm font-bold text-blue-300 uppercase tracking-wider">
+                  ✅ Tasks
+                </h3>
+              </div>
+              
+              <div className="text-center mb-3 sm:mb-4">
+                <div className="flex items-center justify-center gap-1 mb-3">
+                  <span className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-black bg-gradient-to-br from-white to-blue-100 bg-clip-text text-transparent">
+                    {taskCompletion}
+                  </span>
+                  <span className="text-sm sm:text-base lg:text-xl text-blue-400 font-bold">%</span>
+                </div>
+                
+                {/* Progress circle */}
+                <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 mx-auto mb-3 relative">
+                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      stroke="#374151"
+                      strokeWidth="8"
+                      fill="none"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      stroke="url(#blueGradient)"
+                      strokeWidth="8"
+                      fill="none"
+                      strokeDasharray={`${2 * Math.PI * 40}`}
+                      strokeDashoffset={`${2 * Math.PI * 40 * (1 - taskCompletion / 100)}`}
+                      className="transition-all duration-1000 ease-out"
+                      strokeLinecap="round"
+                    />
+                    <defs>
+                      <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#60A5FA" />
+                        <stop offset="50%" stopColor="#3B82F6" />
+                        <stop offset="100%" stopColor="#1D4ED8" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+              </div>
+              
+              <div className="text-center">
+                <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full border border-blue-500/30 font-medium">
+                  On Track
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* SKILL DISTRIBUTION */}
+          <div className="metric-card group relative bg-gradient-to-br from-purple-500/10 to-purple-600/5 backdrop-blur-sm rounded-xl lg:rounded-2xl p-3 sm:p-4 lg:p-6 border border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/20 col-span-1 sm:col-span-2 w-full min-w-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent rounded-xl lg:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            
+            {/* Decorative elements */}
+            <div className="absolute top-1 right-1 sm:top-2 sm:right-2 w-3 h-3 sm:w-4 sm:h-4 lg:w-6 lg:h-6 bg-purple-500/30 rounded-full blur-sm"></div>
+            <div className="absolute bottom-1 left-1 sm:bottom-2 sm:left-2 w-2 h-2 sm:w-3 sm:h-3 bg-purple-400/40 rounded-full animate-ping"></div>
+            
+            <div className="relative z-10 w-full">
+              <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                <div className="p-1.5 sm:p-2 bg-gradient-to-br from-purple-500/30 to-purple-600/20 rounded-lg backdrop-blur-sm">
+                  <FaBrain className="text-xs sm:text-sm lg:text-base text-purple-300" />
+                </div>
+                <h3 className="text-xs sm:text-sm font-bold text-purple-300 uppercase tracking-wider">
+                  🧠 Skills
+                </h3>
+              </div>
+              
+              <div className="mt-2 sm:mt-4 overflow-x-auto scrollbar-custom">
                 <div
-                  className="bg-gradient-to-r from-sky-400 to-green-400 h-2.5 rounded-full"
-                  style={{ width: `${taskCompletion}%` }}
-                ></div>
+                  style={{ 
+                    width: `${Math.max(skillsData.length * 40, 200)}px`, 
+                    minWidth: "100%" 
+                  }}
+                >
+                  <ResponsiveContainer width="100%" height={60}>
+                    <BarChart data={skillsData} margin={{ top: 5, right: 2, left: 2, bottom: 5 }}>
+                      <XAxis
+                        dataKey="name"
+                        tick={{ fill: "#C4B5FD", fontSize: 8, fontWeight: 500 }}
+                        axisLine={false}
+                        tickLine={false}
+                        interval={0}
+                        angle={-45}
+                        textAnchor="end"
+                        height={25}
+                      />
+                      <Bar dataKey="value" radius={[3, 3, 0, 0]}>
+                        {skillsData.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={SKILL_COLORS[entry.name] || "#8B5CF6"}
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+              
+              <div className="text-center mt-2">
+                <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full border border-purple-500/30 font-medium">
+                  Multi-skilled
+                </span>
               </div>
             </div>
           </div>
-          <p className="text-xs text-blue-200 mt-2 italic">
-            Percentage of completed tasks on time
-          </p>
-        </div>
-
-        {/* SKILL DISTRIBUTION */}
-        <div className="bg-[#2A2238]/80 backdrop-blur-md rounded-xl p-5 border border-[#3A2F4F] shadow-lg hover:shadow-purple-400/30 transition">
-          <h3 className="text-sm font-semibold text-purple-300 mb-2">
-            🧠 SKILL DISTRIBUTION
-          </h3>
-          <div className="mt-3 overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500 scrollbar-track-gray-800">
-            <div
-              style={{ width: `${skillsData.length * 60}px`, minWidth: "100%" }}
-            >
-              <ResponsiveContainer width="100%" height={120}>
-                <BarChart data={skillsData}>
-                  <XAxis
-                    dataKey="name"
-                    tick={{ fill: "#E0E7FF", fontSize: 11 }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <Bar dataKey="value">
-                    {skillsData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={SKILL_COLORS[entry.name] || "#7C3AED"}
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-          <p className="text-xs text-purple-200 mt-2 italic">
-            Technical expertise across domains
-          </p>
         </div>
       </div>
     </div>

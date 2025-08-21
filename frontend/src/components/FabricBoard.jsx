@@ -692,4 +692,3 @@ const FabricBoard = ({ projectId, username }) => {
 };
 
 export default FabricBoard;
-

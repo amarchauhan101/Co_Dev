@@ -705,8 +705,12 @@ export default function ProjectDashboard({
                   </div>
                 )}
                 {mobilePanel === "files" && (
-                  <div className="space-y-4">
-                    <FileExplorer projectId={projectId} />
+                  <div className="h-[calc(100vh-200px)] sm:h-[500px]">
+                    <FileExplorer 
+                      projectId={projectId} 
+                      isMobile={true}
+                      containerHeight="100%"
+                    />
                   </div>
                 )}
                 {mobilePanel === "commit" && (
@@ -733,7 +737,7 @@ export default function ProjectDashboard({
                 <div className="text-sm text-gray-400 bg-gray-700/50 px-3 py-1 rounded-full">
                   {task[projectId]?.length || 0} tasks
                 </div>
-              </div>
+              </div> 
 
               <div className="max-h-96 overflow-y-auto pr-2 custom-scroll">
                 {task[projectId]?.length > 0 ? (

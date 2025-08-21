@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import Loader from "./Loader";
-import { FaBell, FaCode, FaDatabase, FaServer } from "react-icons/fa";
+import { FaBell, FaCode, FaDatabase, FaServer, FaEdit, FaSave, FaTimes, FaMapMarkerAlt, FaCalendarAlt, FaCertificate, FaAward } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { FaYoutube } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
 import { RiInstagramFill } from "react-icons/ri";
 import { BsGithub } from "react-icons/bs";
 import { FaLinkedin, FaPalette } from "react-icons/fa6";
+import './ProfileStyles.css';
 import { AiFillInstagram } from "react-icons/ai";
 import { FaFacebookF } from "react-icons/fa";
 import { useSelector } from "react-redux";
@@ -30,6 +31,7 @@ function Profile() {
   const [userData, setUserData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
   const { user } = useAuth();
   const token = user?.userWithToken?.token;
   console.log("user in profile", user);
@@ -43,7 +45,8 @@ function Profile() {
     github: <BsGithub className="text-zinc-600" />,
     linkedin: <FaLinkedin className="text-blue-700" />,
   };
-  //   // Chart colors
+
+  // Chart colors
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
   const SKILL_COLORS = {
     Frontend: "#6366F1",
@@ -52,7 +55,7 @@ function Profile() {
     DevOps: "#EF4444",
   };
 
-  //   // Skill icons
+  // Skill icons
   const SkillIcon = ({ name }) => {
     const icons = {
       Frontend: <FaCode className="text-indigo-500" />,
@@ -145,30 +148,6 @@ function Profile() {
     }
   }, [isEditing, userData, reset]);
 
-  // const handleRespond = async (requestId, response) => {
-  //   try {
-  //     const res = await axios.post(
-  //       "http://localhost:8000/api/v1/request/respond",
-  //       { requestId, response },
-  //       { headers: { authorization: `Bearer ${token}` } }
-  //     );
-
-  //     if (res.status === 200) {
-  //       toast.success(`Request ${response}`);
-  //       setUserData((prev) => ({
-  //         ...prev,
-  //         profile: {
-  //           ...prev.profile,
-  //           requests: prev.profile.requests.filter((r) => r._id !== requestId),
-  //         },
-  //       }));
-  //       if (userData.profile.requests.length === 1) setShowModal(false);
-  //     }
-  //   } catch (err) {
-  //     toast.error(`Failed to ${response} request`);
-  //   }
-  // };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-900 text-gray-200">
@@ -198,289 +177,377 @@ function Profile() {
     })) || [];
 
   return (
-    <div className="min-h-screen font-fira bg-gray-900 text-gray-200 py-8 px-4 flex flex-col items-center">
-      {/* Header */}
-      <div className="w-full flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-100">Your Profile</h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-4 -right-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float"></div>
+        <div className="absolute -bottom-8 -left-4 w-72 h-72 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float animation-delay-4000"></div>
       </div>
 
-      {/* Profile Card */}
-      <div className="w-full  bg-gray-900 rounded-xl shadow-lg p-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-white min-h-[calc(100vh-4rem)]">
-        {/* Profile Info */}
-        <div className="col-span-2 flex flex-col gap-10 font-[Poppins] text-slate-100 px-4 sm:px-6 md:px-10 xl:px-16">
-          {/* Top Profile Section */}
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-8  p-6 md:p-10    backdrop-blur-md">
-            {/* Avatar */}
-            <div className="relative">
-              <img
-                src={userData?.profileImage}
-                alt="Profile"
-                className="w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full object-cover border-4 border-emerald-400 shadow-xl hover:scale-105 transition-transform duration-300"
-              />
-              {profile?.isactive && (
-                <span className="absolute bottom-1 right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full ring-2 ring-emerald-400 animate-ping"></span>
-              )}
-            </div>
+      {/* Main Container */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4 animate-fade-in">
+            Professional Profile
+          </h1>
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            Showcase your expertise and connect with opportunities
+          </p>
+        </div>
 
-            {/* Basic Info */}
-            <div className="flex-1 text-center md:text-left space-y-2">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 tracking-wide">
-                {userData?.username}
-              </h2>
-              <p className="text-sm text-gray-400">{userData?.email}</p>
-              <p className="italic text-gray-300">
-                {profile?.bio || "No bio available"}
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm mt-3">
-                <p>
-                  <span className="font-semibold text-emerald-400">
-                    ⚙ Experience:
-                  </span>{" "}
-                  {profile?.experienceLevel || "Not specified"}
-                </p>
-                <p>
-                  <span className="font-semibold text-emerald-400">
-                    🐱‍💻 GitHub Commits:
-                  </span>{" "}
-                  {profile?.githubCommits ?? 0}
-                </p>
-                <p className="sm:col-span-2">
-                  <span className="font-semibold text-emerald-400">
-                    🟢 Active At:
-                  </span>{" "}
-                  {new Date(profile?.activeat).toLocaleString()}
-                </p>
-              </div>
+        {/* Profile Hero Section */}
+        <div className="glass-card glass-card-hover rounded-3xl shadow-2xl mb-8 overflow-hidden animate-fade-in">
+          {/* Cover Background */}
+          <div className="h-48 sm:h-64 bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 relative animate-gradient">
+            <div className="absolute inset-0 bg-black/20"></div>
+            <div className="absolute bottom-6 right-6">
+              <button
+                onClick={() => setIsEditing(!isEditing)}
+                className="btn-glow bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 rounded-full p-3 text-white shadow-lg hover:shadow-xl transform hover:scale-105 animate-pulse-glow"
+              >
+                {isEditing ? <FaTimes size={20} /> : <FaEdit size={20} />}
+              </button>
             </div>
           </div>
 
-          {/* Edit Form */}
-          {isEditing ? (
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="p-5 sm:p-8 md:p-10 bg-[#12141c] rounded-xl border border-slate-700 shadow-lg backdrop-blur-sm space-y-6"
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <Input
-                  label="📝 Bio"
-                  type="textarea"
-                  register={register("bio")}
-                />
-                <Input
-                  label="💡 Skills"
-                  register={register("skills")}
-                  placeholder="e.g. React, Node.js"
-                />
-                <Input
-                  label="💼 Experience"
-                  register={register("experience")}
-                />
-                <Input label="🎓 Education" register={register("education")} />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-white text-sm font-semibold">
-                  🔗 Social Links
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {[
-                    "linkedin",
-                    "github",
-                    "instagram",
-                    "twitter",
-                    "youtube",
-                  ].map((key) => (
-                    <input
-                      key={key}
-                      {...register(`social.${key}`)}
-                      placeholder={`${key.charAt(0).toUpperCase()}${key.slice(
-                        1
-                      )} URL`}
-                      className="w-full px-4 py-2 rounded-md bg-gray-800 text-gray-200 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-emerald-400 transition"
-                    />
-                  ))}
+          {/* Profile Info */}
+          <div className="px-6 sm:px-8 lg:px-12 pb-8">
+            {/* Avatar and Basic Info */}
+            <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6 -mt-16 sm:-mt-20">
+              <div className="relative group animate-fade-in">
+                <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-tr from-purple-400 to-cyan-400 p-1 shadow-2xl animate-float">
+                  <img
+                    src={userData?.profileImage || 'https://via.placeholder.com/160'}
+                    alt="Profile"
+                    className="w-full h-full rounded-full object-cover bg-white hover:scale-105 transition-transform duration-300"
+                  />
                 </div>
+                {profile?.isactive && (
+                  <div className="absolute bottom-2 right-2 w-6 h-6 bg-green-400 border-4 border-white rounded-full shadow-lg animate-pulse-glow"></div>
+                )}
               </div>
 
-              <div className="flex justify-end gap-4 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setIsEditing(false)}
-                  className="bg-gray-700 hover:bg-gray-600 text-white px-5 py-2 rounded-lg shadow transition"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white px-5 py-2 rounded-lg shadow-lg transition"
-                >
-                  💾 Save
-                </button>
-              </div>
-            </form>
-          ) : (
-            <>
-              {/* Education & Experience */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
-                <div>
-                  <h4 className="text-lg font-semibold text-emerald-300 mb-1">
-                    🎓 Education
-                  </h4>
-                  <p className="text-sm text-gray-300">
-                    {profile?.education || "Not specified"}
-                  </p>
-                </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-emerald-300 mb-1">
-                    💼 Experience
-                  </h4>
-                  <p className="text-sm text-gray-300">
-                    {profile?.experience || "Not specified"}
-                  </p>
-                </div>
-              </div>
-
-              {/* Skills */}
-              <div>
-                <h4 className="text-lg font-semibold text-emerald-300 mb-2">
-                  🛠 Skills
-                </h4>
-                <div className="flex flex-wrap gap-3">
-                  {profile?.skills?.length ? (
-                    profile.skills.map((skill, index) => {
-                      const SkillIcon = getSkillIcon(skill);
-                      return (
-                        <span
-                          key={index}
-                          className="flex items-center gap-2 px-3 py-1 text-xs bg-gradient-to-r from-emerald-700 to-emerald-500 text-white rounded-full shadow hover:scale-105 transition"
-                        >
-                          <SkillIcon className="text-sm" />
-                          {skill}
-                        </span>
-                      );
-                    })
-                  ) : (
-                    <p className="text-sm text-gray-400">Not specified</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Interests */}
-              <div>
-                <h4 className="text-lg font-semibold text-blue-300 mb-2">
-                  🎯 Interests
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {profile?.interests?.length ? (
-                    profile.interests.map((interest, index) => (
-                      <span
-                        key={index}
-                        className="px-3 py-1 text-xs bg-blue-700 text-white rounded-full shadow hover:bg-blue-500 transition"
-                      >
-                        {interest}
-                      </span>
-                    ))
-                  ) : (
-                    <p className="text-sm text-gray-400">Not specified</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Social Links */}
-              <div>
-                <h4 className="text-lg font-semibold text-white mb-2">
-                  🌐 Social Profiles
-                </h4>
-                <div className="flex flex-wrap gap-3">
-                  {Object.entries(profile?.social || {}).map(([key, value]) => {
-                    const Icon = getSocialIcon(key);
-                    return (
-                      <a
-                        key={key}
-                        href={value}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="flex items-center gap-2 px-3 py-1 text-xs bg-gray-800 hover:bg-emerald-600 rounded-full capitalize text-white transition"
-                      >
-                        <Icon className="text-sm" />
-                        {key}
-                      </a>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Edit Button */}
-              <div className="flex justify-end mt-8">
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="px-5 py-2 bg-gradient-to-r from-purple-600 to-emerald-500 hover:from-purple-500 hover:to-emerald-400 text-white rounded-full shadow-md hover:shadow-emerald-400 transition"
-                >
-                  ✏️ Edit Profile
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* Right Column - Developer Analytics */}
-        <div className="col-span-1 overflow-auto max-h-[calc(100vh-8rem)]">
-          <ProfileDev profile={profile} />
-        </div>
-      </div>
-
-      {/* Notification Modal */}
-      {/* {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 p-6 rounded-lg w-full max-w-lg relative">
-            <button
-              className="absolute top-2 right-4 text-white text-xl"
-              onClick={() => setShowModal(false)}
-            >
-              ×
-            </button>
-            <h2 className="text-white text-xl font-bold mb-4">
-              Project Requests
-            </h2>
-            {profile?.requests?.length > 0 ? (
-              profile.requests.map((request, index) => (
-                <div key={index} className="mb-4 bg-gray-700 p-4 rounded">
-                  <p className="text-white font-semibold">
-                    {request.project?.name || "Unnamed Project"}
-                  </p>
-                  <p className="text-gray-300 text-sm">
-                    {request.project?.description}
-                  </p>
-                  <p className="text-gray-400 text-sm">
-                    From: {request.sender?.username}
-                  </p>
-                  <div className="flex gap-4 mt-3">
-                    <button
-                      onClick={() => handleRespond(request._id, "accepted")}
-                      className="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded"
-                    >
-                      ✔️ Accept
-                    </button>
-                    <button
-                      onClick={() => handleRespond(request._id, "rejected")}
-                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded"
-                    >
-                      ❌ Reject
-                    </button>
+              <div className="flex-1 text-center sm:text-left space-y-3 sm:mb-4">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                  {userData?.username}
+                </h2>
+                <p className="text-lg text-gray-300">{userData?.email}</p>
+                <p className="text-gray-400 max-w-2xl leading-relaxed">
+                  {profile?.bio || "🚀 Passionate developer creating amazing digital experiences"}
+                </p>
+                
+                {/* Stats Row */}
+                <div className="flex flex-wrap justify-center sm:justify-start gap-6 mt-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-cyan-400">{profile?.githubCommits || 0}</div>
+                    <div className="text-sm text-gray-400">Commits</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-purple-400">{profile?.reliabilityScore || 0}%</div>
+                    <div className="text-sm text-gray-400">Reliability</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-pink-400">{profile?.skills?.length || 0}</div>
+                    <div className="text-sm text-gray-400">Skills</div>
                   </div>
                 </div>
-              ))
-            ) : (
-              <p className="text-gray-400">No requests found.</p>
-            )}
+              </div>
+            </div>
+
+            {/* Navigation Tabs */}
+            <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-8 mb-8">
+              {['overview', 'skills', 'experience', 'social'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-6 py-3 rounded-full font-medium transition-all duration-300 transform hover:scale-105 ${
+                    activeTab === tab
+                      ? 'bg-gradient-to-r from-purple-500 to-cyan-500 text-white shadow-lg'
+                      : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                  }`}
+                >
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+              ))}
+            </div>
+
+            {/* Content Sections */}
+            <div className="min-h-[400px]">
+              {/* Overview Tab */}
+              {activeTab === 'overview' && (
+                <div className="space-y-8 animate-fade-in">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Education */}
+                    <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-purple-400/50 transition-all duration-300">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                          <IoSchool className="text-white text-xl" />
+                        </div>
+                        <h3 className="text-xl font-bold text-white">Education</h3>
+                      </div>
+                      <p className="text-gray-300 leading-relaxed">
+                        {profile?.education || "🎓 Add your educational background"}
+                      </p>
+                    </div>
+
+                    {/* Experience */}
+                    <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-cyan-400/50 transition-all duration-300">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-cyan-500 rounded-full flex items-center justify-center">
+                          <FaCertificate className="text-white text-xl" />
+                        </div>
+                        <h3 className="text-xl font-bold text-white">Experience</h3>
+                      </div>
+                      <p className="text-gray-300 leading-relaxed">
+                        {profile?.experience || "💼 Share your professional journey"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Interests */}
+                  <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+                    <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-3">
+                      <FaAward className="text-yellow-400" />
+                      Interests & Achievements
+                    </h3>
+                    <div className="flex flex-wrap gap-3">
+                      {profile?.interests?.length ? (
+                        profile.interests.map((interest, index) => (
+                          <span
+                            key={index}
+                            className="px-4 py-2 bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-400/30 rounded-full text-pink-300 text-sm hover:scale-105 transition-transform duration-300"
+                          >
+                            {interest}
+                          </span>
+                        ))
+                      ) : (
+                        <p className="text-gray-400 italic">🎯 Add your interests and achievements</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Skills Tab */}
+              {activeTab === 'skills' && (
+                <div className="space-y-6 animate-fade-in">
+                  <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+                    <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                      <FaCode className="text-cyan-400" />
+                      Technical Skills
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {profile?.skills?.length ? (
+                        profile.skills.map((skill, index) => {
+                          const SkillIcon = getSkillIcon(skill);
+                          return (
+                            <div
+                              key={index}
+                              className="bg-gradient-to-r from-purple-500/10 to-cyan-500/10 border border-purple-400/30 rounded-xl p-4 hover:scale-105 transition-all duration-300 hover:shadow-lg group"
+                            >
+                              <div className="flex items-center gap-3">
+                                <SkillIcon className="text-2xl text-cyan-400 group-hover:scale-110 transition-transform duration-300" />
+                                <span className="font-medium text-white">{skill}</span>
+                              </div>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <div className="col-span-full text-center py-12">
+                          <FaCode className="text-6xl text-gray-500 mx-auto mb-4" />
+                          <p className="text-gray-400 text-lg">🛠️ Add your technical skills</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Experience Tab */}
+              {activeTab === 'experience' && (
+                <div className="space-y-6 animate-fade-in">
+                  <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+                    <h3 className="text-2xl font-bold text-white mb-6">Professional Journey</h3>
+                    <div className="space-y-4">
+                      <div className="flex items-start gap-4 p-4 bg-white/5 rounded-xl">
+                        <div className="w-3 h-3 bg-cyan-400 rounded-full mt-2"></div>
+                        <div>
+                          <h4 className="font-bold text-white">Experience Level</h4>
+                          <p className="text-gray-300">{profile?.experienceLevel || "Not specified"}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-4 p-4 bg-white/5 rounded-xl">
+                        <div className="w-3 h-3 bg-purple-400 rounded-full mt-2"></div>
+                        <div>
+                          <h4 className="font-bold text-white">Last Active</h4>
+                          <p className="text-gray-300">{new Date(profile?.activeat).toLocaleDateString()}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Social Tab */}
+              {activeTab === 'social' && (
+                <div className="space-y-6 animate-fade-in">
+                  <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+                    <h3 className="text-2xl font-bold text-white mb-6">Connect With Me</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {Object.entries(profile?.social || {}).map(([platform, url]) => {
+                        if (!url) return null;
+                        const Icon = getSocialIcon(platform);
+                        return (
+                          <a
+                            key={platform}
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-gradient-to-r from-gray-800 to-gray-700 hover:from-purple-600 hover:to-cyan-600 border border-gray-600 hover:border-purple-400 rounded-xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-lg group"
+                          >
+                            <div className="flex items-center gap-3">
+                              <Icon className="text-2xl text-gray-400 group-hover:text-white transition-colors duration-300" />
+                              <span className="font-medium text-white capitalize">{platform}</span>
+                            </div>
+                          </a>
+                        );
+                      })}
+                      {Object.keys(profile?.social || {}).length === 0 && (
+                        <div className="col-span-full text-center py-12">
+                          <div className="text-6xl mb-4">🌐</div>
+                          <p className="text-gray-400 text-lg">Add your social profiles</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      )} */}
 
-      <Graph profile={profile} />
-      {/* Projects */}
-      <ProjectsSection profile={profile} />
+        {/* Edit Form Modal */}
+        {isEditing && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-white">Edit Profile</h2>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                    className="bg-red-500/20 hover:bg-red-500/30 rounded-full p-2 text-red-400 hover:text-red-300 transition-all duration-300"
+                  >
+                    <FaTimes size={20} />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="sm:col-span-2">
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Bio</label>
+                    <textarea
+                      {...register("bio")}
+                      rows={3}
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none transition-all duration-300"
+                      placeholder="Tell us about yourself..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Skills</label>
+                    <input
+                      {...register("skills")}
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:border-cyan-400 focus:outline-none transition-all duration-300"
+                      placeholder="React, Node.js, Python..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Experience</label>
+                    <input
+                      {...register("experience")}
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:border-green-400 focus:outline-none transition-all duration-300"
+                      placeholder="Your experience level..."
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Education</label>
+                    <input
+                      {...register("education")}
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:border-blue-400 focus:outline-none transition-all duration-300"
+                      placeholder="Your educational background..."
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-white">Social Links</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {['linkedin', 'github', 'instagram', 'twitter', 'youtube'].map((platform) => (
+                      <div key={platform}>
+                        <label className="block text-sm font-medium text-gray-400 mb-1 capitalize">{platform}</label>
+                        <input
+                          {...register(`social.${platform}`)}
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:border-pink-400 focus:outline-none transition-all duration-300"
+                          placeholder={`Your ${platform} URL`}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-4 pt-6">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                    className="px-6 py-3 bg-gray-600 hover:bg-gray-500 text-white rounded-xl font-medium transition-all duration-300 hover:scale-105"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-3 bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-400 hover:to-cyan-400 text-white rounded-xl font-medium transition-all duration-300 hover:scale-105 shadow-lg flex items-center gap-2"
+                  >
+                    <FaSave />
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Analytics Dashboard */}
+        <div className="flex flex-col lg:grid lg:grid-cols-3
+  gap-8 mt-8">
+          {/* Developer Analytics */}
+          <div className="lg:col-span-1">
+            <div className="bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl p-6">
+              <h3 className="text-xl font-bold text-white mb-6">Developer Stats</h3>
+              <ProfileDev profile={profile} />
+            </div>
+          </div>
+
+          {/* Activity Graph */}
+          <div className="lg:col-span-2">
+            <div className="bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl p-6">
+              <h3 className="text-xl font-bold text-white mb-6">Activity Overview</h3>
+              <Graph profile={profile} />
+            </div>
+          </div>
+        </div>
+
+        {/* Projects Section */}
+        <div className="mt-8">
+          <div className="bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl p-6">
+            <h3 className="text-2xl font-bold text-white mb-6">Featured Projects</h3>
+            <ProjectsSection profile={profile} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

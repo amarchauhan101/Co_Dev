@@ -31,6 +31,7 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const DeveloperCard = ({ dev, devkey }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -279,11 +280,13 @@ const DeveloperCard = ({ dev, devkey }) => {
             <div className="w-full h-full rounded-full bg-gradient-to-br from-slate-800 to-slate-900"></div>
           </div>
 
-          <img
+          <Link to={`/getdevprofile/${dev._id}`}>
+            <img
             src={dev?.profile?.avatar || dev?.profileImage}
             alt="Avatar"
             className="relative w-20 sm:w-24 lg:w-28 xl:w-32 h-20 sm:h-24 lg:h-28 xl:h-32 rounded-full object-cover z-10 border-2 border-slate-700/50"
           />
+          </Link>
 
           {/* Enhanced Active Status */}
           {isActive() && (
