@@ -1,15 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import Loader from "./Loader";
-import { FaBell, FaCode, FaDatabase, FaServer, FaEdit, FaSave, FaTimes, FaMapMarkerAlt, FaCalendarAlt, FaCertificate, FaAward } from "react-icons/fa";
+import {
+  FaBell,
+  FaCode,
+  FaDatabase,
+  FaServer,
+  FaEdit,
+  FaSave,
+  FaTimes,
+  FaMapMarkerAlt,
+  FaCalendarAlt,
+  FaCertificate,
+  FaAward,
+  FaChartLine,
+  FaChartArea,
+} from "react-icons/fa";
 import { toast } from "react-toastify";
 import { FaYoutube } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
 import { RiInstagramFill } from "react-icons/ri";
 import { BsGithub } from "react-icons/bs";
 import { FaLinkedin, FaPalette } from "react-icons/fa6";
-import './ProfileStyles.css';
+import "./ProfileStyles.css";
 import { AiFillInstagram } from "react-icons/ai";
 import { FaFacebookF } from "react-icons/fa";
 import { useSelector } from "react-redux";
@@ -26,17 +40,75 @@ import {
 } from "../utils/iconMapper";
 import { useAuth } from "../../context/AuthContext";
 
+// Memoized components to prevent unnecessary re-renders
+const MemoizedProfileDev = React.memo(ProfileDev);
+const MemoizedGraph = React.memo(Graph);
+const MemoizedProjectsSection = React.memo(ProjectsSection);
+
 function Profile() {
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState("overview");
+  const [isScrolling, setIsScrolling] = useState(false);
   const { user } = useAuth();
   const token = user?.userWithToken?.token;
+  const scrollTimeoutRef = useRef();
+  
+  const { register, handleSubmit, reset } = useForm();
+
+  // Move all memoized values and callbacks to the top - before any early returns
+  const profile = userData?.profile;
+  const social = profile?.social || {};
+
+  // Memoized chart data to prevent unnecessary recalculations
+  const reliabilityData = useMemo(() => {
+    const score = profile?.reliabilityScore ?? 0;
+    return {
+      labels: ["Completed", "Remaining"],
+      datasets: [
+        {
+          label: "Reliability",
+          data: [score, 100 - score],
+          backgroundColor: ["#10B981", "#374151"],
+        },
+      ],
+    };
+  }, [profile?.reliabilityScore]);
+
+  const skillsData = useMemo(() => 
+    profile?.skills?.map((skill) => ({
+      name: skill,
+      value: 1,
+    })) || []
+  , [profile?.skills]);
+
+  // Simple scroll handler - removed complex optimizations for better performance
+  const handleScrollOptimization = useCallback(() => {
+    // Minimal scroll handling
+  }, []);
+
+  // Optimized CSS classes with minimal animations for better performance
+  const getOptimizedClasses = useCallback((baseClasses, animationClasses = '') => {
+    return baseClasses; // Remove all animations for optimal performance
+  }, []);
+
   console.log("user in profile", user);
 
-  const { register, handleSubmit, reset } = useForm();
+  // Single scroll listener with proper cleanup - no dependency on isScrolling state
+  useEffect(() => {
+    window.addEventListener('scroll', handleScrollOptimization, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScrollOptimization);
+      // Clean up on unmount
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      document.body.classList.remove('scrolling');
+    };
+  }, [handleScrollOptimization]); // Only depends on the callback, not on isScrolling state
 
   const sociallink = {
     youtube: <FaYoutube className="text-red-500" />,
@@ -156,30 +228,13 @@ function Profile() {
     );
   }
 
-  const profile = userData?.profile;
-  const social = profile?.social || {};
-
-  const reliabilityData = {
-    labels: ["Completed", "Remaining"],
-    datasets: [
-      {
-        label: "Reliability",
-        data: [profile?.reliabilityScore, 100 - profile?.reliabilityScore],
-        backgroundColor: ["#10B981", "#374151"],
-      },
-    ],
-  };
-
-  const skillsData =
-    profile?.skills?.map((skill) => ({
-      name: skill,
-      value: 1, // You can change value based on frequency or level if available
-    })) || [];
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
-      {/* Animated Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      {/* Optimized Background Elements - Always present but with reduced opacity during scroll */}
+      <div 
+        className="fixed inset-0 overflow-hidden pointer-events-none transition-opacity duration-200"
+        style={{ opacity: isScrolling ? 0.3 : 1 }}
+      >
         <div className="absolute -top-4 -right-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float"></div>
         <div className="absolute -bottom-8 -left-4 w-72 h-72 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float animation-delay-2000"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float animation-delay-4000"></div>
@@ -189,8 +244,11 @@ function Profile() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4 animate-fade-in">
-            Professional Profile
+          <h1 className={getOptimizedClasses(
+            "text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4",
+            "animate-fade-in"
+          )}>
+            Your Profile
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
             Showcase your expertise and connect with opportunities
@@ -198,14 +256,23 @@ function Profile() {
         </div>
 
         {/* Profile Hero Section */}
-        <div className="glass-card glass-card-hover rounded-3xl shadow-2xl mb-8 overflow-hidden animate-fade-in">
+        <div className={getOptimizedClasses(
+          "glass-card rounded-3xl shadow-2xl mb-8 overflow-hidden",
+          "glass-card-hover animate-fade-in"
+        )}>
           {/* Cover Background */}
-          <div className="h-48 sm:h-64 bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 relative animate-gradient">
+          <div className={getOptimizedClasses(
+            "h-48 sm:h-64 bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 relative",
+            "animate-gradient"
+          )}>
             <div className="absolute inset-0 bg-black/20"></div>
             <div className="absolute bottom-6 right-6">
               <button
                 onClick={() => setIsEditing(!isEditing)}
-                className="btn-glow bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 rounded-full p-3 text-white shadow-lg hover:shadow-xl transform hover:scale-105 animate-pulse-glow"
+                className={getOptimizedClasses(
+                  "bg-white/20 backdrop-blur-sm hover:bg-white/30 rounded-full p-3 text-white shadow-lg transform hover:scale-105",
+                  "btn-glow transition-all duration-300 hover:shadow-xl animate-pulse-glow"
+                )}
               >
                 {isEditing ? <FaTimes size={20} /> : <FaEdit size={20} />}
               </button>
@@ -214,58 +281,82 @@ function Profile() {
 
           {/* Profile Info */}
           <div className="px-6 sm:px-8 lg:px-12 pb-8">
-            {/* Avatar and Basic Info */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6 -mt-16 sm:-mt-20">
-              <div className="relative group animate-fade-in">
-                <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-tr from-purple-400 to-cyan-400 p-1 shadow-2xl animate-float">
-                  <img
-                    src={userData?.profileImage || 'https://via.placeholder.com/160'}
-                    alt="Profile"
-                    className="w-full h-full rounded-full object-cover bg-white hover:scale-105 transition-transform duration-300"
-                  />
+            
+            <div className="flex flex-col sm:flex-row items-center sm:items-center gap-6">
+              <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6 -mt-16 sm:-mt-32">
+                <div className={getOptimizedClasses(
+                  "relative group",
+                  "animate-fade-in"
+                )}>
+                  <div className={getOptimizedClasses(
+                    "w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-tr from-purple-400 to-cyan-400 p-1 shadow-2xl",
+                    "animate-float"
+                  )}>
+                    <img
+                      src={
+                        userData?.profileImage ||
+                        "https://via.placeholder.com/160"
+                      }
+                      alt="Profile"
+                      className="w-full h-full rounded-full object-cover bg-white hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  {profile?.isactive && (
+                    <div className={getOptimizedClasses(
+                      "absolute bottom-2 right-2 w-6 h-6 bg-green-400 border-4 border-white rounded-full shadow-lg",
+                      "animate-pulse-glow"
+                    )}></div>
+                  )}
                 </div>
-                {profile?.isactive && (
-                  <div className="absolute bottom-2 right-2 w-6 h-6 bg-green-400 border-4 border-white rounded-full shadow-lg animate-pulse-glow"></div>
-                )}
-              </div>
 
-              <div className="flex-1 text-center sm:text-left space-y-3 sm:mb-4">
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                  {userData?.username}
-                </h2>
-                <p className="text-lg text-gray-300">{userData?.email}</p>
-                <p className="text-gray-400 max-w-2xl leading-relaxed">
-                  {profile?.bio || "🚀 Passionate developer creating amazing digital experiences"}
-                </p>
                 
-                {/* Stats Row */}
-                <div className="flex flex-wrap justify-center sm:justify-start gap-6 mt-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-cyan-400">{profile?.githubCommits || 0}</div>
-                    <div className="text-sm text-gray-400">Commits</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-purple-400">{profile?.reliabilityScore || 0}%</div>
-                    <div className="text-sm text-gray-400">Reliability</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-pink-400">{profile?.skills?.length || 0}</div>
-                    <div className="text-sm text-gray-400">Skills</div>
+              </div>
+              <div className="flex-1 text-center sm:text-left space-y-3 sm:mb-4">
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                    {userData?.username}
+                  </h2>
+                  <p className="text-lg text-gray-300">{userData?.email}</p>
+                  <p className="text-gray-400 max-w-2xl leading-relaxed">
+                    {profile?.bio ||
+                      "🚀 Passionate developer creating amazing digital experiences"}
+                  </p>
+
+                  {/* Stats Row */}
+                  <div className="flex flex-wrap justify-center sm:justify-start gap-6 mt-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-cyan-400">
+                        {profile?.githubCommits || 0}
+                      </div>
+                      <div className="text-sm text-gray-400">Commits</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-400">
+                        {profile?.reliabilityScore || 0}%
+                      </div>
+                      <div className="text-sm text-gray-400">Reliability</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-pink-400">
+                        {profile?.skills?.length || 0}
+                      </div>
+                      <div className="text-sm text-gray-400">Skills</div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
+            </div>  
 
             {/* Navigation Tabs */}
             <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-8 mb-8">
-              {['overview', 'skills', 'experience', 'social'].map((tab) => (
+              {["overview", "skills", "experience", "social"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-6 py-3 rounded-full font-medium transition-all duration-300 transform hover:scale-105 ${
+                  className={`px-6 py-3 rounded-full font-medium ${
+                    isScrolling ? 'transition-none' : 'transition-all duration-300 transform hover:scale-105'
+                  } ${
                     activeTab === tab
-                      ? 'bg-gradient-to-r from-purple-500 to-cyan-500 text-white shadow-lg'
-                      : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                      ? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white shadow-lg"
+                      : "bg-white/10 text-gray-300 hover:bg-white/20"
                   }`}
                 >
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -275,12 +366,11 @@ function Profile() {
 
             {/* Content Sections */}
             <div className="min-h-[400px]">
-              {/* Overview Tab */}
-              {activeTab === 'overview' && (
-                <div className="space-y-8 animate-fade-in">
+              {activeTab === "overview" && (
+                <div className="space-y-8">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Education */}
-                    <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-purple-400/50 transition-all duration-300">
+                    <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-purple-400/50 transition-colors duration-200">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
                           <IoSchool className="text-white text-xl" />
@@ -293,7 +383,7 @@ function Profile() {
                     </div>
 
                     {/* Experience */}
-                    <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-cyan-400/50 transition-all duration-300">
+                    <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-cyan-400/50 transition-colors duration-200">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-cyan-500 rounded-full flex items-center justify-center">
                           <FaCertificate className="text-white text-xl" />
@@ -317,13 +407,15 @@ function Profile() {
                         profile.interests.map((interest, index) => (
                           <span
                             key={index}
-                            className="px-4 py-2 bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-400/30 rounded-full text-pink-300 text-sm hover:scale-105 transition-transform duration-300"
+                            className="px-4 py-2 bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-400/30 rounded-full text-pink-300 text-sm hover:scale-105 transition-transform duration-200"
                           >
                             {interest}
                           </span>
                         ))
                       ) : (
-                        <p className="text-gray-400 italic">🎯 Add your interests and achievements</p>
+                        <p className="text-gray-400 italic">
+                          🎯 Add your interests and achievements
+                        </p>
                       )}
                     </div>
                   </div>
@@ -331,8 +423,8 @@ function Profile() {
               )}
 
               {/* Skills Tab */}
-              {activeTab === 'skills' && (
-                <div className="space-y-6 animate-fade-in">
+              {activeTab === "skills" && (
+                <div className="space-y-6">
                   <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
                     <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
                       <FaCode className="text-cyan-400" />
@@ -345,10 +437,10 @@ function Profile() {
                           return (
                             <div
                               key={index}
-                              className="bg-gradient-to-r from-purple-500/10 to-cyan-500/10 border border-purple-400/30 rounded-xl p-4 hover:scale-105 transition-all duration-300 hover:shadow-lg group"
+                              className="bg-gradient-to-r from-purple-500/10 to-cyan-500/10 border border-purple-400/30 rounded-xl p-4"
                             >
                               <div className="flex items-center gap-3">
-                                <SkillIcon className="text-2xl text-cyan-400 group-hover:scale-110 transition-transform duration-300" />
+                                <SkillIcon className="text-2xl text-cyan-400" />
                                 <span className="font-medium text-white">{skill}</span>
                               </div>
                             </div>
@@ -366,8 +458,8 @@ function Profile() {
               )}
 
               {/* Experience Tab */}
-              {activeTab === 'experience' && (
-                <div className="space-y-6 animate-fade-in">
+              {activeTab === "experience" && (
+                <div className={getOptimizedClasses("space-y-6", "animate-fade-in")}>
                   <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
                     <h3 className="text-2xl font-bold text-white mb-6">Professional Journey</h3>
                     <div className="space-y-4">
@@ -375,14 +467,18 @@ function Profile() {
                         <div className="w-3 h-3 bg-cyan-400 rounded-full mt-2"></div>
                         <div>
                           <h4 className="font-bold text-white">Experience Level</h4>
-                          <p className="text-gray-300">{profile?.experienceLevel || "Not specified"}</p>
+                          <p className="text-gray-300">
+                            {profile?.experienceLevel || "Not specified"}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-start gap-4 p-4 bg-white/5 rounded-xl">
                         <div className="w-3 h-3 bg-purple-400 rounded-full mt-2"></div>
                         <div>
                           <h4 className="font-bold text-white">Last Active</h4>
-                          <p className="text-gray-300">{new Date(profile?.activeat).toLocaleDateString()}</p>
+                          <p className="text-gray-300">
+                            {profile?.activeat ? new Date(profile.activeat).toLocaleDateString() : "Not available"}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -391,8 +487,8 @@ function Profile() {
               )}
 
               {/* Social Tab */}
-              {activeTab === 'social' && (
-                <div className="space-y-6 animate-fade-in">
+              {activeTab === "social" && (
+                <div className="space-y-6">
                   <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
                     <h3 className="text-2xl font-bold text-white mb-6">Connect With Me</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -405,11 +501,13 @@ function Profile() {
                             href={url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="bg-gradient-to-r from-gray-800 to-gray-700 hover:from-purple-600 hover:to-cyan-600 border border-gray-600 hover:border-purple-400 rounded-xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-lg group"
+                            className="bg-gradient-to-r from-gray-800 to-gray-700 hover:from-purple-600 hover:to-cyan-600 border border-gray-600 hover:border-purple-400 rounded-xl p-4 transition-colors duration-200"
                           >
                             <div className="flex items-center gap-3">
-                              <Icon className="text-2xl text-gray-400 group-hover:text-white transition-colors duration-300" />
-                              <span className="font-medium text-white capitalize">{platform}</span>
+                              <Icon className="text-2xl text-gray-400 hover:text-white transition-colors duration-200" />
+                              <span className="font-medium text-white capitalize">
+                                {platform}
+                              </span>
                             </div>
                           </a>
                         );
@@ -434,7 +532,9 @@ function Profile() {
             <div className="bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-white">Edit Profile</h2>
+                  <h2 className="text-2xl font-bold text-white">
+                    Edit Profile
+                  </h2>
                   <button
                     type="button"
                     onClick={() => setIsEditing(false)}
@@ -446,7 +546,9 @@ function Profile() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Bio</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Bio
+                    </label>
                     <textarea
                       {...register("bio")}
                       rows={3}
@@ -456,7 +558,9 @@ function Profile() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Skills</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Skills
+                    </label>
                     <input
                       {...register("skills")}
                       className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:border-cyan-400 focus:outline-none transition-all duration-300"
@@ -465,7 +569,9 @@ function Profile() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Experience</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Experience
+                    </label>
                     <input
                       {...register("experience")}
                       className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:border-green-400 focus:outline-none transition-all duration-300"
@@ -474,7 +580,9 @@ function Profile() {
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Education</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Education
+                    </label>
                     <input
                       {...register("education")}
                       className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:border-blue-400 focus:outline-none transition-all duration-300"
@@ -484,11 +592,21 @@ function Profile() {
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-white">Social Links</h3>
+                  <h3 className="text-lg font-semibold text-white">
+                    Social Links
+                  </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {['linkedin', 'github', 'instagram', 'twitter', 'youtube'].map((platform) => (
+                    {[
+                      "linkedin",
+                      "github",
+                      "instagram",
+                      "twitter",
+                      "youtube",
+                    ].map((platform) => (
                       <div key={platform}>
-                        <label className="block text-sm font-medium text-gray-400 mb-1 capitalize">{platform}</label>
+                        <label className="block text-sm font-medium text-gray-400 mb-1 capitalize">
+                          {platform}
+                        </label>
                         <input
                           {...register(`social.${platform}`)}
                           className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:border-pink-400 focus:outline-none transition-all duration-300"
@@ -521,21 +639,44 @@ function Profile() {
         )}
 
         {/* Analytics Dashboard */}
-        <div className="flex flex-col lg:grid lg:grid-cols-3
-  gap-8 mt-8">
-          {/* Developer Analytics */}
-          <div className="lg:col-span-1">
-            <div className="bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl p-6">
-              <h3 className="text-xl font-bold text-white mb-6">Developer Stats</h3>
-              <ProfileDev profile={profile} />
+        <div className="space-y-8 mt-8">
+          {/* Developer Analytics - Full Width on Desktop */}
+          <div className="w-full">
+            <div className={getOptimizedClasses(
+              "bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl p-6 lg:p-8",
+              "hover:shadow-3xl transition-all duration-500"
+            )}>
+              <div className="flex items-center gap-3 mb-6 lg:mb-8">
+                <div className="p-3 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-xl shadow-lg">
+                  <FaChartLine className="text-white text-xl" />
+                </div>
+                <h3 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                  🚀 Developer Analytics
+                </h3>
+              </div>
+              <div style={{ opacity: isScrolling ? 0.7 : 1, transition: 'opacity 0.2s ease' }}>
+                <MemoizedProfileDev profile={profile} />
+              </div>
             </div>
           </div>
 
-          {/* Activity Graph */}
-          <div className="lg:col-span-2">
-            <div className="bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl p-6">
-              <h3 className="text-xl font-bold text-white mb-6">Activity Overview</h3>
-              <Graph profile={profile} />
+          {/* Activity Graph - Full Width on Desktop */}
+          <div className="w-full">
+            <div className={getOptimizedClasses(
+              "bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl p-6 lg:p-8",
+              "hover:shadow-3xl transition-all duration-500"
+            )}>
+              <div className="flex items-center gap-3 mb-6 lg:mb-8">
+                <div className="p-3 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-xl shadow-lg">
+                  <FaChartArea className="text-white text-xl" />
+                </div>
+                <h3 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                  📊 Activity Overview
+                </h3>
+              </div>
+              <div style={{ opacity: isScrolling ? 0.7 : 1, transition: 'opacity 0.2s ease' }}>
+                <MemoizedGraph profile={profile} variant="enhanced" />
+              </div>
             </div>
           </div>
         </div>
@@ -543,8 +684,12 @@ function Profile() {
         {/* Projects Section */}
         <div className="mt-8">
           <div className="bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl p-6">
-            <h3 className="text-2xl font-bold text-white mb-6">Featured Projects</h3>
-            <ProjectsSection profile={profile} />
+            <h3 className="text-2xl font-bold text-white mb-6">
+              Featured Projects
+            </h3>
+            <div style={{ opacity: isScrolling ? 0.7 : 1, transition: 'opacity 0.2s ease' }}>
+              <MemoizedProjectsSection profile={profile} />
+            </div>
           </div>
         </div>
       </div>

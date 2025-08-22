@@ -1,10 +1,147 @@
 import { useRef, useState } from "react";
+import { FaDownload, FaEye, FaTimes } from "react-icons/fa";
+
+// File utility functions
+const getFileType = (filename) => {
+  const extension = filename.split('.').pop().toLowerCase();
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(extension)) return 'image';
+  if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm', 'ogg'].includes(extension)) return 'video';
+  if (['pdf'].includes(extension)) return 'pdf';
+  if (['doc', 'docx', 'txt', 'rtf'].includes(extension)) return 'document';
+  if (['mp3', 'wav', 'ogg', 'flac'].includes(extension)) return 'audio';
+  return 'other';
+};
+
+const getFileIcon = (fileType) => {
+  const icons = {
+    image: '🖼️',
+    video: '🎥',
+    pdf: '📄',
+    document: '📝',
+    audio: '🎵',
+    other: '📎'
+  };
+  return icons[fileType] || icons.other;
+};
+
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
+
+// File Preview Modal Component
+const FilePreviewModal = ({ file, onClose }) => {
+  const fileType = getFileType(file.name || file.url);
+  
+  const downloadFile = () => {
+    const link = document.createElement('a');
+    link.href = file.url;
+    link.download = file.name || 'download';
+    link.click();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="relative bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-xl border border-gray-600/50 rounded-2xl shadow-2xl max-w-4xl max-h-[90vh] w-full overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-700/50">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">{getFileIcon(fileType)}</span>
+            <div>
+              <h3 className="text-white font-semibold truncate">{file.name || 'File'}</h3>
+              <p className="text-gray-400 text-sm">{formatFileSize(file.size || 0)}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={downloadFile}
+              className="p-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 flex items-center gap-2"
+            >
+              <FaDownload className="text-sm" />
+              <span className="hidden sm:inline text-sm">Download</span>
+            </button>
+            <button
+              onClick={onClose}
+              className="p-2 rounded-lg bg-gray-600 hover:bg-gray-700 text-white transition-all duration-200"
+            >
+              <FaTimes className="text-sm" />
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-4 max-h-[70vh] overflow-auto">
+          {fileType === 'image' && (
+            <div className="flex justify-center">
+              <img 
+                src={file.url} 
+                alt={file.name || 'Image'}
+                className="max-w-full max-h-full rounded-lg shadow-lg"
+                style={{ maxHeight: '60vh' }}
+              />
+            </div>
+          )}
+          
+          {fileType === 'video' && (
+            <div className="flex justify-center">
+              <video 
+                controls 
+                className="max-w-full max-h-full rounded-lg shadow-lg"
+                style={{ maxHeight: '60vh' }}
+              >
+                <source src={file.url} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          )}
+          
+          {fileType === 'pdf' && (
+            <div className="w-full h-96">
+              <iframe 
+                src={file.url} 
+                className="w-full h-full rounded-lg border border-gray-600"
+                title={file.name || 'PDF'}
+              />
+            </div>
+          )}
+          
+          {fileType === 'audio' && (
+            <div className="flex justify-center p-8">
+              <audio controls className="w-full max-w-md">
+                <source src={file.url} type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+          )}
+          
+          {(fileType === 'document' || fileType === 'other') && (
+            <div className="text-center p-8">
+              <div className="text-6xl mb-4">{getFileIcon(fileType)}</div>
+              <p className="text-gray-300 mb-4">Preview not available for this file type</p>
+              <button
+                onClick={downloadFile}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-all duration-200 flex items-center gap-2 mx-auto"
+              >
+                <FaDownload />
+                Download File
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function MessageRowWrapper({ index, style, data }) {
   const { item, user, moment, rowRefs } = data;
   console.log("user in messagerowwrapper", user);
   const ref = useRef(null);
   const [loaded, setLoaded] = useState(false); // changed to false initially
+  const [showPreview, setShowPreview] = useState(false);
 
   const isDateType = item.type === "date";
   const msg = !isDateType ? item.data || item : null;
@@ -21,6 +158,27 @@ export default function MessageRowWrapper({ index, style, data }) {
 
   const handleMediaLoad = () => {
     setLoaded(true);
+  };
+
+  const downloadFile = () => {
+    if (msg?.file) {
+      const link = document.createElement('a');
+      link.href = msg.file;
+      link.download = `file.${extension}`;
+      link.click();
+    }
+  };
+
+  const openPreview = () => {
+    setShowPreview(true);
+  };
+
+  const getFileName = () => {
+    if (msg?.file) {
+      const url = new URL(msg.file);
+      return url.pathname.split('/').pop() || `file.${extension}`;
+    }
+    return 'file';
   };
 
   if (isDateType) {
@@ -139,56 +297,101 @@ export default function MessageRowWrapper({ index, style, data }) {
             </div>
           </div>
         ) : msg?.file ? (
-          // File: Image / Video / PDF
-          <div className="relative mt-3 sm:mt-4 bg-gradient-to-br from-gray-50 via-white to-gray-50 border border-gray-200 shadow-lg rounded-xl overflow-hidden flex items-center justify-center p-2 sm:p-3 md:p-4 max-w-[280px] sm:max-w-[300px] max-h-[280px] sm:max-h-[320px] md:max-h-[340px] group hover:shadow-xl transition-all duration-300">
-            {!loaded && (
-              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/60 to-black/40 z-10 rounded-xl backdrop-blur-sm">
-                <div className="flex flex-col items-center gap-2 sm:gap-3">
-                  <div className="relative">
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 border-3 border-white/30 border-t-white animate-spin rounded-full" />
-                    <div className="absolute inset-0 w-6 h-6 sm:w-8 sm:h-8 border-3 border-transparent border-r-blue-400 animate-spin rounded-full" style={{animationDirection: 'reverse'}} />
+          // File: Image / Video / PDF with enhanced controls
+          <div className="relative mt-3 sm:mt-4">
+            {/* File Controls */}
+            <div className="flex items-center justify-between mb-2 px-2">
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-lg">{getFileIcon(getFileType(getFileName()))}</span>
+                <span className={`font-medium truncate max-w-[150px] ${isCurrentUser ? "text-blue-100" : "text-gray-600"}`}>
+                  {getFileName()}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                {(isImage || isVideo || isPDF) && (
+                  <button
+                    onClick={openPreview}
+                    className={`p-1.5 rounded-lg transition-all duration-200 flex items-center gap-1 ${
+                      isCurrentUser 
+                        ? "bg-blue-500/30 hover:bg-blue-500/50 text-blue-100" 
+                        : "bg-gray-200 hover:bg-gray-300 text-gray-600"
+                    }`}
+                    title="Preview"
+                  >
+                    <FaEye className="text-xs" />
+                    <span className="hidden sm:inline text-xs">Preview</span>
+                  </button>
+                )}
+                <button
+                  onClick={downloadFile}
+                  className={`p-1.5 rounded-lg transition-all duration-200 flex items-center gap-1 ${
+                    isCurrentUser 
+                      ? "bg-green-500/30 hover:bg-green-500/50 text-green-100" 
+                      : "bg-green-100 hover:bg-green-200 text-green-600"
+                  }`}
+                  title="Download"
+                >
+                  <FaDownload className="text-xs" />
+                  <span className="hidden sm:inline text-xs">Download</span>
+                </button>
+              </div>
+            </div>
+
+            {/* File Display */}
+            <div className="bg-gradient-to-br from-gray-50 via-white to-gray-50 border border-gray-200 shadow-lg rounded-xl overflow-hidden flex items-center justify-center p-2 sm:p-3 md:p-4 max-w-[280px] sm:max-w-[300px] max-h-[280px] sm:max-h-[320px] md:max-h-[340px] group hover:shadow-xl transition-all duration-300">
+              {!loaded && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/60 to-black/40 z-10 rounded-xl backdrop-blur-sm">
+                  <div className="flex flex-col items-center gap-2 sm:gap-3">
+                    <div className="relative">
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 border-3 border-white/30 border-t-white animate-spin rounded-full" />
+                      <div className="absolute inset-0 w-6 h-6 sm:w-8 sm:h-8 border-3 border-transparent border-r-blue-400 animate-spin rounded-full" style={{animationDirection: 'reverse'}} />
+                    </div>
+                    <span className="text-[10px] sm:text-xs text-white font-medium">Loading content...</span>
                   </div>
-                  <span className="text-[10px] sm:text-xs text-white font-medium">Loading content...</span>
                 </div>
-              </div>
-            )}
+              )}
 
-            {isImage && (
-              <img
-                src={msg.file}
-                onLoad={handleMediaLoad}
-                className="rounded-lg object-cover max-w-[220px] sm:max-w-[240px] md:max-w-[260px] max-h-[250px] sm:max-h-[280px] md:max-h-[300px] border border-gray-200 shadow-sm transition-all duration-300 group-hover:scale-[1.02]"
-                style={{ background: "#f8f9fa" }}
-                alt="shared"
-              />
-            )}
-
-            {isVideo && (
-              <video
-                src={msg.file}
-                controls
-                onLoadedData={handleMediaLoad}
-                className="rounded-lg object-cover max-w-[220px] sm:max-w-[240px] md:max-w-[260px] max-h-[250px] sm:max-h-[280px] md:max-h-[300px] border border-gray-200 shadow-sm bg-black transition-all duration-300 group-hover:scale-[1.02]"
-                style={{ background: "#000" }}
-              />
-            )}
-
-            {isPDF && (
-              <div className="relative">
-                <iframe
-                  src={`https://docs.google.com/gview?url=${encodeURIComponent(
-                    msg.file
-                  )}&embedded=true`}
+              {isImage && (
+                <img
+                  src={msg.file}
                   onLoad={handleMediaLoad}
-                  className="rounded-lg max-w-[220px] sm:max-w-[240px] md:max-w-[260px] max-h-[250px] sm:max-h-[280px] md:max-h-[300px] border border-gray-200 shadow-sm bg-white transition-all duration-300"
-                  style={{ background: "#fff" }}
-                  title="PDF Preview"
+                  onClick={openPreview}
+                  className="rounded-lg object-cover max-w-[220px] sm:max-w-[240px] md:max-w-[260px] max-h-[250px] sm:max-h-[280px] md:max-h-[300px] border border-gray-200 shadow-sm transition-all duration-300 group-hover:scale-[1.02] cursor-pointer"
+                  style={{ background: "#f8f9fa" }}
+                  alt="shared"
                 />
-                <div className="absolute top-1 sm:top-2 right-1 sm:right-2 bg-red-500 text-white text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full font-medium shadow-lg">
-                  PDF
+              )}
+
+              {isVideo && (
+                <video
+                  src={msg.file}
+                  controls
+                  onLoadedData={handleMediaLoad}
+                  className="rounded-lg object-cover max-w-[220px] sm:max-w-[240px] md:max-w-[260px] max-h-[250px] sm:max-h-[280px] md:max-h-[300px] border border-gray-200 shadow-sm bg-black transition-all duration-300 group-hover:scale-[1.02]"
+                  style={{ background: "#000" }}
+                />
+              )}
+
+              {isPDF && (
+                <div className="relative cursor-pointer" onClick={openPreview}>
+                  <iframe
+                    src={`https://docs.google.com/gview?url=${encodeURIComponent(
+                      msg.file
+                    )}&embedded=true`}
+                    onLoad={handleMediaLoad}
+                    className="rounded-lg max-w-[220px] sm:max-w-[240px] md:max-w-[260px] max-h-[250px] sm:max-h-[280px] md:max-h-[300px] border border-gray-200 shadow-sm bg-white transition-all duration-300 pointer-events-none"
+                    style={{ background: "#fff" }}
+                    title="PDF Preview"
+                  />
+                  <div className="absolute top-1 sm:top-2 right-1 sm:right-2 bg-red-500 text-white text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full font-medium shadow-lg">
+                    PDF
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 hover:bg-black/20 transition-all duration-200 rounded-lg">
+                    <FaEye className="text-white text-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         ) : null}
 
@@ -211,6 +414,18 @@ export default function MessageRowWrapper({ index, style, data }) {
           )}
         </div>
       </div>
+      
+      {/* File Preview Modal */}
+      {showPreview && msg?.file && (
+        <FilePreviewModal 
+          file={{ 
+            url: msg.file, 
+            name: getFileName(),
+            size: 0 // File size not available in current structure
+          }} 
+          onClose={() => setShowPreview(false)} 
+        />
+      )}
     </div>
   );
 }

@@ -1,13 +1,26 @@
-/* Profile component animations and styles */
+/* Profile component animations and styles - Optimized for performance */
 
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Performance optimized animations */
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translate3d(0, 20px, 0);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -22,10 +35,10 @@
 
 @keyframes float {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translate3d(0, -10px, 0);
   }
 }
 
@@ -41,21 +54,37 @@
   }
 }
 
+/* Optimized animation classes with will-change property for better performance */
 .animate-fade-in {
-  animation: fade-in 0.6s ease-out;
+  animation: fade-in 0.4s ease-out;
+  will-change: opacity, transform;
 }
 
 .animate-pulse-glow {
   animation: pulse-glow 3s ease-in-out infinite;
+  will-change: box-shadow;
 }
 
 .animate-float {
   animation: float 6s ease-in-out infinite;
+  will-change: transform;
 }
 
 .animate-gradient {
   background-size: 400% 400%;
   animation: gradient-shift 8s ease infinite;
+  will-change: background-position;
+}
+
+/* Reduce animation complexity on mobile */
+@media (max-width: 768px) {
+  .animate-float {
+    animation: none;
+  }
+  
+  .animate-pulse-glow {
+    animation-iteration-count: 1;
+  }
 }
 
 .animation-delay-2000 {
@@ -66,25 +95,34 @@
   animation-delay: 4s;
 }
 
-/* Glassmorphism effects */
+/* Performance optimized glassmorphism effects */
 .glass-card {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  transform: translateZ(0); /* Force hardware acceleration */
 }
 
 .glass-card-hover {
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  will-change: transform;
 }
 
 .glass-card-hover:hover {
   background: rgba(255, 255, 255, 0.15);
-  transform: translateY(-5px);
+  transform: translate3d(0, -5px, 0);
   box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.5);
 }
 
-/* Custom scrollbar */
+/* Disable hover effects during scroll for better performance */
+.scrolling .glass-card-hover:hover {
+  transform: none;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+/* Optimized scrollbar with better performance */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
@@ -103,14 +141,20 @@
   background: linear-gradient(to bottom, #a855f7, #0891b2);
 }
 
-/* Responsive design utilities */
+/* Responsive design utilities with reduced animations on mobile */
 @media (max-width: 640px) {
   .animate-fade-in {
-    animation-duration: 0.4s;
+    animation-duration: 0.3s;
   }
   
   .glass-card {
     backdrop-filter: blur(8px);
+  }
+  
+  /* Disable complex animations on mobile for better performance */
+  .animate-gradient {
+    animation: none;
+    background: linear-gradient(to right, #9333ea, #ec4899, #06b6d4);
   }
 }
 
@@ -122,11 +166,12 @@
   }
 }
 
-/* Loading skeleton */
+/* Optimized loading skeleton */
 .skeleton {
   background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
+  will-change: background-position;
 }
 
 @keyframes loading {
@@ -138,10 +183,11 @@
   }
 }
 
-/* Interactive button effects */
+/* Optimized interactive button effects */
 .btn-glow {
   position: relative;
   overflow: hidden;
+  transform: translateZ(0); /* Force hardware acceleration */
 }
 
 .btn-glow::before {
@@ -152,20 +198,36 @@
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: left 0.6s;
+  transition: left 0.6s ease;
 }
 
 .btn-glow:hover::before {
   left: 100%;
 }
 
-/* Parallax background elements */
+/* Disable button glow during scroll for performance */
+.scrolling .btn-glow::before {
+  transition: none;
+}
+
+.scrolling .btn-glow:hover::before {
+  left: -100%;
+}
+
+/* Simplified background elements for better performance */
 .bg-element {
   position: absolute;
   border-radius: 50%;
   background: linear-gradient(45deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
   filter: blur(40px);
   animation: float 10s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (max-width: 768px) {
+  .bg-element {
+    animation: none; /* Disable on mobile for better performance */
+  }
 }
 
 .bg-element:nth-child(1) {
@@ -191,4 +253,39 @@
   left: 50%;
   transform: translate(-50%, -50%);
   animation-delay: 4s;
+}
+
+/* Disable transitions during scroll for performance */
+.transition-none {
+  transition: none !important;
+}
+
+/* Performance optimization: reduce paint and composite layers */
+.scrolling * {
+  pointer-events: none;
+}
+
+.scrolling *:not(button):not(a):not(input):not(textarea) {
+  user-select: none;
+}
+
+/* GPU acceleration for smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Optimize transform and opacity changes */
+.transform-gpu {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.opacity-gpu {
+  will-change: opacity;
 }

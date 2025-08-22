@@ -16,12 +16,263 @@ import {
   FaVideo,
   FaChevronUp,
   FaChevronDown,
+  FaDownload,
+  FaEye,
+  FaTimes,
 } from "react-icons/fa";
 import { CgMediaLive } from "react-icons/cg";
 import { LuEyeClosed } from "react-icons/lu";
-import { BiCodeBlock, BiTask } from "react-icons/bi";
+import { BiCodeBlock } from "react-icons/bi";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import Header from "./Header";
+
+// File utility functions
+const getFileType = (filename) => {
+  const extension = filename.split('.').pop().toLowerCase();
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(extension)) return 'image';
+  if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm'].includes(extension)) return 'video';
+  if (['pdf'].includes(extension)) return 'pdf';
+  if (['doc', 'docx', 'txt', 'rtf'].includes(extension)) return 'document';
+  if (['mp3', 'wav', 'ogg', 'flac'].includes(extension)) return 'audio';
+  return 'other';
+};
+
+const getFileIcon = (fileType) => {
+  const icons = {
+    image: '🖼️',
+    video: '🎥',
+    pdf: '📄',
+    document: '📝',
+    audio: '🎵',
+    other: '📎'
+  };
+  return icons[fileType] || icons.other;
+};
+
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
+
+// File Preview Modal Component
+const FilePreviewModal = ({ file, onClose }) => {
+  const fileType = getFileType(file.name);
+  
+  const downloadFile = () => {
+    const link = document.createElement('a');
+    link.href = file.url;
+    link.download = file.name;
+    link.click();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="relative bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-xl border border-gray-600/50 rounded-2xl shadow-2xl max-w-4xl max-h-[90vh] w-full overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-700/50">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">{getFileIcon(fileType)}</span>
+            <div>
+              <h3 className="text-white font-semibold truncate">{file.name}</h3>
+              <p className="text-gray-400 text-sm">{formatFileSize(file.size || 0)}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={downloadFile}
+              className="p-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 flex items-center gap-2"
+            >
+              <FaDownload className="text-sm" />
+              <span className="hidden sm:inline text-sm">Download</span>
+            </button>
+            <button
+              onClick={onClose}
+              className="p-2 rounded-lg bg-gray-600 hover:bg-gray-700 text-white transition-all duration-200"
+            >
+              <FaTimes className="text-sm" />
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-4 max-h-[70vh] overflow-auto">
+          {fileType === 'image' && (
+            <div className="flex justify-center">
+              <img 
+                src={file.url} 
+                alt={file.name}
+                className="max-w-full max-h-full rounded-lg shadow-lg"
+                style={{ maxHeight: '60vh' }}
+              />
+            </div>
+          )}
+          
+          {fileType === 'video' && (
+            <div className="flex justify-center">
+              <video 
+                controls 
+                className="max-w-full max-h-full rounded-lg shadow-lg"
+                style={{ maxHeight: '60vh' }}
+              >
+                <source src={file.url} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          )}
+          
+          {fileType === 'pdf' && (
+            <div className="w-full h-96">
+              <iframe 
+                src={file.url} 
+                className="w-full h-full rounded-lg border border-gray-600"
+                title={file.name}
+              />
+            </div>
+          )}
+          
+          {fileType === 'audio' && (
+            <div className="flex justify-center p-8">
+              <audio controls className="w-full max-w-md">
+                <source src={file.url} type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+          )}
+          
+          {(fileType === 'document' || fileType === 'other') && (
+            <div className="text-center p-8">
+              <div className="text-6xl mb-4">{getFileIcon(fileType)}</div>
+              <p className="text-gray-300 mb-4">Preview not available for this file type</p>
+              <button
+                onClick={downloadFile}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-all duration-200 flex items-center gap-2 mx-auto"
+              >
+                <FaDownload />
+                Download File
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Enhanced File Display Component for Messages
+const FileDisplay = ({ file, isCompact = false }) => {
+  const [showPreview, setShowPreview] = useState(false);
+  const fileType = getFileType(file.name);
+  
+  const downloadFile = (e) => {
+    e.stopPropagation();
+    const link = document.createElement('a');
+    link.href = file.url;
+    link.download = file.name;
+    link.click();
+  };
+
+  const openPreview = () => {
+    setShowPreview(true);
+  };
+
+  if (isCompact) {
+    return (
+      <>
+        <div className="inline-flex items-center gap-2 bg-gray-700/50 rounded-lg p-2 border border-gray-600/50 cursor-pointer hover:bg-gray-600/50 transition-all duration-200">
+          <span className="text-lg">{getFileIcon(fileType)}</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-white truncate">{file.name}</p>
+            <p className="text-xs text-gray-400">{formatFileSize(file.size || 0)}</p>
+          </div>
+          <div className="flex items-center gap-1">
+            {['image', 'video', 'pdf'].includes(fileType) && (
+              <button
+                onClick={openPreview}
+                className="p-1 rounded text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 transition-all"
+                title="Preview"
+              >
+                <FaEye className="text-xs" />
+              </button>
+            )}
+            <button
+              onClick={downloadFile}
+              className="p-1 rounded text-green-400 hover:text-green-300 hover:bg-green-500/20 transition-all"
+              title="Download"
+            >
+              <FaDownload className="text-xs" />
+            </button>
+          </div>
+        </div>
+        
+        {showPreview && (
+          <FilePreviewModal 
+            file={file} 
+            onClose={() => setShowPreview(false)} 
+          />
+        )}
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div className="bg-gray-700/50 rounded-xl p-4 border border-gray-600/50 mb-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">{getFileIcon(fileType)}</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-white truncate">{file.name}</p>
+              <p className="text-xs text-gray-400">{formatFileSize(file.size || 0)}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            {['image', 'video', 'pdf'].includes(fileType) && (
+              <button
+                onClick={openPreview}
+                className="p-2 rounded-lg bg-blue-600/80 hover:bg-blue-600 text-white transition-all duration-200 flex items-center gap-1"
+              >
+                <FaEye className="text-sm" />
+                <span className="hidden sm:inline text-xs">Preview</span>
+              </button>
+            )}
+            <button
+              onClick={downloadFile}
+              className="p-2 rounded-lg bg-green-600/80 hover:bg-green-600 text-white transition-all duration-200 flex items-center gap-1"
+            >
+              <FaDownload className="text-sm" />
+              <span className="hidden sm:inline text-xs">Download</span>
+            </button>
+          </div>
+        </div>
+        
+        {/* Inline preview for images */}
+        {fileType === 'image' && (
+          <div className="mt-3 cursor-pointer" onClick={openPreview}>
+            <img 
+              src={file.url} 
+              alt={file.name}
+              className="max-w-full h-auto rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+              style={{ maxHeight: '200px' }}
+            />
+          </div>
+        )}
+      </div>
+      
+      {showPreview && (
+        <FilePreviewModal 
+          file={file} 
+          onClose={() => setShowPreview(false)} 
+        />
+      )}
+    </>
+  );
+};
+import {  BiTask } from "react-icons/bi";
+
+
 
 export default function ProjectDashboard({
   sidebarOpen,
@@ -151,59 +402,65 @@ export default function ProjectDashboard({
   const rowVirtualizer = useVirtualizer({
     count: processedItems.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: useCallback((index) => {
-      const item = processedItems[index];
-      if (!item) return 100;
-      
-      // Estimate based on content type
-      if (item.type === "date") return window.innerWidth < 640 ? 80 : 100;
-      
-      const msg = item.data || item;
-      if (!msg) return 100;
-      
-      const isMobile = window.innerWidth < 640;
-      const isTablet = window.innerWidth < 1024;
-      
-      let estimatedHeight = isMobile ? 80 : isTablet ? 85 : 90; // Base height responsive
-      
-      // Add height for message text with better calculation
-      if (msg.message) {
-        const messageLength = msg.message.length;
-        const newlines = (msg.message.match(/\n/g) || []).length;
-        
-        // Adjust characters per line based on screen size
-        const charsPerLine = isMobile ? 35 : isTablet ? 45 : 55;
-        
-        // Calculate based on both character count and newlines
-        const estimatedLines = Math.max(
-          Math.ceil(messageLength / charsPerLine),
-          newlines + 1
-        );
-        
-        // More generous height calculation for longer messages with mobile optimization
-        const lineHeight = isMobile ? 18 : isTablet ? 20 : 22;
-        
-        if (estimatedLines > 50) {
-          estimatedHeight += estimatedLines * (lineHeight + 2); // Extra spacing for very long messages
-        } else if (estimatedLines > 10) {
-          estimatedHeight += estimatedLines * lineHeight;
-        } else {
-          estimatedHeight += Math.max(estimatedLines * lineHeight, isMobile ? 30 : 40);
+    estimateSize: useCallback(
+      (index) => {
+        const item = processedItems[index];
+        if (!item) return 100;
+
+        // Estimate based on content type
+        if (item.type === "date") return window.innerWidth < 640 ? 80 : 100;
+
+        const msg = item.data || item;
+        if (!msg) return 100;
+
+        const isMobile = window.innerWidth < 640;
+        const isTablet = window.innerWidth < 1024;
+
+        let estimatedHeight = isMobile ? 80 : isTablet ? 85 : 90; // Base height responsive
+
+        // Add height for message text with better calculation
+        if (msg.message) {
+          const messageLength = msg.message.length;
+          const newlines = (msg.message.match(/\n/g) || []).length;
+
+          // Adjust characters per line based on screen size
+          const charsPerLine = isMobile ? 35 : isTablet ? 45 : 55;
+
+          // Calculate based on both character count and newlines
+          const estimatedLines = Math.max(
+            Math.ceil(messageLength / charsPerLine),
+            newlines + 1
+          );
+
+          // More generous height calculation for longer messages with mobile optimization
+          const lineHeight = isMobile ? 18 : isTablet ? 20 : 22;
+
+          if (estimatedLines > 50) {
+            estimatedHeight += estimatedLines * (lineHeight + 2); // Extra spacing for very long messages
+          } else if (estimatedLines > 10) {
+            estimatedHeight += estimatedLines * lineHeight;
+          } else {
+            estimatedHeight += Math.max(
+              estimatedLines * lineHeight,
+              isMobile ? 30 : 40
+            );
+          }
         }
-      }
-      
-      // Add height for file attachments (responsive)
-      if (msg.file || msg.isUploading) {
-        estimatedHeight += isMobile ? 280 : isTablet ? 320 : 360;
-      }
-      
-      // Add extra padding for very long messages to prevent overlap
-      if (msg.message && msg.message.length > 1000) {
-        estimatedHeight += isMobile ? 30 : 50;
-      }
-      
-      return Math.max(estimatedHeight, isMobile ? 100 : 120);
-    }, [processedItems]),
+
+        // Add height for file attachments (responsive)
+        if (msg.file || msg.isUploading) {
+          estimatedHeight += isMobile ? 280 : isTablet ? 320 : 360;
+        }
+
+        // Add extra padding for very long messages to prevent overlap
+        if (msg.message && msg.message.length > 1000) {
+          estimatedHeight += isMobile ? 30 : 50;
+        }
+
+        return Math.max(estimatedHeight, isMobile ? 100 : 120);
+      },
+      [processedItems]
+    ),
     overscan: 5,
     ref: virtualizerRef,
   });
@@ -213,8 +470,8 @@ export default function ProjectDashboard({
     if (rowVirtualizer && processedItems.length > 0) {
       const timeout = setTimeout(() => {
         rowVirtualizer.scrollToIndex(processedItems.length - 1, {
-          align: 'end',
-          behavior: 'smooth'
+          align: "end",
+          behavior: "smooth",
         });
       }, 100);
       return () => clearTimeout(timeout);
@@ -380,10 +637,10 @@ export default function ProjectDashboard({
           ref={parentRef}
           className="flex-1 min-h-0 overflow-y-auto bg-gradient-to-b from-[#0D1117] to-[#161B22] px-2 py-2 sm:px-4 sm:py-4 md:px-6 lg:px-8 chat-scrollbar relative"
           style={{
-            scrollBehavior: 'smooth',
-            scrollbarWidth: 'thin',
-            scrollbarColor: '#6366f1 transparent',
-            maxHeight: 'calc(100vh - 140px)' // Ensure it doesn't exceed viewport minus header/input
+            scrollBehavior: "smooth",
+            scrollbarWidth: "thin",
+            scrollbarColor: "#6366f1 transparent",
+            maxHeight: "calc(100vh - 140px)", // Ensure it doesn't exceed viewport minus header/input
           }}
         >
           <div
@@ -706,8 +963,8 @@ export default function ProjectDashboard({
                 )}
                 {mobilePanel === "files" && (
                   <div className="h-[calc(100vh-200px)] sm:h-[500px]">
-                    <FileExplorer 
-                      projectId={projectId} 
+                    <FileExplorer
+                      projectId={projectId}
                       isMobile={true}
                       containerHeight="100%"
                     />
@@ -737,7 +994,7 @@ export default function ProjectDashboard({
                 <div className="text-sm text-gray-400 bg-gray-700/50 px-3 py-1 rounded-full">
                   {task[projectId]?.length || 0} tasks
                 </div>
-              </div> 
+              </div>
 
               <div className="max-h-96 overflow-y-auto pr-2 custom-scroll">
                 {task[projectId]?.length > 0 ? (

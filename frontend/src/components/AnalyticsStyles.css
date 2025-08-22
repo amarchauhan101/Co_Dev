@@ -1,174 +1,80 @@
-/* Enhanced styles for ProfileDev and Graph components */
+/* Optimized styles for ProfileDev and Graph components - Performance Focused */
 
-/* Custom animations */
-@keyframes glow-pulse {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 40px rgba(139, 92, 246, 0.6), 0 0 60px rgba(139, 92, 246, 0.4);
-  }
-}
-
-@keyframes float-gentle {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  33% {
-    transform: translateY(-10px) rotate(1deg);
-  }
-  66% {
-    transform: translateY(5px) rotate(-1deg);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes scale-in {
-  0% {
-    opacity: 0;
-    transform: scale(0.8) translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-@keyframes slide-up {
-  0% {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* Simple, efficient animations */
 @keyframes fade-in {
-  0% {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slide-in {
+  0% { 
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px);
   }
-  100% {
+  100% { 
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-/* Enhanced glassmorphism */
+/* Lightweight glassmorphism */
 .glass-card-enhanced {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 
-    0 8px 32px 0 rgba(31, 38, 135, 0.37),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  transition: background-color 0.2s ease;
 }
 
 .glass-card-enhanced:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
-  box-shadow: 
-    0 16px 48px 0 rgba(31, 38, 135, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  background: rgba(30, 41, 59, 0.8);
 }
 
-/* Enhanced button effects */
+/* Simple button styles */
 .btn-modern {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.8), rgba(236, 72, 153, 0.8));
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
-}
-
-.btn-modern::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  transition: left 0.6s;
-}
-
-.btn-modern:hover::before {
-  left: 100%;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(147, 51, 234, 0.9));
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  transition: opacity 0.2s ease;
 }
 
 .btn-modern:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(139, 92, 246, 0.4);
+  opacity: 0.9;
 }
 
-/* Chart container enhancements */
+/* Optimized chart container */
 .chart-container {
   position: relative;
   padding: 1rem;
   border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  background: rgba(51, 65, 85, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  transition: background-color 0.2s ease;
 }
 
 .chart-container:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+  background: rgba(51, 65, 85, 0.6);
 }
 
-/* Metric card animations */
+/* Simple metric cards */
 .metric-card {
-  animation: scale-in 0.6s ease-out;
-  transition: all 0.3s ease;
+  animation: fade-in 0.3s ease-out;
+  transition: opacity 0.2s ease;
 }
-
-.metric-card:nth-child(1) { animation-delay: 0.1s; }
-.metric-card:nth-child(2) { animation-delay: 0.2s; }
-.metric-card:nth-child(3) { animation-delay: 0.3s; }
-.metric-card:nth-child(4) { animation-delay: 0.4s; }
 
 .metric-card:hover {
-  transform: translateY(-8px) scale(1.02);
+  opacity: 0.95;
 }
 
-/* Progress bar enhancements */
-.progress-bar {
-  position: relative;
-  overflow: hidden;
+/* Simple animations */
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out;
 }
 
-.progress-bar::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  transform: translateX(-100%);
-  animation: shimmer 2s infinite;
+.section-fade-in {
+  animation: slide-in 0.4s ease-out;
 }
 
-/* Responsive design improvements */
+/* Basic responsive design */
 @media (max-width: 768px) {
   .metric-card {
     padding: 1rem;
@@ -180,116 +86,153 @@
   }
   
   .glass-card-enhanced {
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-  }
-  
-  .metric-card:hover {
-    transform: translateY(-4px) scale(1.01);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
   }
 }
 
 @media (max-width: 640px) {
-  .metric-card {
-    margin-bottom: 1rem;
-    padding: 1rem;
-  }
-  
   .btn-modern {
     padding: 0.75rem 1.5rem;
     font-size: 0.875rem;
   }
   
   .glass-card-enhanced {
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
 }
 
-/* Custom scrollbar for mobile */
-.scrollbar-custom {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(139, 92, 246, 0.5) transparent;
-}
-
-.scrollbar-custom::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
-}
-
-.scrollbar-custom::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.scrollbar-custom::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #8b5cf6, #ec4899);
-  border-radius: 2px;
-}
-
-.scrollbar-custom::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #a855f7, #f472b6);
-}
-
-/* Icon animations */
-.icon-float {
-  animation: float-gentle 6s ease-in-out infinite;
-}
-
-.icon-glow {
-  filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.5));
-  transition: filter 0.3s ease;
-}
-
-.icon-glow:hover {
-  filter: drop-shadow(0 0 16px rgba(139, 92, 246, 0.8));
-}
-
-/* Loading states */
-.skeleton-loader {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.1) 25%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.1) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-/* Tooltip enhancements */
+/* Simple tooltip */
 .tooltip-modern {
-  background: rgba(0, 0, 0, 0.9);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.3);
   border-radius: 0.75rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-/* Section animations */
-.section-fade-in {
-  animation: slide-up 0.8s ease-out;
+/* Custom Scrollbar Styles for Charts - High Performance */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(107, 114, 128, 0.7) rgba(31, 41, 55, 0.5);
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  scroll-behavior: smooth;
 }
 
-.section-fade-in:nth-child(1) { animation-delay: 0.1s; }
-.section-fade-in:nth-child(2) { animation-delay: 0.2s; }
-.section-fade-in:nth-child(3) { animation-delay: 0.3s; }
-.section-fade-in:nth-child(4) { animation-delay: 0.4s; }
-
-/* Animation utilities */
-.animate-fade-in {
-  animation: fade-in 0.6s ease-out forwards;
-  opacity: 0;
+.scrollbar-thin::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
 }
 
-/* Project card specific animations */
-.animate-fade-in:nth-child(1) { animation-delay: 0.1s; }
-.animate-fade-in:nth-child(2) { animation-delay: 0.2s; }
-.animate-fade-in:nth-child(3) { animation-delay: 0.3s; }
-.animate-fade-in:nth-child(4) { animation-delay: 0.4s; }
-.animate-fade-in:nth-child(5) { animation-delay: 0.5s; }
-.animate-fade-in:nth-child(6) { animation-delay: 0.6s; }
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.5);
+  border-radius: 4px;
+}
 
-/* Line clamping for better text display */
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(107, 114, 128, 0.7);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  will-change: background-color; /* Performance optimization */
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(107, 114, 128, 0.9);
+}
+
+.scrollbar-thin::-webkit-scrollbar-corner {
+  background: rgba(31, 41, 55, 0.5);
+}
+
+/* Performance-optimized mobile scrollbar */
+@media (max-width: 768px) {
+  .scrollbar-thin::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(107, 114, 128, 0.8);
+  }
+  
+  .scrollbar-thin {
+    -webkit-overflow-scrolling: touch;
+    /* Hide scrollbar on mobile while keeping functionality */
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Chart horizontal scroll container - Performance optimized */
+.chart-scroll-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  transform: translateZ(0); /* Hardware acceleration */
+  will-change: scroll-position; /* Performance hint */
+}
+
+/* Optimized chart containers */
+.chart-container {
+  position: relative;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(51, 65, 85, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  transition: background-color 0.2s ease;
+  contain: layout style; /* Performance optimization */
+}
+
+.chart-container:hover {
+  background: rgba(51, 65, 85, 0.6);
+}
+
+/* Smooth transitions for better UX */
+.chart-container .scrollbar-thin {
+  transition: opacity 0.3s ease;
+}
+
+.chart-container:hover .scrollbar-thin {
+  opacity: 1;
+}
+
+/* Additional performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+  .scrollbar-thin {
+    scroll-behavior: auto;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    transition: none;
+  }
+}
+
+/* Mobile optimization */
+@media (hover: none) and (pointer: coarse) {
+  .metric-card:hover,
+  .glass-card-enhanced:hover,
+  .chart-container:hover,
+  .btn-modern:hover {
+    transform: none;
+    opacity: 1;
+    background: initial;
+  }
+}
+
+/* Remove all heavy animations */
+.icon-float,
+.icon-glow,
+.progress-bar,
+.skeleton-loader {
+  animation: none;
+  filter: none;
+  box-shadow: none;
+}
+
+/* Utility classes */
 .line-clamp-2 {
   overflow: hidden;
   display: -webkit-box;
@@ -304,61 +247,4 @@
   -webkit-line-clamp: 3;
   line-clamp: 3;
   -webkit-box-orient: vertical;
-}
-
-/* Grid responsive improvements */
-@media (max-width: 1280px) {
-  .xl\:grid-cols-2 {
-    grid-template-columns: 1fr;
-  }
-  
-  .xl\:grid-cols-3 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 1024px) {
-  .lg\:grid-cols-3 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .lg\:grid-cols-2 {
-    grid-template-columns: 1fr;
-  }
-  
-  .lg\:col-span-2 {
-    grid-column: span 2;
-  }
-}
-
-@media (max-width: 768px) {
-  .md\:grid-cols-2 {
-    grid-template-columns: 1fr;
-  }
-  
-  .lg\:col-span-2 {
-    grid-column: span 1;
-  }
-}
-
-@media (max-width: 640px) {
-  .sm\:grid-cols-2 {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Mobile touch improvements */
-@media (hover: none) and (pointer: coarse) {
-  .metric-card:hover {
-    transform: none;
-  }
-  
-  .glass-card-enhanced:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
-  }
-  
-  .chart-container:hover {
-    transform: none;
-  }
 }
