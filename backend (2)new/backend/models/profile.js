@@ -1,73 +1,4 @@
-// const mongoose = require('mongoose');
-// const express = require('express');
-
-// const profileSchema = new mongoose.Schema({
-//     bio: {
-//         type: String
-//     },
-//     avatar: {
-//         type: String,
-//         default:''
-//     },
-//     skills: [
-//         {
-//             type: String
-//         }
-//     ],
-//     experience: {
-//         type: String
-//     },
-//     education: {
-//         type: String
-//     },
-//     social: {
-//         youtube: {
-//             type: String
-//         },
-//         facebook: {
-//             type: String
-//         },
-//         twitter: {
-//             type: String
-//         },
-//         linkedin: {
-//             type: String
-//         },
-//         instagram: {
-//             type: String
-//         },
-//         github: {
-//             type: String
-//         }
-//     },
-//     projects:[{
-//         type: mongoose.Schema.Types.ObjectId,
-//         ref: 'Project'
-//     }],
-//     requests:[{
-//         type: mongoose.Schema.Types.ObjectId,
-//         ref: 'ProjectRequest'
-//     }],
-//     points:{
-//         type: Number,
-//         default: 0
-//     },
-//     isactive:{
-//         type: Boolean,
-//         default: true
-//     },
-//     activeat:{
-//         type: Date
-//     },
-//     createdAt: {
-//         type: Date,
-//         default: Date.now
-//     }
-// })
-
-// module.exports = mongoose.model('Profile', profileSchema);
-
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const profileSchema = new mongoose.Schema({
   bio: {
@@ -75,7 +6,7 @@ const profileSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-    default: '',
+    default: "",
   },
   skills: [
     {
@@ -87,8 +18,8 @@ const profileSchema = new mongoose.Schema({
   },
   experienceLevel: {
     type: String,
-    enum: ['Beginner', 'Intermediate', 'Expert'],
-    default: 'Beginner',
+    enum: ["Beginner", "Intermediate", "Expert"],
+    default: "Beginner",
   },
   interests: [
     {
@@ -121,13 +52,13 @@ const profileSchema = new mongoose.Schema({
   projects: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Project',
+      ref: "Project",
     },
   ],
   requests: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'ProjectRequest',
+      ref: "ProjectRequest",
     },
   ],
   points: {
@@ -137,6 +68,11 @@ const profileSchema = new mongoose.Schema({
   isactive: {
     type: Boolean,
     default: true,
+  },
+  status: {
+    type: String,
+    enum: ["Active", "Inactive", "Banned"],
+    default: "Active",
   },
   activeat: {
     type: Date,
@@ -153,23 +89,23 @@ const profileSchema = new mongoose.Schema({
     default: 0,
   },
   pointHistory: [
-  {
-    date: { type: Date, default: Date.now },
-    points: Number,
-    reason: String,
-  }
-],
-reliabilityHistory: [
-  {
-    date: { type: Date, default: Date.now },
-    score: Number,
-    reason: String,
-  },
-],
+    {
+      date: { type: Date, default: Date.now },
+      points: Number,
+      reason: String,
+    },
+  ],
+  reliabilityHistory: [
+    {
+      date: { type: Date, default: Date.now },
+      score: Number,
+      reason: String,
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
 
-module.exports = mongoose.model('Profile', profileSchema);
+module.exports = mongoose.model("Profile", profileSchema);

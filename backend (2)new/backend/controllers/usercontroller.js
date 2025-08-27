@@ -38,73 +38,6 @@ const storage = multer.diskStorage({
 // Multer Upload Middleware
 const upload = multer({ storage }).single("avatar");
 
-// exports.createuser = async (req, res) => {
-//   try {
-//     const { username, email, password } = req.body;
-//     const errors = validationResult(req);
-//     if (!errors.isEmpty()) {
-//       return res.status(400).json({ errors: errors.array() });
-//     }
-//     const isalreadyexist = await User.findOne({ email: email });
-//     if (isalreadyexist) {
-//       return res.status(400).json({
-//         errors: [{ msg: "User already exist" }],
-//       });
-//     }
-//     const hashPassword = await bcrypt.hash(password, 10);
-
-//     const profileImage = `https://api.dicebear.com/5.x/initials/svg?seed=${username}`;
-//     const newprofile = await profile.create({
-//       bio: "This is my bio",
-//       avatar: profileImage,
-//       skills: ["HTML", "CSS", "JS"],
-//       experience: "I have 5 years of experience",
-//       education: "I have completed my graduation",
-//       social: {
-//         youtube: "https://www.youtube.com",
-//         facebook: "https://www.facebook.com",
-//         twitter: "https://www.twitter.com",
-//         linkedin: "https://www.linkedin.com",
-//         instagram: "https://www.instagram.com",
-//         github: "https://www.github.com",
-//       },
-//       projects: [],
-//       requests: [],
-//       points: 0,
-//       isactive: true,
-//     });
-//     const newuser = await User.create({
-//       username,
-//       email,
-//       password: hashPassword,
-//       profile: newprofile._id,
-//       profileImage: profileImage,
-//     });
-
-//     const populateduser = await newuser.populate("profile");
-//     console.log(populateduser);
-
-//     res.status(200).json({
-//       success: true,
-//       message: "new user is created successfully",
-//       data: populateduser,
-//     });
-
-//     // const newuser = await User.create({username,email,password:hashPassword});
-
-//     // if(!newuser){
-//     //     return res.status(400).json({errors:[{msg: 'Registration failed'}]});
-//     // }
-//     // return res.status(200).json({
-//     //     msg: 'User registered successfully',
-//     //     user: newuser
-//     // })
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send("Server Error");
-//   }
-// };
-
 exports.createuser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -273,7 +206,7 @@ exports.updateuserprofile = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -293,10 +226,21 @@ exports.login = async (req, res) => {
       id: user._id,
       username: user.username,
       email: user.email,
+      role: user.role,
+      isAdmin: user.isAdmin,
     };
+    // Access token - shorter lifespan for security
     let token = jwt.sign(payload, process.env.TOKEN_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "15m",
     });
+    // Refresh token - longer lifespan for persistence
+    let refreshToken = jwt.sign(
+      payload,
+      process.env.REFRESH_TOKEN_SECRET || process.env.TOKEN_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
     const today = new Date();
     const strtoday = today.toDateString();
     const profile = user.profile;
@@ -318,6 +262,7 @@ exports.login = async (req, res) => {
     const userWithToken = {
       ...user._doc, // Spread the user's document to retain its fields
       token,
+      refreshToken,
     };
     const options = { expires: new Date(Date.now() + 3600000), httpOnly: true };
     return res.cookie("token", token, options).status(200).json({
@@ -329,38 +274,6 @@ exports.login = async (req, res) => {
     res.status(500).send("Server Error");
   }
 };
-
-// const jwt = require("jsonwebtoken");
-// const bcrypt = require("bcrypt");
-// const User = require("../models/User");
-
-// exports.login = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-
-//     const user = await User.findOne({ email });
-//     if (!user) return res.status(404).json({ msg: "User not found" });
-
-//     const isMatch = await bcrypt.compare(password, user.password);
-//     if (!isMatch) return res.status(401).json({ msg: "Invalid password" });
-
-//     const payload = {
-//       id: user._id,
-//       username: user.username,
-//       email: user.email,
-//     };
-
-//     const token = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: "1h" });
-
-//     res.status(200).json({
-//       msg: "Login successful",
-//       userWithToken: { ...user._doc, token },
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send("Server error");
-//   }
-// };
 
 exports.logout = async (req, res) => {
   try {
@@ -382,6 +295,53 @@ exports.logout = async (req, res) => {
   }
 };
 
+exports.refreshToken = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      return res.status(401).json({ msg: "Refresh token required" });
+    }
+
+    // Verify refresh token
+    const decoded = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET || process.env.TOKEN_SECRET
+    );
+
+    // Get user from database
+    const user = await User.findById(decoded.id).populate("profile");
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    // Generate new access token
+    const payload = {
+      id: user._id,
+      username: user.username,
+      email: user.email,
+    };
+
+    const newToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+      expiresIn: "15m",
+    });
+
+    // Return new token with user data
+    const userWithToken = {
+      ...user._doc,
+      token: newToken,
+      refreshToken, // Keep the same refresh token
+    };
+
+    return res.status(200).json({
+      message: "Token refreshed successfully",
+      userWithToken,
+    });
+  } catch (err) {
+    console.error("Refresh token error:", err.message);
+    return res.status(401).json({ msg: "Invalid refresh token" });
+  }
+};
 exports.getprofile = async (req, res) => {
   try {
     const userid = req.user.id;
@@ -430,25 +390,6 @@ exports.getprofile = async (req, res) => {
     res.status(500).send("Server Error");
   }
 };
-
-// exports.getprofile = async (req, res) => {
-//   try{
-//     const userid = req.user.id;
-//     console.log("userId", userid);
-//     const userData = await User.findById(userid).populate("profile")
-//     if(!userData){
-//       return res.status(404).json({msg:"User not found"})
-//     }
-//     return res.status(200).json({
-//       msg: "User profile fetched successfully",
-//       userData,
-//     })
-//   }
-//   catch(err){
-//     console.error(err.message);
-//     res.status(500).send("Server Error");
-//   }
-// }
 
 exports.getalluser = async (req, res) => {
   try {

@@ -23,17 +23,26 @@ import DeveloperProfile from "./components/DeveloperProfile.jsx";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import Leaderboard from "./components/Leaderboard.jsx";
-import ProjectLiveSession from "./components/ProjectLiveSession.jsx";
+// import ProjectLiveSession from "./components/ProjectLiveSession.jsx";
 import ProjectLiveSessionWrapper from "./components/ProjectLiveSessionWrapper.jsx";
 import PrivateRoute from "./protectedRoute/PrivateRoute.jsx";
+import VoiceChatTest from "./components/VoiceChatTest.jsx";
+import VoiceChatDebug from "./components/VoiceChatDebug.jsx";
+import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+import UserManagement from "./pages/admin/UserManagement.jsx";
+import ProjectManagement from "./pages/admin/ProjectManagement.jsx";
+import TaskManagement from "./pages/admin/TaskManagement.jsx";
+import RequestManagement from "./pages/admin/RequestManagement.jsx";
+import AdminManagement from "./pages/admin/AdminManagement.jsx";
+import CreateSuperAdmin from "./pages/admin/CreateSuperAdmin.jsx";
+import AdminLogin from "./pages/admin/AdminLogin.jsx";
+import AdminRegister from "./pages/admin/AdminRegister.jsx";
+import Registerwithinvitation from "./pages/admin/Registerwithinvitation.jsx";
+// import UserDetails from "./pages/admin/UserDetails.jsx";
 
 function App() {
   return (
     <>
-      {/* <ErrorBoundary> */}
-      {/* <RouteMapWithDetails/>  */}
-      {/* </ErrorBoundary> */}
-      {/* <PollutionApp/> */}
       <Routes>
         <Route path="/Register" element={<Register />} />
         <Route path="/login" element={<Login />} />
@@ -56,12 +65,31 @@ function App() {
           path="/project/live/:projectId"
           element={<ProjectLiveSessionWrapper />}
         />
+
+        <Route path="/voice-test" element={<VoiceChatTest />} />
+        <Route path="/voice-debug" element={<VoiceChatDebug />} />
+
         {/* 404 etc. */}
 
         <Route path="/updateproject/:projectId" element={<Projectupdate />} />
         <Route path="/getallusers" element={<Developers />} />
         <Route path="/getdevprofile/:id" element={<DeveloperProfile />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
+
+        <Route
+          path="/admin/firstsuperadmin"
+          element={<CreateSuperAdmin />}
+        />
+        <Route path="/admin/login" element={<Login />} />
+        <Route path="/admin/register/:token" element={<Registerwithinvitation />} />
+        <Route path="/admin/register" element={<Registerwithinvitation />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/users" element={<UserManagement />} />
+        <Route path="/admin/projects" element={<ProjectManagement />} />
+        <Route path="/admin/tasks" element={<TaskManagement />} />
+        <Route path="/admin/requests" element={<RequestManagement />} />
+        <Route path="/admin/admins" element={<AdminManagement />} />
+        {/* <Route path="/admin/users/:userId" element={<UserDetails />} /> */}
       </Routes>
     </>
   );

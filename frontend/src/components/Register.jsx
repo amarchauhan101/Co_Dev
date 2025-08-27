@@ -54,39 +54,32 @@ const Register = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-blue-200">
-      <div className="w-full max-w-md p-6 bg-white rounded-2xl shadow-lg ">
-        <h1 className="text-2xl font-bold text-center text-blue-600 mb-6">
-          Register
-        </h1>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-400 to-pink-300 relative overflow-hidden">
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <svg width="100%" height="100%" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="650" cy="100" r="120" fill="#fff" fillOpacity="0.08" />
+          <circle cx="150" cy="500" r="100" fill="#fff" fillOpacity="0.10" />
+          <ellipse cx="400" cy="300" rx="350" ry="180" fill="#fff" fillOpacity="0.07" />
+        </svg>
+      </div>
+      <div className="w-full max-w-md p-8 rounded-3xl shadow-2xl bg-white/30 backdrop-blur-lg border border-white/40 relative z-10 animate-fade-in">
+        <h1 className="text-4xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-400 mb-8 tracking-tight drop-shadow-lg">Create Your Account</h1>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
-            <label
-              htmlFor="username"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Username
-            </label>
+            <label htmlFor="username" className="block text-base font-semibold text-indigo-700 mb-1">Username</label>
             <input
               type="text"
               id="username"
               {...register("username", { required: "Username is required" })}
-              className="mt-1 block w-full p-2 outline-none rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-3 rounded-xl border border-purple-300 bg-white/60 focus:ring-2 focus:ring-pink-400 focus:outline-none text-lg shadow-sm transition-all duration-200"
               placeholder="Enter your username"
             />
             {errors.username && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.username.message}
-              </p>
+              <p className="text-sm text-pink-600 mt-1">{errors.username.message}</p>
             )}
           </div>
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email
-            </label>
+            <label htmlFor="email" className="block text-base font-semibold text-indigo-700 mb-1">Email</label>
             <input
               type="email"
               id="email"
@@ -97,22 +90,15 @@ const Register = () => {
                   message: "Invalid email address",
                 },
               })}
-              className="mt-1 block w-full p-2 outline-none rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-3 rounded-xl border border-purple-300 bg-white/60 focus:ring-2 focus:ring-pink-400 focus:outline-none text-lg shadow-sm transition-all duration-200"
               placeholder="Enter your email"
             />
             {errors.email && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.email.message}
-              </p>
+              <p className="text-sm text-pink-600 mt-1">{errors.email.message}</p>
             )}
           </div>
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Password
-            </label>
+            <label htmlFor="password" className="block text-base font-semibold text-indigo-700 mb-1">Password</label>
             <div className="flex items-center relative">
               <input
                 type={`${ishide ? "password" : "text"}`}
@@ -124,29 +110,31 @@ const Register = () => {
                     message: "Password must be at least 6 characters",
                   },
                 })}
-                className="mt-1 block w-full rounded-lg p-2 outline-none border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-3 rounded-xl border border-purple-300 bg-white/60 focus:ring-2 focus:ring-pink-400 focus:outline-none text-lg shadow-sm transition-all duration-200"
                 placeholder="Enter your password"
-              />{" "}
+              />
               <span
                 onClick={() => setishide(!ishide)}
-                className="absolute inset-y-0 right-3 flex items-center"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-xl text-indigo-500 cursor-pointer"
               >
                 {ishide ? <IoMdEyeOff /> : <IoEye />}
               </span>
             </div>
             {errors.password && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.password.message}
-              </p>
+              <p className="text-sm text-pink-600 mt-1">{errors.password.message}</p>
             )}
           </div>
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-lg shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="w-full py-3 px-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-400 text-white font-bold rounded-xl shadow-lg hover:scale-105 hover:shadow-2xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2"
           >
             Register
           </button>
         </form>
+        <div className="mt-6 text-center">
+          <span className="text-base text-indigo-700">Already have an account?</span>
+          <a href="/login" className="ml-2 text-pink-500 font-semibold hover:underline transition-all">Login</a>
+        </div>
       </div>
     </div>
   );

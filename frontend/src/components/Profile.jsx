@@ -524,7 +524,7 @@ function Profile() {
               )}
             </div>
           </div>
-        </div>
+        </div> 
 
         {/* Edit Form Modal */}
         {isEditing && (

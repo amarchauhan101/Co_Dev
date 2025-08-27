@@ -2,7 +2,7 @@
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import ProjectLiveSession from "../components/ProjectLiveSession";
+import ProjectLiveSession from "./ProjectLiveSession";
 import { initializeSocket } from "../config/socket";
 import { useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";

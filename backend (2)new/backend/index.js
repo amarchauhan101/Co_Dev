@@ -9,6 +9,11 @@ const mongoose = require("mongoose");
 const { Server } = require("socket.io");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
+const { handleVoiceChat } = require("./socket/voiceHandler"); // <─ voice chat handler
+
+const adminRoute = require("./routes/adminRoute");
+
+
 
 /* ── local modules ── */
 const db = require("./config/database");
@@ -45,7 +50,7 @@ app.use("/api/v1", chatroute);
 app.use("/api/v1", airoute);
 app.use("/api/v1", taskrouter);
 app.use("/api/v1", trafficroute);
-
+app.use("/api/v1",adminRoute);
 /* GitHub OAuth */
 app.get("/auth/github", passport.authenticate("github"));
 app.get(
@@ -137,8 +142,10 @@ const peersInRoom = {};
 io.on("connection", (socket) => {
   console.log("🟢 Connected:", socket.id);
   connections.push(socket);
-  console.log(`${socket.id} is connected in editor`);
   let roomId = null;
+
+  // Initialize voice chat handler ONCE per socket connection
+  handleVoiceChat(io, socket);
 
   const joinRoom = (projectId) => {
     if (roomId) socket.leave(roomId);
@@ -177,40 +184,6 @@ io.on("connection", (socket) => {
     // Send the array of shapes for the room, or an empty array if none exists
     socket.emit("drawing-history", projectShapes[roomId] || []);
   });
-
-  // socket.on("add-shape", (newShape) => {
-  //   if (!projectShapes[roomId]) {
-  //     projectShapes[roomId] = [];
-  //   }
-  //   projectShapes[roomId].push(newShape);
-  //   socket.to(roomId).emit("add-shape", newShape);
-  // });
-
-  // socket.on("update-shape", (updatedShape) => {
-  //   if (!projectShapes[roomId]) return;
-
-  //   // Find and update the shape in the server's list
-  //   projectShapes[roomId] = projectShapes[roomId].map(shape =>
-  //     shape.id === updatedShape.id ? updatedShape : shape
-  //   );
-  //   socket.to(roomId).emit("update-shape", updatedShape);
-  // });
-
-  // socket.on("delete-shape", (id) => {
-  //   if (!projectShapes[roomId]) return;
-  //   projectShapes[roomId] = projectShapes[roomId].filter(shape => shape.id !== id);
-  //   socket.to(roomId).emit("delete-shape", id);
-  // });
-
-  // socket.on("clear-canvas", () => {
-  //   projectShapes[roomId] = [];
-  //   io.to(roomId).emit("clear-canvas");
-  // });
-
-  
-
- 
-  
 
   // ✅ Use this updated handler for both new and in-progress shapes
   socket.on("add-shape", (shapeData) => {
