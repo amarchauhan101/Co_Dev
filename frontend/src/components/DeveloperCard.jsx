@@ -342,24 +342,23 @@ const DeveloperCard = ({ dev, devkey }) => {
           {(dev?.profile?.experience || dev?.profile?.education) && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4 lg:gap-5 text-xs sm:text-sm">
               {dev?.profile?.experience && (
-                <div className="bg-gradient-to-r from-slate-800/60 to-slate-700/60 rounded-xl lg:rounded-2xl p-3 sm:p-4 lg:p-5 border border-slate-600/30 backdrop-blur-sm hover:scale-105 transition-all duration-300 group">
-                  <div className="text-cyan-400 font-semibold flex items-center gap-2 sm:gap-3 mb-2">
-                    <Award className="w-3 sm:w-4 lg:w-5 h-3 sm:h-4 lg:h-5 group-hover:scale-110 transition-transform duration-300" />
+                <div className="bg-gradient-to-r  from-slate-800/60 to-slate-700/60 rounded-xl lg:rounded-2xl  border border-slate-600/30 backdrop-blur-sm hover:scale-105 transition-all duration-300 group">
+                  <div className="text-cyan-400 px-2 font-semibold flex items-center gap-2 sm:gap-3 mb-2">
                     <span>Experience</span>
                   </div>
-                  <div className="text-slate-200 font-medium">
+                  <div className="text-slate-200 px-2 font-medium">
                     {dev.profile.experience}
                   </div>
                 </div>
               )}
 
               {dev?.profile?.education && (
-                <div className="bg-gradient-to-r from-slate-800/60 to-slate-700/60 rounded-xl lg:rounded-2xl p-3 sm:p-4 lg:p-5 border border-slate-600/30 backdrop-blur-sm hover:scale-105 transition-all duration-300 group">
-                  <div className="text-blue-400 font-semibold flex items-center gap-2 sm:gap-3 mb-2">
-                    <Briefcase className="w-3 sm:w-4 lg:w-5 h-3 sm:h-4 lg:h-5 group-hover:scale-110 transition-transform duration-300" />
+                <div className="bg-gradient-to-r from-slate-800/60 to-slate-700/60 rounded-xl lg:rounded-2xl border border-slate-600/30 backdrop-blur-sm hover:scale-105 transition-all duration-300 group">
+                  <div className="text-blue-400 font-semibold px-2 pt-0.5 flex items-center gap-2 sm:gap-3 mb-2">
+                   
                     <span>Education</span>
                   </div>
-                  <div className="text-slate-200 font-medium">
+                  <div className="text-slate-200 px-2 font-medium">
                     {dev.profile.education}
                   </div>
                 </div>

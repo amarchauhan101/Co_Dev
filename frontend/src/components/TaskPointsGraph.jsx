@@ -242,7 +242,7 @@ export const TaskPointsGraph = ({ profile }) => {
             </div>
             {/* Scrollable Chart Container */}
             <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
-              <div className="min-w-[600px] w-full">
+              <div style={{minWidth: `${Math.max(graphData.length * 80, 400)}px`, height: window.innerWidth < 640 ? 280 : window.innerWidth < 1024 ? 320 : 350}}>
                 <ResponsiveContainer width="100%" height={window.innerWidth < 640 ? 280 : window.innerWidth < 1024 ? 320 : 350}>
                   <AreaChart data={graphData} margin={{ 
                     top: 20, 

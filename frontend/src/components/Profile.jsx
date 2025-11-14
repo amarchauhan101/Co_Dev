@@ -51,10 +51,8 @@ function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
-  const [isScrolling, setIsScrolling] = useState(false);
   const { user } = useAuth();
   const token = user?.userWithToken?.token;
-  const scrollTimeoutRef = useRef();
   
   const { register, handleSubmit, reset } = useForm();
 
@@ -84,31 +82,7 @@ function Profile() {
     })) || []
   , [profile?.skills]);
 
-  // Simple scroll handler - removed complex optimizations for better performance
-  const handleScrollOptimization = useCallback(() => {
-    // Minimal scroll handling
-  }, []);
-
-  // Optimized CSS classes with minimal animations for better performance
-  const getOptimizedClasses = useCallback((baseClasses, animationClasses = '') => {
-    return baseClasses; // Remove all animations for optimal performance
-  }, []);
-
   console.log("user in profile", user);
-
-  // Single scroll listener with proper cleanup - no dependency on isScrolling state
-  useEffect(() => {
-    window.addEventListener('scroll', handleScrollOptimization, { passive: true });
-    
-    return () => {
-      window.removeEventListener('scroll', handleScrollOptimization);
-      // Clean up on unmount
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-      document.body.classList.remove('scrolling');
-    };
-  }, [handleScrollOptimization]); // Only depends on the callback, not on isScrolling state
 
   const sociallink = {
     youtube: <FaYoutube className="text-red-500" />,
@@ -230,24 +204,18 @@ function Profile() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
-      {/* Optimized Background Elements - Always present but with reduced opacity during scroll */}
-      <div 
-        className="fixed inset-0 overflow-hidden pointer-events-none transition-opacity duration-200"
-        style={{ opacity: isScrolling ? 0.3 : 1 }}
-      >
-        <div className="absolute -top-4 -right-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float"></div>
-        <div className="absolute -bottom-8 -left-4 w-72 h-72 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float animation-delay-4000"></div>
+      {/* Static Background Elements - No dynamic changes for better scroll performance */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-4 -right-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-10"></div>
+        <div className="absolute -bottom-8 -left-4 w-72 h-72 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-10"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-10"></div>
       </div>
 
       {/* Main Container */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className={getOptimizedClasses(
-            "text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4",
-            "animate-fade-in"
-          )}>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
             Your Profile
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
@@ -256,23 +224,14 @@ function Profile() {
         </div>
 
         {/* Profile Hero Section */}
-        <div className={getOptimizedClasses(
-          "glass-card rounded-3xl shadow-2xl mb-8 overflow-hidden",
-          "glass-card-hover animate-fade-in"
-        )}>
+        <div className="glass-card rounded-3xl shadow-2xl mb-8 overflow-hidden">
           {/* Cover Background */}
-          <div className={getOptimizedClasses(
-            "h-48 sm:h-64 bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 relative",
-            "animate-gradient"
-          )}>
+          <div className="h-48 sm:h-64 bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 relative">
             <div className="absolute inset-0 bg-black/20"></div>
             <div className="absolute bottom-6 right-6">
               <button
                 onClick={() => setIsEditing(!isEditing)}
-                className={getOptimizedClasses(
-                  "bg-white/20 backdrop-blur-sm hover:bg-white/30 rounded-full p-3 text-white shadow-lg transform hover:scale-105",
-                  "btn-glow transition-all duration-300 hover:shadow-xl animate-pulse-glow"
-                )}
+                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 rounded-full p-3 text-white shadow-lg transition-colors duration-200"
               >
                 {isEditing ? <FaTimes size={20} /> : <FaEdit size={20} />}
               </button>
@@ -284,14 +243,8 @@ function Profile() {
             
             <div className="flex flex-col sm:flex-row items-center sm:items-center gap-6">
               <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6 -mt-16 sm:-mt-32">
-                <div className={getOptimizedClasses(
-                  "relative group",
-                  "animate-fade-in"
-                )}>
-                  <div className={getOptimizedClasses(
-                    "w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-tr from-purple-400 to-cyan-400 p-1 shadow-2xl",
-                    "animate-float"
-                  )}>
+                <div className="relative group">
+                  <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-tr from-purple-400 to-cyan-400 p-1 shadow-2xl">
                     <img
                       src={
                         userData?.profileImage ||
@@ -302,10 +255,7 @@ function Profile() {
                     />
                   </div>
                   {profile?.isactive && (
-                    <div className={getOptimizedClasses(
-                      "absolute bottom-2 right-2 w-6 h-6 bg-green-400 border-4 border-white rounded-full shadow-lg",
-                      "animate-pulse-glow"
-                    )}></div>
+                    <div className="absolute bottom-2 right-2 w-6 h-6 bg-green-400 border-4 border-white rounded-full shadow-lg"></div>
                   )}
                 </div>
 
@@ -351,9 +301,7 @@ function Profile() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-6 py-3 rounded-full font-medium ${
-                    isScrolling ? 'transition-none' : 'transition-all duration-300 transform hover:scale-105'
-                  } ${
+                  className={`px-6 py-3 rounded-full font-medium transition-colors duration-200 ${
                     activeTab === tab
                       ? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white shadow-lg"
                       : "bg-white/10 text-gray-300 hover:bg-white/20"
@@ -459,7 +407,7 @@ function Profile() {
 
               {/* Experience Tab */}
               {activeTab === "experience" && (
-                <div className={getOptimizedClasses("space-y-6", "animate-fade-in")}>
+                <div className="space-y-6">
                   <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
                     <h3 className="text-2xl font-bold text-white mb-6">Professional Journey</h3>
                     <div className="space-y-4">
@@ -642,10 +590,7 @@ function Profile() {
         <div className="space-y-8 mt-8">
           {/* Developer Analytics - Full Width on Desktop */}
           <div className="w-full">
-            <div className={getOptimizedClasses(
-              "bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl p-6 lg:p-8",
-              "hover:shadow-3xl transition-all duration-500"
-            )}>
+            <div className="bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl p-6 lg:p-8">
               <div className="flex items-center gap-3 mb-6 lg:mb-8">
                 <div className="p-3 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-xl shadow-lg">
                   <FaChartLine className="text-white text-xl" />
@@ -654,18 +599,13 @@ function Profile() {
                   🚀 Developer Analytics
                 </h3>
               </div>
-              <div style={{ opacity: isScrolling ? 0.7 : 1, transition: 'opacity 0.2s ease' }}>
-                <MemoizedProfileDev profile={profile} />
-              </div>
+              <MemoizedProfileDev profile={profile} />
             </div>
           </div>
 
           {/* Activity Graph - Full Width on Desktop */}
           <div className="w-full">
-            <div className={getOptimizedClasses(
-              "bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl p-6 lg:p-8",
-              "hover:shadow-3xl transition-all duration-500"
-            )}>
+            <div className="bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl p-6 lg:p-8">
               <div className="flex items-center gap-3 mb-6 lg:mb-8">
                 <div className="p-3 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-xl shadow-lg">
                   <FaChartArea className="text-white text-xl" />
@@ -674,9 +614,7 @@ function Profile() {
                   📊 Activity Overview
                 </h3>
               </div>
-              <div style={{ opacity: isScrolling ? 0.7 : 1, transition: 'opacity 0.2s ease' }}>
-                <MemoizedGraph profile={profile} variant="enhanced" />
-              </div>
+              <MemoizedGraph profile={profile} variant="enhanced" />
             </div>
           </div>
         </div>
@@ -687,9 +625,7 @@ function Profile() {
             <h3 className="text-2xl font-bold text-white mb-6">
               Featured Projects
             </h3>
-            <div style={{ opacity: isScrolling ? 0.7 : 1, transition: 'opacity 0.2s ease' }}>
-              <MemoizedProjectsSection profile={profile} />
-            </div>
+            <MemoizedProjectsSection profile={profile} />
           </div>
         </div>
       </div>

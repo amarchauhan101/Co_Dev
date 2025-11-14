@@ -113,33 +113,32 @@ function Getmyproject({ handleRespond }) {
     }
   };
 
-  // Optimized ProjectCard with minimal animations for performance
+  // Simplified ProjectCard with basic CSS - better performance
   const ProjectCard = ({ project, index }) => {
     return (
       <div
-        className="group relative bg-slate-800/40 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-6 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20 hover:border-purple-500/50"
+        className="relative bg-slate-800 rounded-xl border border-slate-700 p-6 hover:border-purple-500 transition-colors"
         onMouseEnter={() => setHoveredCard(project._id)}
         onMouseLeave={() => setHoveredCard(null)}
       >
-        {/* Simplified background effect for better performance */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        {/* Removed heavy background effects */}
 
         <div className="relative h-full flex flex-col">
           {/* Header */}
           <div className="flex items-start justify-between mb-4">
             <Link to={`/getproject/${project._id}`} className="flex-1 min-w-0">
-              <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-200 transition-colors duration-300 flex items-center gap-2 hover:underline truncate">
+              <h3 className="text-xl font-bold text-white mb-2 hover:text-purple-400 flex items-center gap-2 hover:underline truncate">
                 <Code size={20} className="text-purple-400 flex-shrink-0" />
                 <span className="truncate">{project.name}</span>
               </h3>
-              <p className="text-slate-300 text-sm line-clamp-3 group-hover:text-slate-200 transition-colors duration-300">
+              <p className="text-slate-300 text-sm line-clamp-3">
                 {project.description || "No description available"}
               </p>
             </Link>
 
             <button
               onClick={() => navigate(`/updateproject/${project._id}`)}
-              className="ml-4 p-2 rounded-xl bg-slate-700/50 text-slate-400 hover:text-purple-300 hover:bg-slate-600/50 transition-all duration-300 hover:scale-110 flex-shrink-0"
+              className="ml-4 p-2 rounded-lg bg-slate-700 text-slate-400 hover:text-purple-300 hover:bg-slate-600 flex-shrink-0"
             >
               <Edit3 size={16} />
             </button>
@@ -155,13 +154,13 @@ function Getmyproject({ handleRespond }) {
                   .map((tech, idx) => (
                     <span
                       key={idx}
-                      className="px-2 py-1 bg-slate-700/50 text-purple-300 text-xs rounded-lg border border-slate-600/30 transition-colors duration-300"
+                      className="px-2 py-1 bg-slate-700 text-purple-300 text-xs rounded-lg border border-slate-600"
                     >
                       {tech.trim()}
                     </span>
                   ))}
                 {project.technologies.split(",").length > 3 && (
-                  <span className="px-2 py-1 bg-slate-700/50 text-slate-400 text-xs rounded-lg">
+                  <span className="px-2 py-1 bg-slate-700 text-slate-400 text-xs rounded-lg">
                     +{project.technologies.split(",").length - 3}
                   </span>
                 )}
@@ -195,13 +194,13 @@ function Getmyproject({ handleRespond }) {
             </div>
           </div>
 
-          {/* Team members - Optimized */}
+          {/* Team members - Simplified */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm text-slate-300 font-medium">Team</span>
               <button
                 onClick={() => setSelectedProject(project._id)}
-                className="p-1.5 rounded-lg bg-slate-700/50 border border-dashed border-slate-600 hover:border-purple-400 text-slate-400 hover:text-purple-400 transition-all duration-300 hover:scale-110"
+                className="p-1.5 rounded-lg bg-slate-700 border border-dashed border-slate-600 hover:border-purple-400 text-slate-400 hover:text-purple-400"
               >
                 <Plus size={12} />
               </button>
@@ -211,7 +210,7 @@ function Getmyproject({ handleRespond }) {
               {project.user.slice(0, 5).map((member, idx) => (
                 <div
                   key={idx}
-                  className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-sm font-medium text-white hover:scale-110 transition-transform duration-300 border-2 border-slate-800"
+                  className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-sm font-medium text-white border-2 border-slate-800"
                   title={member.username}
                   style={{ marginLeft: idx > 0 ? "-8px" : "0" }}
                 >
@@ -229,23 +228,20 @@ function Getmyproject({ handleRespond }) {
             </div>
           </div>
 
-          {/* Actions - Simplified */}
+          {/* Actions - Basic CSS */}
           <div className="mt-auto flex gap-3">
             <Link
               to={`/getproject/${project._id}`}
-              className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 px-4 rounded-xl font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-400/25 flex items-center justify-center gap-2 group"
+              className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2"
             >
               Enter Project
-              <ChevronRight
-                size={16}
-                className="group-hover:translate-x-1 transition-transform duration-300"
-              />
+              <ChevronRight size={16} />
             </Link>
 
             {project.liveDemoLink && (
               <button
                 onClick={() => window.open(project.liveDemoLink, "_blank")}
-                className="p-3 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 hover:text-white rounded-xl transition-all duration-300 hover:scale-105"
+                className="p-3 bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white rounded-xl"
                 title="View Live Demo"
               >
                 <ExternalLink size={16} />
@@ -258,8 +254,8 @@ function Getmyproject({ handleRespond }) {
   };
 
   const UserAddModal = () => (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-slate-900/95 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-6 max-w-md w-full transform transition-all duration-300 scale-100">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-slate-900 rounded-xl border border-slate-700 p-6 max-w-md w-full">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <UserPlus className="text-purple-400" size={20} />
@@ -267,7 +263,7 @@ function Getmyproject({ handleRespond }) {
           </div>
           <button
             onClick={() => setSelectedProject(null)}
-            className="p-2 rounded-xl bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-700/50 transition-all duration-300 hover:scale-110"
+            className="p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700"
           >
             <X size={16} />
           </button>
@@ -281,7 +277,7 @@ function Getmyproject({ handleRespond }) {
             <select
               value={newUser}
               onChange={(e) => setNewUser(e.target.value)}
-              className="w-full bg-slate-800/50 backdrop-blur-sm border border-slate-600/50 rounded-xl px-4 py-3 text-white focus:border-purple-400 focus:outline-none transition-all duration-300"
+              className="w-full bg-slate-800 border border-slate-600 rounded-xl px-4 py-3 text-white focus:border-purple-400 focus:outline-none"
             >
               <option value="">Choose a user...</option>
               {users.map((user) => (
@@ -296,13 +292,13 @@ function Getmyproject({ handleRespond }) {
             <button
               onClick={() => handleAddUser(selectedProject)}
               disabled={!newUser}
-              className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-4 rounded-xl font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-400/25 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-4 rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Add Member
             </button>
             <button
               onClick={() => setSelectedProject(null)}
-              className="flex-1 bg-slate-700/50 text-slate-300 py-3 px-4 rounded-xl font-medium hover:bg-slate-600/50 hover:text-white transition-all duration-300"
+              className="flex-1 bg-slate-700 text-slate-300 py-3 px-4 rounded-xl font-medium hover:bg-slate-600 hover:text-white"
             >
               Cancel
             </button>
@@ -328,7 +324,7 @@ function Getmyproject({ handleRespond }) {
           <p className="text-slate-400 mb-6">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-xl font-medium transition-all duration-300 hover:scale-105"
+            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 px-6 rounded-xl font-medium"
           >
             Try Again
           </button>
@@ -339,14 +335,13 @@ function Getmyproject({ handleRespond }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 relative overflow-hidden font-inter">
-      {/* Simplified background elements for better performance */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/5 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
+      {/* Simple static background - no animations */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 py-8">
+      <div className="relative z-10 w-full mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent mb-4">
@@ -374,16 +369,16 @@ function Getmyproject({ handleRespond }) {
               placeholder="Search projects..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-slate-800/50 backdrop-blur-sm border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:border-purple-400 focus:outline-none transition-all duration-300 hover:bg-slate-800/70"
+              className="w-full pl-10 pr-4 py-3 bg-slate-800 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-purple-400 focus:outline-none hover:bg-slate-800/80"
             />
           </div>
 
-          <div className="flex bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-600/50 p-1">
+          <div className="flex bg-slate-800 rounded-xl border border-slate-600 p-1">
             <button
               onClick={() => setViewMode("grid")}
-              className={`p-2 rounded-lg transition-all duration-300 ${
+              className={`p-2 rounded-lg ${
                 viewMode === "grid"
-                  ? "bg-purple-500 text-white shadow-lg"
+                  ? "bg-purple-500 text-white"
                   : "text-slate-400 hover:text-white"
               }`}
             >
@@ -391,9 +386,9 @@ function Getmyproject({ handleRespond }) {
             </button>
             <button
               onClick={() => setViewMode("list")}
-              className={`p-2 rounded-lg transition-all duration-300 ${
+              className={`p-2 rounded-lg ${
                 viewMode === "list"
-                  ? "bg-purple-500 text-white shadow-lg"
+                  ? "bg-purple-500 text-white"
                   : "text-slate-400 hover:text-white"
               }`}
             >
@@ -405,21 +400,19 @@ function Getmyproject({ handleRespond }) {
         {/* Projects Grid */}
         {filteredProjects.length > 0 ? (
           <div
-            className={`grid gap-6  ${
+            className={`grid gap-6 ${
               viewMode === "grid"
                 ? "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
                 : "grid-cols-1 max-w-4xl mx-auto"
             }`}
           >
             {filteredProjects.map((project, index) => (
-              <div key={project._id}>
-                <ProjectCard project={project} index={index} />
-              </div>
+              <ProjectCard key={project._id} project={project} index={index} />
             ))}
           </div>
         ) : (
           <div className="text-center py-20">
-            <div className="w-24 h-24 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6">
               <Search className="text-slate-400" size={32} />
             </div>
             <h3 className="text-xl font-semibold text-slate-300 mb-2">

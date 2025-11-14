@@ -19,17 +19,7 @@ exports.firstSuperAdmin = async (req, res) => {
     }
 
     const isadmin = await User.findOne({ isAdmin: true });
-    if (isadmin) {
-      return res
-        .status(400)
-        .json({ message: "these admin is already exist in the system" });
-    }
     const userExist = await User.findOne({ email });
-    if (userExist) {
-      return res
-        .status(400)
-        .json({ message: "these user is already exist in the system" });
-    }
 
     const invitationaToken = crypto.randomBytes(32).toString("hex");
     const expiredAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
@@ -124,12 +114,12 @@ exports.promoteAdmin = async (req, res) => {
 
     if (newRole === "super-admin" && req.user.role != "super-admin") {
       return res.status(403).json({
-        msg: "only super-admin can promote other admins",
+        msg: "only super-admin can promote or demote other admins",
       });
     }
     if (newRole === "admin" && req.user.role != "super-admin") {
       return res.status(403).json({
-        msg: "only super-admin can promote other admins",
+        msg: "only super-admin can promote or demote other admins",
       });
     }
 
@@ -151,7 +141,14 @@ exports.promoteAdmin = async (req, res) => {
         msg: "user is already in this role",
       });
     }
-
+    if(newRole=='user'){
+      user.isAdmin = false;
+      user.isSuperAdmin = false;
+    }
+    else if(newRole == 'admin' || newRole == 'super-admin'){
+      user.isAdmin = true;
+      user.isSuperAdmin = newRole === 'super-admin';
+    }
     user.role = newRole;
     await user.save();
 

@@ -25,7 +25,7 @@ function UserManagement() {
     setLoading(true);
     try {
       const res = await adminApi.getAllUsers({
-        page: page, limit: 10
+        page: page, limit: 12
       });
       if(res.success) {
         setUsers(res.users);

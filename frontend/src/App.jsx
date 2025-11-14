@@ -33,7 +33,7 @@ import UserManagement from "./pages/admin/UserManagement.jsx";
 import ProjectManagement from "./pages/admin/ProjectManagement.jsx";
 import TaskManagement from "./pages/admin/TaskManagement.jsx";
 import RequestManagement from "./pages/admin/RequestManagement.jsx";
-import AdminManagement from "./pages/admin/AdminManagement.jsx";
+
 import CreateSuperAdmin from "./pages/admin/CreateSuperAdmin.jsx";
 import AdminLogin from "./pages/admin/AdminLogin.jsx";
 import AdminRegister from "./pages/admin/AdminRegister.jsx";
@@ -88,7 +88,7 @@ function App() {
         <Route path="/admin/projects" element={<ProjectManagement />} />
         <Route path="/admin/tasks" element={<TaskManagement />} />
         <Route path="/admin/requests" element={<RequestManagement />} />
-        <Route path="/admin/admins" element={<AdminManagement />} />
+        {/* <Route path="/admin/admins" element={<AdminManagement />} /> */}
         {/* <Route path="/admin/users/:userId" element={<UserDetails />} /> */}
       </Routes>
     </>

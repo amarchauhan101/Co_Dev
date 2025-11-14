@@ -16,7 +16,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useProject } from "../../context/ProjectContext";
 import { useAuth } from "../../context/AuthContext";
-import { InView } from "react-intersection-observer";
 
 // Define comprehensive guide steps that follow content flow
 const guideSteps = [
@@ -264,64 +263,59 @@ function Home() {
         />
       )}
 
-      <div className="min-h-screen overflow-y-auto bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-gray-100 floating-orbs relative">
-        <header className="w-full h-20   flex items-center justify-between px-6 glass-morphism shadow-md fixed top-0 left-0 right-0 z-50 border-b border-purple-500/20">
-          <div className="flex items-center gap-6">
+      <div className="min-h-screen overflow-y-auto bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-gray-100 relative">
+        <header className="w-full h-16 sm:h-20 flex items-center justify-between px-3 sm:px-6 bg-slate-900/80 shadow-md fixed top-0 left-0 right-0 z-50 border-b border-purple-500/20">
+          <div className="flex items-center gap-2 sm:gap-6">
             <div
               id="main-menu-button"
-              className="p-2 rounded-full hover:bg-purple-500/20 transition-all duration-300"
+              className="p-1.5 sm:p-2 rounded-full hover:bg-purple-500/20"
             >
               {!menuopen ? (
                 <RiMenu2Line
                   onClick={() => setmenuopen(true)}
-                  className="h-7 w-7 cursor-pointer text-purple-400 hover:text-purple-300 transition-transform duration-150 hover:scale-110"
+                  className="h-6 w-6 sm:h-7 sm:w-7 cursor-pointer text-purple-400 hover:text-purple-300"
                 />
               ) : (
                 <RxCross2
                   onClick={() => setmenuopen(false)}
-                  className="h-7 w-7 cursor-pointer text-purple-400 hover:text-purple-300 transition-all duration-300 hover:scale-110 hover:rotate-90"
+                  className="h-6 w-6 sm:h-7 sm:w-7 cursor-pointer text-purple-400 hover:text-purple-300"
                 />
               )}
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
               <h1
                 id="welcome-header"
-                className="text-2xl font-bold text-shimmer"
+                className="text-sm sm:text-xl lg:text-2xl font-bold text-white truncate max-w-[150px] sm:max-w-none"
               >
                 Welcome back, {userData?.username}
               </h1>
             </div>
           </div>
 
-          <div className="rightheader flex items-center gap-6">
-            <div className="relative group">
-              <div className="absolute -inset-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full opacity-0 group-hover:opacity-75 blur transition-all duration-300" />
-              <div className="relative">
-                <FaBell
-                  className="h-6 w-6 text-purple-400 cursor-pointer hover:text-purple-300 transition-all duration-300 hover:scale-110"
-                  onClick={() => {
-                    setShowModal(true);
-                    console.log("modal is clickerd=>", showModal);
-                  }}
-                />
-                {userData?.profile?.requests?.length > 0 && (
-                  <span className="notification-badge absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg">
-                    {userData?.profile.requests.length}
-                  </span>
-                )}
-              </div>
+          <div className="rightheader flex items-center gap-3 sm:gap-6">
+            <div className="relative">
+              <FaBell
+                className="h-5 w-5 sm:h-6 sm:w-6 text-purple-400 cursor-pointer hover:text-purple-300"
+                onClick={() => {
+                  setShowModal(true);
+                  console.log("modal is clickerd=>", showModal);
+                }}
+              />
+              {userData?.profile?.requests?.length > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 sm:-top-2 sm:-right-2 bg-gradient-to-r from-red-500 to-pink-500 text-white text-[10px] sm:text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center font-bold shadow-lg">
+                  {userData?.profile.requests.length}
+                </span>
+              )}
             </div>
 
-            <div id="profile-link" className="relative group">
-              <div className="absolute -inset-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full opacity-0 group-hover:opacity-75 blur transition-all duration-300" />
-              <Link
-                to="/getprofile"
-                className="relative cursor-pointer hover:opacity-80 transition-all duration-300 block p-2 rounded-full hover:bg-purple-500/20"
-              >
-                <CgProfile className="h-8 w-8 text-purple-400 hover:text-purple-300 transition-all duration-300 hover:scale-110" />
-              </Link>
-            </div>
+            <Link
+              id="profile-link"
+              to="/getprofile"
+              className="cursor-pointer hover:opacity-80 block p-1.5 sm:p-2 rounded-full hover:bg-purple-500/20"
+            >
+              <CgProfile className="h-6 w-6 sm:h-8 sm:w-8 text-purple-400 hover:text-purple-300" />
+            </Link>
           </div>
         </header>
 
@@ -379,39 +373,39 @@ function Home() {
         )}
 
         {showModal && (
-          <div className="fixed inset-0 z-50 flex items-start pt-10 justify-center backdrop-blur-md bg-black/70 px-4">
-            <div className="glass-morphism shadow-2xl rounded-3xl w-full max-w-3xl p-8 relative neon-glow">
+          <div className="fixed inset-0 z-50 flex items-start pt-4 sm:pt-10 justify-center backdrop-blur-md bg-black/70 px-2 sm:px-4">
+            <div className="glass-morphism shadow-2xl rounded-2xl sm:rounded-3xl w-full max-w-3xl p-4 sm:p-6 lg:p-8 relative neon-glow max-h-[90vh] overflow-y-auto">
               <button
-                className="absolute -top-4 -right-4 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-400 hover:to-pink-400 text-white rounded-full p-3 shadow-xl transition-all duration-300 hover:scale-110 hover:rotate-90"
+                className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-400 hover:to-pink-400 text-white rounded-full p-2 sm:p-3 shadow-xl transition-all duration-300 hover:scale-110 hover:rotate-90"
                 onClick={() => setShowModal(false)}
               >
-                <RxCross2 className="w-6 h-6" />
+                <RxCross2 className="w-4 h-4 sm:w-6 sm:h-6" />
               </button>
 
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-shimmer mb-4">
+              <div className="text-center mb-6 sm:mb-8">
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-shimmer mb-3 sm:mb-4">
                   Project Collaboration Requests
                 </h2>
-                <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full" />
+                <div className="w-16 sm:w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full" />
               </div>
 
               {userData?.profile?.requests?.length > 0 ? (
-                <div className="space-y-6 max-h-[60vh] overflow-y-auto scrollbar-thin pr-4">
+                <div className="space-y-4 sm:space-y-6 max-h-[60vh] overflow-y-auto scrollbar-thin pr-2 sm:pr-4">
                   {userData.profile.requests.map((request, index) => (
                     <div
                       key={index}
-                      className="glass-morphism-light rounded-2xl p-6 hover-lift border border-purple-500/30 relative overflow-hidden"
+                      className="glass-morphism-light rounded-xl sm:rounded-2xl p-4 sm:p-6 hover-lift border border-purple-500/30 relative overflow-hidden"
                     >
-                      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full -mr-10 -mt-10" />
+                      <div className="absolute top-0 right-0 w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full -mr-8 sm:-mr-10 -mt-8 sm:-mt-10" />
 
                       <div className="relative z-[60]">
-                        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-4 gap-3">
-                          <h3 className="text-xl font-bold text-white">
+                        <div className="flex flex-col gap-3 mb-4">
+                          <h3 className="text-lg sm:text-xl font-bold text-white">
                             {request.project?.name || "Untitled Project"}
                           </h3>
-                          <div className="flex items-center gap-2 px-3 py-1 bg-purple-500/20 rounded-full">
+                          <div className="flex items-center gap-2 px-3 py-1 bg-purple-500/20 rounded-full w-fit">
                             <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
-                            <span className="text-sm text-purple-300">
+                            <span className="text-xs sm:text-sm text-purple-300">
                               from{" "}
                               <span className="font-semibold">
                                 {request.sender?.username}
@@ -420,17 +414,17 @@ function Home() {
                           </div>
                         </div>
 
-                        <p className="text-gray-300 text-base mb-6 leading-relaxed">
+                        <p className="text-gray-300 text-sm sm:text-base mb-4 sm:mb-6 leading-relaxed">
                           {request.project?.description ||
                             "No description provided."}
                         </p>
 
-                        <div className="flex flex-col sm:flex-row gap-4 justify-end">
+                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                           <button
                             onClick={() =>
                               handleRespond(request._id, "rejected")
                             }
-                            className="group relative overflow-hidden bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-400 hover:to-pink-400 text-white font-medium py-3 px-6 rounded-xl shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-red-500/50"
+                            className="group relative overflow-hidden bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-400 hover:to-pink-400 text-white font-medium py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-red-500/50 text-sm sm:text-base"
                           >
                             <span className="relative z-10 flex items-center justify-center gap-2">
                               ❌ Decline Request
@@ -440,7 +434,7 @@ function Home() {
                             onClick={() =>
                               handleRespond(request._id, "accepted")
                             }
-                            className="group relative overflow-hidden bg-gradient-to-r from-green-500 to-emerald-400 hover:from-green-400 hover:to-emerald-300 text-white font-medium py-3 px-6 rounded-xl shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-green-500/50"
+                            className="group relative overflow-hidden bg-gradient-to-r from-green-500 to-emerald-400 hover:from-green-400 hover:to-emerald-300 text-white font-medium py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-green-500/50 text-sm sm:text-base"
                           >
                             <span className="relative z-10 flex items-center justify-center gap-2">
                               ✨ Accept & Collaborate
@@ -452,12 +446,12 @@ function Home() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-12">
-                  <div className="text-6xl mb-4">📭</div>
-                  <p className="text-xl text-gray-400">
+                <div className="text-center py-8 sm:py-12">
+                  <div className="text-4xl sm:text-6xl mb-4">📭</div>
+                  <p className="text-lg sm:text-xl text-gray-400">
                     No pending requests at the moment.
                   </p>
-                  <p className="text-gray-500 mt-2">
+                  <p className="text-sm sm:text-base text-gray-500 mt-2">
                     New collaboration opportunities will appear here.
                   </p>
                 </div>
@@ -467,19 +461,19 @@ function Home() {
         )}
 
         <main
-          className={`pt-28 px-6 pb-12 transition-all duration-500 ${
-            menuopen ? "ml-0 lg:ml-80" : ""
+          className={`pt-20 sm:pt-28 px-3 sm:px-6 pb-8 sm:pb-12 transition-all duration-500 ${
+            menuopen ? "ml-64 sm:ml-72 lg:ml-80" : ""
           }`}
         >
-          <div className="space-y-12 w-full mx-auto">
-            <section className="text-center mb-16">
-              <div className="hero-gradient p-12 rounded-3xl mb-8 relative overflow-hidden">
+          <div className="space-y-8 sm:space-y-12 w-full mx-auto">
+            <section className="text-center mb-8 sm:mb-16">
+              <div className="hero-gradient p-6 sm:p-10 lg:p-12 rounded-2xl sm:rounded-3xl mb-6 sm:mb-8 relative overflow-hidden">
                 <div className="absolute inset-0 bg-black/20" />
                 <div className="relative z-10">
-                  <h2 className="text-5xl font-bold text-white mb-4">
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
                     Build the Future
                   </h2>
-                  <p className="text-xl text-gray-200 max-w-2xl mx-auto">
+                  <p className="text-base sm:text-lg lg:text-xl text-gray-200 max-w-2xl mx-auto px-4">
                     Collaborate, create, and bring your ideas to life with our
                     powerful project management platform.
                   </p>
@@ -487,104 +481,77 @@ function Home() {
               </div>
             </section>
 
-            <InView triggerOnce threshold={0.2}>
-              {({ inView, ref }) => (
-                <section
-                  ref={ref}
-                  id="create-project-section"
-                  className="glass-morphism p-8 rounded-3xl shadow-2xl border border-purple-500/30 hover-lift section-enter relative overflow-hidden"
-                >
-                  <div
-                    className={`${
-                      inView ? "opacity-100" : "opacity-0"
-                    } absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full -mr-16 -mt-16`}
-                  />
-                  <div className="relative z-10">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl">
-                        <span className="text-2xl">🚀</span>
-                      </div>
-                      <h2 className="text-3xl font-bold text-shimmer">
-                        Launch Your Next Big Idea
-                      </h2>
-                    </div>
-                    <p className="text-gray-400 mb-8 text-lg">
-                      Transform your vision into reality. Start building
-                      something amazing today.
-                    </p>
-                    <div id="create-project-tools">
-                      <Createproject />
-                    </div>
+            <section
+              id="create-project-section"
+              className="bg-slate-800 p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl shadow-lg border border-purple-500/30 relative overflow-hidden"
+            >
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                  <div className="p-2 sm:p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl sm:rounded-2xl">
+                    <span className="text-xl sm:text-2xl">🚀</span>
                   </div>
-                </section>
-              )}
-            </InView>
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-shimmer">
+                    Launch Your Next Big Idea
+                  </h2>
+                </div>
+                <p className="text-gray-400 mb-6 sm:mb-8 text-sm sm:text-base lg:text-lg">
+                  Transform your vision into reality. Start building
+                  something amazing today.
+                </p>
+                <div id="create-project-tools">
+                  <Createproject />
+                </div>
+              </div>
+            </section>
 
-            <InView triggerOnce threshold={0.2}>
-              {({ inView, ref }) => (
-                <section
-                  id="my-projects-section"
-                  ref={ref}
-                  className="glass-morphism p-8 rounded-3xl shadow-2xl border border-purple-500/30 hover-lift section-enter relative overflow-hidden"
-                >
-                  <div
-                    className={`${
-                      inView ? "opacity-100" : "opacity-0"
-                    } absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full -ml-16 -mt-16`}
-                  />
-                  <div className="relative z-10">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl">
-                        <span className="text-2xl">💼</span>
-                      </div>
-                      <h2 className="text-3xl font-bold text-shimmer">
-                        Your Creative Universe
-                      </h2>
-                    </div>
-                    <p className="text-gray-400 mb-8 text-lg">
-                      Manage and track all your projects in one beautiful,
-                      intuitive space.
-                    </p>
-                    <div id="my-projects-dashboard">
-                      <Getmyproject />
-                    </div>
+           
+              
+            <section
+              id="my-projects-section"
+              className="bg-slate-800 p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl shadow-lg border border-purple-500/30 relative overflow-hidden"
+            >
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                  <div className="p-2 sm:p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl sm:rounded-2xl">
+                    <span className="text-xl sm:text-2xl">💼</span>
                   </div>
-                </section>
-              )}
-            </InView>
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-shimmer">
+                    Your Creative Universe
+                  </h2>
+                </div>
+                <p className="text-gray-400 mb-6 sm:mb-8 text-sm sm:text-base lg:text-lg">
+                  Manage and track all your projects in one beautiful,
+                  intuitive space.
+                </p>
+                <div id="my-projects-dashboard">
+                  <Getmyproject/>
+                </div>
+              </div>
+            </section>          
 
-            <InView triggerOnce threshold={0.2}>
-              {({ inView, ref }) => (
-                <section
-                  id="all-projects-section"
-                  ref={ref}
-                  className="glass-morphism p-8 rounded-3xl shadow-2xl border border-purple-500/30 hover-lift section-enter relative overflow-hidden"
-                >
-                  <div
-                    className={`${
-                      inView ? "opacity-100" : "opacity-0"
-                    } absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/10 to-blue-500/10 rounded-full -mr-16 -mb-16`}
-                  />
-                  <div className="relative z-10">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="p-3 bg-gradient-to-r from-green-500 to-blue-500 rounded-2xl">
-                        <span className="text-2xl">🌍</span>
-                      </div>
-                      <h2 className="text-3xl font-bold text-shimmer">
-                        Discover & Collaborate
-                      </h2>
-                    </div>
-                    <p className="text-gray-400 mb-8 text-lg">
-                      Explore incredible projects from our global community of
-                      creators and innovators.
-                    </p>
-                    <div id="community-projects-browser">
-                      <Getprojects />
-                    </div>
+           
+            <section
+              id="all-projects-section"
+              className="bg-slate-800 p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl shadow-lg border border-purple-500/30 relative overflow-hidden"
+            >
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                  <div className="p-2 sm:p-3 bg-gradient-to-r from-green-500 to-blue-500 rounded-xl sm:rounded-2xl">
+                    <span className="text-xl sm:text-2xl">🌍</span>
                   </div>
-                </section>
-              )}
-            </InView>
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-shimmer">
+                    Discover & Collaborate
+                  </h2>
+                </div>
+                <p className="text-gray-400 mb-6 sm:mb-8 text-sm sm:text-base lg:text-lg">
+                  Explore incredible projects from our global community of
+                  creators and innovators.
+                </p>
+                <div id="community-projects-browser">
+                  <Getprojects />
+                </div>
+              </div>
+            </section>
           </div>
         </main>
       </div>

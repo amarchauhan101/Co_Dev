@@ -150,9 +150,9 @@ export const Graph = ({ profile, variant = "default" }) => {
       {/* Premium Revenue */}
       <section className={`${sectionClass} relative p-4 rounded-xl`}>
         <div className="relative">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-gradient-to-br from-emerald-600 to-green-700 rounded-lg">
-              <FaDollarSign className="text-base text-white" />
+          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <div className="p-1.5 sm:p-2 bg-gradient-to-br from-emerald-600 to-green-700 rounded-lg">
+              <FaDollarSign className="text-sm sm:text-base text-white" />
             </div>
             <div>
               <h2 className={`${titleClass} leading-tight`}>
@@ -161,7 +161,7 @@ export const Graph = ({ profile, variant = "default" }) => {
               <p className="text-gray-300 text-sm">Financial insights & growth</p>
             </div>
           </div>
-          <div className="chart-container">
+          <div className="w-full">
             <TaskPointsGraph profile={profile} />
           </div>
         </div>
@@ -171,9 +171,9 @@ export const Graph = ({ profile, variant = "default" }) => {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
         <section className={`${sectionClass} relative p-4 rounded-xl`}>
           <div className="relative">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-gradient-to-br from-blue-600 to-cyan-700 rounded-lg">
-                <FaTasks className="text-base text-white" />
+            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+              <div className="p-1.5 sm:p-2 bg-gradient-to-br from-blue-600 to-cyan-700 rounded-lg">
+                <FaTasks className="text-sm sm:text-base text-white" />
               </div>
               <div>
                 <h3 className={`${titleClass} leading-tight`}>
@@ -182,7 +182,7 @@ export const Graph = ({ profile, variant = "default" }) => {
                 <p className="text-gray-300 text-sm">Delivery metrics & performance</p>
               </div>
             </div>
-            <div className="chart-container min-h-[250px] flex items-center justify-center">
+            <div className="min-h-[250px] flex items-center justify-center">
               <TaskCompletionRate taskCompletionRates={profile.taskCompletionRates} />
             </div>
           </div>
@@ -190,9 +190,9 @@ export const Graph = ({ profile, variant = "default" }) => {
 
         <section className={`${sectionClass} relative p-4 rounded-xl`}>
           <div className="relative">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-gradient-to-br from-amber-600 to-orange-700 rounded-lg">
-                <FaBolt className="text-base text-white" />
+            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+              <div className="p-1.5 sm:p-2 bg-gradient-to-br from-amber-600 to-orange-700 rounded-lg">
+                <FaBolt className="text-sm sm:text-base text-white" />
               </div>
               <div>
                 <h3 className={`${titleClass} leading-tight`}>
@@ -201,7 +201,7 @@ export const Graph = ({ profile, variant = "default" }) => {
                 <p className="text-gray-300 text-sm">Communication speed & trends</p>
               </div>
             </div>
-            <div className="chart-container min-h-[250px] flex items-center justify-center">
+            <div className="min-h-[250px] flex items-center justify-center">
               <ResponseTime responseTimes={profile.responseTimes} />
             </div>
           </div>
@@ -213,9 +213,9 @@ export const Graph = ({ profile, variant = "default" }) => {
         {/* Reliability Score Bar Chart */}
         <section className={`${sectionClass} relative p-4 rounded-xl`}>
           <div className="relative">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-lg">
-                <FaShieldAlt className="text-base text-white" />
+            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+              <div className="p-1.5 sm:p-2 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-lg">
+                <FaShieldAlt className="text-sm sm:text-base text-white" />
               </div>
               <div>
                 <h3 className={`${titleClass} leading-tight`}>
@@ -224,17 +224,14 @@ export const Graph = ({ profile, variant = "default" }) => {
                 <p className="text-gray-300 text-sm">Trust & performance evolution</p>
               </div>
             </div>
-            <div className="chart-container">
-              <div className="w-full h-[300px]">
-                {/* Horizontal Scroll Container for Reliability Chart */}
-                <div className="w-full overflow-x-auto scrollbar-thin scrollbar-track-gray-800/50 scrollbar-thumb-gray-600 hover:scrollbar-thumb-gray-500 scrollbar-corner-gray-800">
-                  <div className="min-w-[600px] h-full">
-                    {reliabilityData.length > 0 ? (
+            <div className="overflow-x-auto scrollbar-thin scrollbar-track-gray-800/50 scrollbar-thumb-gray-600 hover:scrollbar-thumb-gray-500 -webkit-overflow-scrolling-touch">
+              <div style={{ minWidth: `${Math.max(reliabilityData.length * (window.innerWidth < 640 ? 60 : 80), 300)}px`, height: '300px' }}>
+                {reliabilityData.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={reliabilityData} margin={{ 
                           top: 20, 
-                          right: 20, 
-                          left: 20, 
+                          right: window.innerWidth < 640 ? 10 : 20, 
+                          left: window.innerWidth < 640 ? 0 : 20, 
                           bottom: 25 
                         }}>
                           <defs>
@@ -247,20 +244,24 @@ export const Graph = ({ profile, variant = "default" }) => {
                           <XAxis 
                             dataKey="name" 
                             stroke="#9CA3AF" 
-                            fontSize={12}
-                            fontWeight={500}
+                            fontSize={window.innerWidth < 640 ? 10 : 12}
+                            fontWeight={700}
                             axisLine={false}
                             tickLine={false}
                             tick={{ fill: '#D1D5DB' }}
+                            angle={window.innerWidth < 640 ? -45 : 0}
+                            textAnchor={window.innerWidth < 640 ? 'end' : 'middle'}
+                            height={window.innerWidth < 640 ? 60 : 30}
                           />
                           <YAxis 
                             stroke="#9CA3AF" 
-                            fontSize={12}
+                            fontSize={window.innerWidth < 640 ? 10 : 12}
                             fontWeight={500}
                             axisLine={false}
                             tickLine={false}
                             domain={[0, 100]}
                             tick={{ fill: '#D1D5DB' }}
+                            width={window.innerWidth < 640 ? 35 : 60}
                           />
                           <Tooltip
                             content={({ payload, label }) => {
@@ -299,8 +300,6 @@ export const Graph = ({ profile, variant = "default" }) => {
                         </div>
                       </div>
                     )}
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -309,9 +308,9 @@ export const Graph = ({ profile, variant = "default" }) => {
         {/* Weekly Logins Area Chart */}
         <section className={`${sectionClass} relative p-4 rounded-xl`}>
           <div className="relative">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-gradient-to-br from-cyan-600 to-blue-700 rounded-lg">
-                <FaCalendarAlt className="text-base text-white" />
+            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+              <div className="p-1.5 sm:p-2 bg-gradient-to-br from-cyan-600 to-blue-700 rounded-lg">
+                <FaCalendarAlt className="text-sm sm:text-base text-white" />
               </div>
               <div>
                 <h3 className={`${titleClass} leading-tight`}>
@@ -320,17 +319,14 @@ export const Graph = ({ profile, variant = "default" }) => {
                 <p className="text-gray-300 text-sm">Activity patterns & engagement</p>
               </div>
             </div>
-            <div className="chart-container">
-              <div className="w-full h-[300px]">
-                {/* Horizontal Scroll Container for Login Trends Chart */}
-                <div className="w-full overflow-x-auto scrollbar-thin scrollbar-track-gray-800/50 scrollbar-thumb-gray-600 hover:scrollbar-thumb-gray-500 scrollbar-corner-gray-800">
-                  <div className="min-w-[600px] h-full">
-                    {weeklyLoginsData?.length > 0 ? (
+            <div className="overflow-x-auto scrollbar-thin scrollbar-track-gray-800/50 scrollbar-thumb-gray-600 hover:scrollbar-thumb-gray-500 -webkit-overflow-scrolling-touch">
+              <div style={{ minWidth: `${Math.max(weeklyLoginsData.length * (window.innerWidth < 640 ? 60 : 80), 300)}px`, height: '300px' }}>
+                {weeklyLoginsData?.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={weeklyLoginsData} margin={{ 
                           top: 20, 
-                          right: 20, 
-                          left: 20, 
+                          right: window.innerWidth < 640 ? 10 : 20, 
+                          left: window.innerWidth < 640 ? 0 : 20, 
                           bottom: 25 
                         }}>
                           <defs>
@@ -348,19 +344,23 @@ export const Graph = ({ profile, variant = "default" }) => {
                           <XAxis 
                             dataKey="name" 
                             stroke="#9CA3AF" 
-                            fontSize={12}
+                            fontSize={window.innerWidth < 640 ? 10 : 12}
                             fontWeight={500}
                             axisLine={false}
                             tickLine={false}
                             tick={{ fill: '#D1D5DB' }}
+                            angle={window.innerWidth < 640 ? -45 : 0}
+                            textAnchor={window.innerWidth < 640 ? 'end' : 'middle'}
+                            height={window.innerWidth < 640 ? 60 : 30}
                           />
                           <YAxis 
                             stroke="#9CA3AF" 
-                            fontSize={12}
+                            fontSize={window.innerWidth < 640 ? 10 : 12}
                             fontWeight={500}
                             axisLine={false}
                             tickLine={false}
                             tick={{ fill: '#D1D5DB' }}
+                            width={window.innerWidth < 640 ? 35 : 60}
                           />
                           <Tooltip
                             content={({ payload, label }) => {
@@ -416,8 +416,6 @@ export const Graph = ({ profile, variant = "default" }) => {
                         </div>
                       </div>
                     )}
-                  </div>
-                </div>
               </div>
             </div>
           </div>
