@@ -13,6 +13,7 @@ function Header({
   handleToggleTask,
   handleToggleEditor,
   projectId,
+  setIsModalOpen,
 }) {
   const navigate = useNavigate();
   console.log("showtask", showtask);
@@ -69,21 +70,28 @@ function Header({
         </button>
 
         {/* Start Live Coding */}
-        <button
+        {/* <button
           onClick={() => navigate(`/project/live/${projectId}`)}
-          className="p-3 rounded-full bg-gradient-to-r from-violet-700 to-indigo-700 hover:from-violet-800 hover:to-indigo-800 text-white shadow-lg transition-all duration-300 transform hover:scale-110"
+          className="p-3 sm:block hidden rounded-full bg-gradient-to-r from-violet-700 to-indigo-700 hover:from-violet-800 hover:to-indigo-800 text-white shadow-lg transition-all duration-300 transform hover:scale-110"
           title="Start Live Coding Session"
         >
           <CgMediaLive size={18} />
-        </button>
+        </button> */}
       </div>
       <button
-          onClick={() => navigate(`/project/live/${projectId}`)}
-          className="flex sm:hidden p-3 rounded-full bg-gradient-to-r from-violet-700 to-indigo-700 hover:from-violet-800 hover:to-indigo-800 text-white shadow-lg transition-all duration-300 transform hover:scale-110"
-          title="Start Live Coding Session"
-        >
-          <CgMediaLive size={18} />
-        </button>
+        onClick={() => navigate(`/project/live/${projectId}`)}
+        className="flex p-3 sm:block hidden rounded-full bg-gradient-to-r from-violet-700 to-indigo-700 hover:from-violet-800 hover:to-indigo-800 text-white shadow-lg transition-all duration-300 transform hover:scale-110"
+        title="Start Live Coding Session"
+      >
+        <CgMediaLive size={18} />
+      </button>
+
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="w-10 h-10 sm:hidden  bg-violet-500 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110"
+      >
+        <span className="text-white text-lg">📋</span>
+      </button>
     </header>
   );
 }

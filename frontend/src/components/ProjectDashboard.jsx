@@ -28,41 +28,43 @@ import Header from "./Header";
 
 // File utility functions
 const getFileType = (filename) => {
-  const extension = filename.split('.').pop().toLowerCase();
-  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(extension)) return 'image';
-  if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm'].includes(extension)) return 'video';
-  if (['pdf'].includes(extension)) return 'pdf';
-  if (['doc', 'docx', 'txt', 'rtf'].includes(extension)) return 'document';
-  if (['mp3', 'wav', 'ogg', 'flac'].includes(extension)) return 'audio';
-  return 'other';
+  const extension = filename.split(".").pop().toLowerCase();
+  if (["jpg", "jpeg", "png", "gif", "webp", "svg"].includes(extension))
+    return "image";
+  if (["mp4", "avi", "mov", "wmv", "flv", "webm"].includes(extension))
+    return "video";
+  if (["pdf"].includes(extension)) return "pdf";
+  if (["doc", "docx", "txt", "rtf"].includes(extension)) return "document";
+  if (["mp3", "wav", "ogg", "flac"].includes(extension)) return "audio";
+  return "other";
 };
 
 const getFileIcon = (fileType) => {
   const icons = {
-    image: '🖼️',
-    video: '🎥',
-    pdf: '📄',
-    document: '📝',
-    audio: '🎵',
-    other: '📎'
+    image: "🖼️",
+    video: "🎥",
+    pdf: "📄",
+    document: "📝",
+    audio: "🎵",
+    other: "📎",
   };
   return icons[fileType] || icons.other;
 };
 
 const formatFileSize = (bytes) => {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return "0 Bytes";
   const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const sizes = ["Bytes", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 };
 
 // File Preview Modal Component
 const FilePreviewModal = ({ file, onClose }) => {
   const fileType = getFileType(file.name);
-  
+
   const downloadFile = () => {
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = file.url;
     link.download = file.name;
     link.click();
@@ -77,7 +79,9 @@ const FilePreviewModal = ({ file, onClose }) => {
             <span className="text-2xl">{getFileIcon(fileType)}</span>
             <div>
               <h3 className="text-white font-semibold truncate">{file.name}</h3>
-              <p className="text-gray-400 text-sm">{formatFileSize(file.size || 0)}</p>
+              <p className="text-gray-400 text-sm">
+                {formatFileSize(file.size || 0)}
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -99,41 +103,41 @@ const FilePreviewModal = ({ file, onClose }) => {
 
         {/* Content */}
         <div className="p-4 max-h-[70vh] overflow-auto">
-          {fileType === 'image' && (
+          {fileType === "image" && (
             <div className="flex justify-center">
-              <img 
-                src={file.url} 
+              <img
+                src={file.url}
                 alt={file.name}
                 className="max-w-full max-h-full rounded-lg shadow-lg"
-                style={{ maxHeight: '60vh' }}
+                style={{ maxHeight: "60vh" }}
               />
             </div>
           )}
-          
-          {fileType === 'video' && (
+
+          {fileType === "video" && (
             <div className="flex justify-center">
-              <video 
-                controls 
+              <video
+                controls
                 className="max-w-full max-h-full rounded-lg shadow-lg"
-                style={{ maxHeight: '60vh' }}
+                style={{ maxHeight: "60vh" }}
               >
                 <source src={file.url} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>
           )}
-          
-          {fileType === 'pdf' && (
+
+          {fileType === "pdf" && (
             <div className="w-full h-96">
-              <iframe 
-                src={file.url} 
+              <iframe
+                src={file.url}
                 className="w-full h-full rounded-lg border border-gray-600"
                 title={file.name}
               />
             </div>
           )}
-          
-          {fileType === 'audio' && (
+
+          {fileType === "audio" && (
             <div className="flex justify-center p-8">
               <audio controls className="w-full max-w-md">
                 <source src={file.url} type="audio/mpeg" />
@@ -141,11 +145,13 @@ const FilePreviewModal = ({ file, onClose }) => {
               </audio>
             </div>
           )}
-          
-          {(fileType === 'document' || fileType === 'other') && (
+
+          {(fileType === "document" || fileType === "other") && (
             <div className="text-center p-8">
               <div className="text-6xl mb-4">{getFileIcon(fileType)}</div>
-              <p className="text-gray-300 mb-4">Preview not available for this file type</p>
+              <p className="text-gray-300 mb-4">
+                Preview not available for this file type
+              </p>
               <button
                 onClick={downloadFile}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-all duration-200 flex items-center gap-2 mx-auto"
@@ -165,10 +171,10 @@ const FilePreviewModal = ({ file, onClose }) => {
 const FileDisplay = ({ file, isCompact = false }) => {
   const [showPreview, setShowPreview] = useState(false);
   const fileType = getFileType(file.name);
-  
+
   const downloadFile = (e) => {
     e.stopPropagation();
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = file.url;
     link.download = file.name;
     link.click();
@@ -184,11 +190,15 @@ const FileDisplay = ({ file, isCompact = false }) => {
         <div className="inline-flex items-center gap-2 bg-gray-700/50 rounded-lg p-2 border border-gray-600/50 cursor-pointer hover:bg-gray-600/50 transition-all duration-200">
           <span className="text-lg">{getFileIcon(fileType)}</span>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium text-white truncate">{file.name}</p>
-            <p className="text-xs text-gray-400">{formatFileSize(file.size || 0)}</p>
+            <p className="text-xs font-medium text-white truncate">
+              {file.name}
+            </p>
+            <p className="text-xs text-gray-400">
+              {formatFileSize(file.size || 0)}
+            </p>
           </div>
           <div className="flex items-center gap-1">
-            {['image', 'video', 'pdf'].includes(fileType) && (
+            {["image", "video", "pdf"].includes(fileType) && (
               <button
                 onClick={openPreview}
                 className="p-1 rounded text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 transition-all"
@@ -206,12 +216,9 @@ const FileDisplay = ({ file, isCompact = false }) => {
             </button>
           </div>
         </div>
-        
+
         {showPreview && (
-          <FilePreviewModal 
-            file={file} 
-            onClose={() => setShowPreview(false)} 
-          />
+          <FilePreviewModal file={file} onClose={() => setShowPreview(false)} />
         )}
       </>
     );
@@ -224,12 +231,16 @@ const FileDisplay = ({ file, isCompact = false }) => {
           <div className="flex items-center gap-3">
             <span className="text-2xl">{getFileIcon(fileType)}</span>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">{file.name}</p>
-              <p className="text-xs text-gray-400">{formatFileSize(file.size || 0)}</p>
+              <p className="text-sm font-medium text-white truncate">
+                {file.name}
+              </p>
+              <p className="text-xs text-gray-400">
+                {formatFileSize(file.size || 0)}
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {['image', 'video', 'pdf'].includes(fileType) && (
+            {["image", "video", "pdf"].includes(fileType) && (
               <button
                 onClick={openPreview}
                 className="p-2 rounded-lg bg-blue-600/80 hover:bg-blue-600 text-white transition-all duration-200 flex items-center gap-1"
@@ -247,32 +258,27 @@ const FileDisplay = ({ file, isCompact = false }) => {
             </button>
           </div>
         </div>
-        
+
         {/* Inline preview for images */}
-        {fileType === 'image' && (
+        {fileType === "image" && (
           <div className="mt-3 cursor-pointer" onClick={openPreview}>
-            <img 
-              src={file.url} 
+            <img
+              src={file.url}
               alt={file.name}
               className="max-w-full h-auto rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
-              style={{ maxHeight: '200px' }}
+              style={{ maxHeight: "200px" }}
             />
           </div>
         )}
       </div>
-      
+
       {showPreview && (
-        <FilePreviewModal 
-          file={file} 
-          onClose={() => setShowPreview(false)} 
-        />
+        <FilePreviewModal file={file} onClose={() => setShowPreview(false)} />
       )}
     </>
   );
 };
-import {  BiTask } from "react-icons/bi";
-
-
+import { BiTask } from "react-icons/bi";
 
 export default function ProjectDashboard({
   sidebarOpen,
@@ -630,6 +636,7 @@ export default function ProjectDashboard({
           handleToggleEditor={handleToggleEditor}
           projectId={projectId}
           showtask={showtask}
+          setIsModalOpen={setIsModalOpen}
         />
 
         {/* Chat/Messages Section */}
@@ -736,9 +743,9 @@ export default function ProjectDashboard({
             )}
 
             {/* Input Row */}
-            <div className="flex items-end gap-3">
+            <div className=" items-end flex w-full gap-3">
               {/* Message Input */}
-              <div className="flex-1">
+              <div className="flex-1 relative">
                 <textarea
                   value={message}
                   onChange={(e) => {
@@ -753,16 +760,13 @@ export default function ProjectDashboard({
                   }}
                   placeholder="Type your message here..."
                   rows={1}
-                  className="w-full px-4 py-3 rounded-2xl bg-gray-700/50 border border-gray-600/50 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 resize-none transition-all duration-200"
+                  className="w-full  px-4 py-3 rounded-2xl bg-gray-700/50 border border-gray-600/50 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 resize-none transition-all duration-200"
                 />
-              </div>
-
-              {/* Action Buttons - Desktop */}
-              <div className="hidden sm:flex items-center gap-2">
-                {/* File Upload */}
-                <label className="cursor-pointer group">
-                  <div className="p-3 rounded-2xl bg-purple-600/80 hover:bg-purple-600 transition-all duration-200 group-hover:scale-105">
-                    <span className="text-white text-lg">📎</span>
+                <label className="cursor-pointer absolute right-0 top-0 flex-shrink-0 group">
+                  <div className="p-2 rounded-lg hover:bg-gray-600/50 transition-all">
+                    <span className="text-gray-400 group-hover:text-purple-400 text-xl">
+                      📎
+                    </span>
                   </div>
                   <input
                     type="file"
@@ -770,7 +774,10 @@ export default function ProjectDashboard({
                     className="hidden"
                   />
                 </label>
+              </div>
 
+              {/* Action Buttons - Desktop */}
+              <div className="hidden sm:flex items-center gap-2">
                 {/* Send Button */}
                 <button
                   onClick={send}
@@ -807,7 +814,7 @@ export default function ProjectDashboard({
         <div className="sm:hidden hidden fixed bottom-20 right-4 z-40 flex flex-col gap-3">
           {showFloatingActions && (
             <>
-              <label className="cursor-pointer group">
+              {/* <label className="cursor-pointer group">
                 <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110">
                   <span className="text-white text-lg">📎</span>
                 </div>
@@ -816,14 +823,7 @@ export default function ProjectDashboard({
                   onChange={(e) => setSelectedFile(e.target.files[0])}
                   className="hidden"
                 />
-              </label>
-
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110"
-              >
-                <span className="text-white text-lg">📋</span>
-              </button>
+              </label> */}
 
               <button
                 onClick={handleMobileFileExplorer}
@@ -1053,24 +1053,40 @@ export default function ProjectDashboard({
         )}
 
         {/* Task Creation Modal */}
+        {/* Task Creation Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
-            <div className="bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-xl border border-gray-600/50 rounded-3xl shadow-2xl w-full max-w-2xl">
+          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+            <div className="bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-xl border border-gray-600/50 rounded-3xl shadow-2xl w-full max-w-2xl my-8">
               {/* Modal Header */}
-              <div className="p-6 border-b border-gray-700/50">
-                <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-                  <span className="text-3xl">📝</span>
-                  <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                    Create New Task
-                  </span>
-                </h2>
-                <p className="text-gray-400 text-sm mt-2">
-                  Set up a new task for your project team
-                </p>
+              <div className="p-4 sm:p-6 border-b border-gray-700/50">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2 sm:gap-3">
+                      <span className="text-2xl sm:text-3xl">📝</span>
+                      <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        Create New Task
+                      </span>
+                    </h2>
+                    <p className="text-gray-400 text-xs sm:text-sm mt-2">
+                      Set up a new task for your project team
+                    </p>
+                  </div>
+                  {/* Close Button */}
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-gray-700/50 rounded-lg"
+                  >
+                    <MdCancel className="text-2xl" />
+                  </button>
+                </div>
               </div>
 
               {/* Modal Body */}
-              <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="p-4 sm:p-6 space-y-4 sm:space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto"
+              >
                 {/* Task Title */}
                 <div>
                   <label className="flex items-center gap-2 text-sm font-semibold text-white mb-2">
@@ -1081,7 +1097,7 @@ export default function ProjectDashboard({
                     type="text"
                     {...register("title", { required: true })}
                     placeholder="Enter task title..."
-                    className="w-full px-4 py-3 bg-gray-700/50 text-white placeholder-gray-400 border border-gray-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-700/50 text-white placeholder-gray-400 border border-gray-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all text-sm sm:text-base"
                   />
                 </div>
 
@@ -1095,12 +1111,12 @@ export default function ProjectDashboard({
                     {...register("description", { required: true })}
                     placeholder="Describe the task in detail..."
                     rows={3}
-                    className="w-full px-4 py-3 bg-gray-700/50 text-white placeholder-gray-400 border border-gray-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all resize-none"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-700/50 text-white placeholder-gray-400 border border-gray-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all resize-none text-sm sm:text-base"
                   />
                 </div>
 
                 {/* Due Date and Status */}
-                <div className="grid sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
                     <label className="flex items-center gap-2 text-sm font-semibold text-white mb-2">
                       <span>📅</span>
@@ -1109,7 +1125,7 @@ export default function ProjectDashboard({
                     <input
                       type="date"
                       {...register("dueDate", { required: true })}
-                      className="w-full px-4 py-3 bg-gray-700/50 text-white border border-gray-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all"
+                      className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-700/50 text-white border border-gray-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all text-sm sm:text-base"
                     />
                   </div>
 
@@ -1120,7 +1136,7 @@ export default function ProjectDashboard({
                     </label>
                     <select
                       {...register("status", { required: true })}
-                      className="w-full px-4 py-3 bg-gray-700/50 text-white border border-gray-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all"
+                      className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-700/50 text-white border border-gray-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all text-sm sm:text-base"
                     >
                       <option value="To Do">To Do</option>
                       <option value="In Progress">In Progress</option>
@@ -1135,20 +1151,20 @@ export default function ProjectDashboard({
                     <span>👥</span>
                     Assign Team Members
                   </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 max-h-48 overflow-y-auto pr-2">
                     {userinproject.map((u) => (
                       <button
                         key={u._id}
                         type="button"
                         onClick={() => handletoggle(u._id)}
-                        className={`p-3 rounded-xl text-sm font-medium transition-all duration-200 border ${
+                        className={`p-2 sm:p-3 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 border ${
                           assignedTo.includes(u._id)
                             ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg border-purple-500/50 scale-105"
                             : "bg-gray-700/50 text-gray-300 hover:bg-gray-600/50 border-gray-600/50 hover:border-gray-500/50"
                         }`}
                       >
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg">
+                        <div className="flex items-center gap-1 sm:gap-2">
+                          <span className="text-base sm:text-lg">
                             {assignedTo.includes(u._id) ? "✅" : "👤"}
                           </span>
                           <span className="truncate">{u.username}</span>
@@ -1159,17 +1175,17 @@ export default function ProjectDashboard({
                 </div>
 
                 {/* Modal Actions */}
-                <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-700/50">
+                <div className="flex flex-col sm:flex-row gap-3 pt-4 sm:pt-6 border-t border-gray-700/50 bottom-0 -mx-4 sm:-mx-6 px-4 sm:px-6 pb-4 sm:pb-6">
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="flex-1 px-6 py-3 rounded-xl bg-gray-700/50 hover:bg-gray-600/50 text-white font-semibold transition-all duration-200 border border-gray-600/50"
+                    className="flex-1 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-gray-700/50 hover:bg-gray-600/50 text-white font-semibold transition-all duration-200 border border-gray-600/50 text-sm sm:text-base"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
+                    className="flex-1 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg transition-all duration-200 transform hover:scale-[1.02] text-sm sm:text-base"
                   >
                     Create Task
                   </button>

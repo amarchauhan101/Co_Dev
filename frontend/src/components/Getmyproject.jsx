@@ -198,12 +198,12 @@ function Getmyproject({ handleRespond }) {
           <div className="mb-6">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm text-slate-300 font-medium">Team</span>
-              <button
+              {/* <button
                 onClick={() => setSelectedProject(project._id)}
                 className="p-1.5 rounded-lg bg-slate-700 border border-dashed border-slate-600 hover:border-purple-400 text-slate-400 hover:text-purple-400"
               >
                 <Plus size={12} />
-              </button>
+              </button> */}
             </div>
 
             <div className="flex items-center gap-1">
@@ -403,7 +403,7 @@ function Getmyproject({ handleRespond }) {
             className={`grid gap-6 ${
               viewMode === "grid"
                 ? "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
-                : "grid-cols-1 max-w-4xl mx-auto"
+                : "grid-cols-1 w-full mx-auto"
             }`}
           >
             {filteredProjects.map((project, index) => (

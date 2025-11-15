@@ -68,7 +68,7 @@ function ProjectUpdateForm() {
   }, [formData]);
 
   const progressPercentage = useMemo(() => {
-    return Math.round((completedFields.size / 7) * 100);
+    return Math.round((completedFields.size / 6) * 100);
   }, [completedFields.size]);
 
   // Check if required fields are filled
@@ -218,7 +218,7 @@ function ProjectUpdateForm() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800">
-      <div className="container mx-auto px-4 py-8 w-full">
+      <div className="mx-auto px-4 py-8 w-full">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <button onClick={() => navigate(-1)} className="p-2 rounded-xl bg-slate-800/50 border border-slate-600/50 
