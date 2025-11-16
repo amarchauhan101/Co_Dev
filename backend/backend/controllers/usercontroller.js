@@ -16,8 +16,8 @@ const fs = require("fs");
 const { use } = require("../routes/userroute.js");
 // const { default: Profile } = require("../../frontend/src/components/Profile.jsx");
 
-// Ensure  the uploads directory exists
-const uploadDir = "uploads/";
+// Use /tmp directory for Vercel (only writable directory in serverless)
+const uploadDir = "/tmp/uploads/";
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -25,7 +25,7 @@ if (!fs.existsSync(uploadDir)) {
 // Multer Storage Configuration with Renamed Path
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadDir); // Save files in 'uploads/' directory
+    cb(null, uploadDir); // Save files in '/tmp/uploads/' directory
   },
   filename: (req, file, cb) => {
     const userId = req.user.id; // Get user ID
