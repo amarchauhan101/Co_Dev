@@ -278,7 +278,7 @@ const Commit = ({ projectId }) => {
 
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/v1/project/${projectId}/commits`
+          `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/project/${projectId}/commits`
         );
         console.log("res in commit=>", res.data);
         const commitsData = res.data.commits;

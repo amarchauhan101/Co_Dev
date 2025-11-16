@@ -162,7 +162,7 @@ const FabricBoard = ({ projectId, username }) => {
     ctx.lineCap = "round";
     ctxRef.current = ctx;
 
-    socketRef.current = io("http://localhost:8000", {
+    socketRef.current = io(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}`, {
       query: { projectId },
     });
 

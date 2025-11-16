@@ -19,7 +19,7 @@ const AdminLogin = () => {
 
     try {
       // Use your existing login API endpoint
-      const response = await fetch('http://localhost:8000/api/v1/login', {
+      const response = await fetch(`${import.meta.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

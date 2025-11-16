@@ -17,7 +17,7 @@ function Developers() {
     const getAllUsers = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/v1/allusers",
+          `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/allusers`,
           {
             headers: {
               authorization: `Bearer ${token}`,

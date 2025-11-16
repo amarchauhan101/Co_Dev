@@ -187,9 +187,6 @@ const UserGuide = ({ steps, onComplete, isLoading }) => {
                 }
                 break;
             }
-              tooltipHeight = Math.min(tooltipHeight, maxHeight);
-                break;
-            }
 
             // Calculate horizontal position for top/bottom placements with position-aware logic
             if (newPlacement === "bottom" || newPlacement === "top" || newPlacement === "bottom-constrained") {

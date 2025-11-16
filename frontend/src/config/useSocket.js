@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
 
 export default function useSocket(token, projectId) {
   const sock = useRef(
-    io("http://localhost:8000", {
+    io(import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL, {
       transports: ["websocket"],
       autoConnect: false,
     })

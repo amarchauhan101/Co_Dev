@@ -43,7 +43,7 @@ function AdminDashboard() {
       setError(null);
 
       const res = await axios.get(
-        "http://localhost:8000/api/v1/admin/dashboard",
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/admin/dashboard`,
         {
           headers: {
             authorization: `Bearer ${token}`,

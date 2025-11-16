@@ -16,7 +16,7 @@ export const ProjectProvider = ({ children }) => {
    const fetchProjects = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/api/v1/getproject",
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/getproject`,
         {
           headers: { authorization: `Bearer ${token}` },
         }

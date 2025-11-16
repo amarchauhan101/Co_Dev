@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 import { useAuth } from "../../context/AuthContext";
 
-const SOCKET_SERVER_URL = "http://localhost:8000"; // Your backend
+const SOCKET_SERVER_URL = import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL; // Your backend
 
 function CollaborativeEditor({ projectId, user }) {
   const [code, setCode] = useState("// Start coding...");

@@ -39,7 +39,7 @@ const VoiceChatDebug = () => {
     if (socketRef.current) return;
     
     addLog("🔌 Connecting to socket...");
-    const socket = io("http://localhost:8000", {
+    const socket = io(import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL, {
       // No auth token for debug - backend allows anonymous users
       query: { projectId: "68a5acd4ba5173cb9c23616a" },
       forceNew: true,

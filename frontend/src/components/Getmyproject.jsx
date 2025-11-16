@@ -57,7 +57,7 @@ function Getmyproject({ handleRespond }) {
     const getUsers = async () => {
       try {
         if (!token) return;
-        const res = await axios.get("http://localhost:8000/api/v1/allusers", {
+        const res = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/allusers`, {
           headers: {
             authorization: `Bearer ${token}`,
           },
@@ -73,7 +73,7 @@ function Getmyproject({ handleRespond }) {
   const handleAddUser = async (projectId) => {
     try {
       const res = await axios.patch(
-        `http://localhost:8000/api/v1/project/${projectId}/adduser`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/project/${projectId}/adduser`,
         { userId: newUser },
         {
           headers: {

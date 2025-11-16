@@ -33,7 +33,7 @@ function Createproject() {
       // const token = users?.userWithToken?.token;
       // console.log("token:", token);
       const res = await axios.post(
-        "http://localhost:8000/api/v1/create",
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/create`,
         { name: projectName },
         {
           headers: {
@@ -73,7 +73,7 @@ function Createproject() {
   };
 
   const getcreatedproject = async () => {
-    const res = await axios.get("http://localhost:8000/api/v1/getproject", {
+    const res = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/getproject`, {
       headers: {
         authorization: `Bearer ${token}`,
       },

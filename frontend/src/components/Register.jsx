@@ -24,7 +24,7 @@ const Register = () => {
     console.log("Form Data Submitted:", data);
 
     const res = await axios
-      .post("http://localhost:8000/api/v1/Register", data)
+      .post(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/Register`, data)
       .then((res) => {
         console.log("res=>", res);
         setusername(res.data.username);

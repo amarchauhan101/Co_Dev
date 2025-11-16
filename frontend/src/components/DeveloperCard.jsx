@@ -108,7 +108,7 @@ const DeveloperCard = ({ dev, devkey }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/v1/getprofile", {
+        const res = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/getprofile`, {
           headers: { authorization: `Bearer ${token}` },
         });
         console.log("project in dev=>", res.data.userdata.profile?.projects);
@@ -136,7 +136,7 @@ const DeveloperCard = ({ dev, devkey }) => {
     if (result.isConfirmed) {
       try {
         const res = await axios.post(
-          `http://localhost:8000/api/v1/request`,
+          `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/request`,
           { receiverId: dev._id, projectId },
           {
             headers: { authorization: `Bearer ${token}` },

@@ -1,7 +1,7 @@
 // socket.js
 import { io } from "socket.io-client";
 
-const SOCKET_URL = "http://localhost:8000";
+const SOCKET_URL = import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL || "http://localhost:8000";
 let socket = null;
 
 export const initializeSocket = (token = "") => {

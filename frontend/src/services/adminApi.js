@@ -1,7 +1,7 @@
 // ❌ Remove this import - you don't need backend imports in frontend
 // const { getAllUsers } = require("../../../backend (2)new/backend/controllers/admincontroller");
 
-const API_BASE_URL = "http://localhost:8000/api/v1/admin";
+const API_BASE_URL = `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/admin`;
 
 class AdminApi {
   constructor() {

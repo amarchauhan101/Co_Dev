@@ -198,7 +198,7 @@ const Registerwithinvitation = () => {
       };
 
       const response = await axios.post(
-        'http://localhost:8000/api/v1/admin/registerwithinvite',
+        `${import.meta.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/admin/registerwithinvite`,
         requestData,
         {
           headers: {

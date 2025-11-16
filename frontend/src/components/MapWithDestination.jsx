@@ -66,7 +66,7 @@ function MapWithDestination() {
       // Log the parameters for debugging
       console.log("Fetching directions for:", src, dest);
       const response = await fetch(
-        `http://localhost:8000/api/v1/traffic/get-traffic?lat=${src.lat}&lng=${src.lng}&destLat=${dest.lat}&destLng=${dest.lng}`
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/traffic/get-traffic?lat=${src.lat}&lng=${src.lng}&destLat=${dest.lat}&destLng=${dest.lng}`
       );
       const data = await response.json();
       console.log("Fetched directions data:", data);

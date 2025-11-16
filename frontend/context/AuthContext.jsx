@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
   // Function to refresh access token using refresh token
   const refreshAccessToken = async (refreshToken) => {
     try {
-      const response = await fetch("http://localhost:8000/api/v1/refresh-token", {
+      const response = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/refresh-token`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

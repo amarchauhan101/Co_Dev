@@ -94,7 +94,7 @@ const ProofForm = ({ taskId, onSuccess, getAllTask, projectId }) => {
       const fileUrl = uploadRes.data.secure_url;
 
       await axios.post(
-        `http://localhost:8000/api/v1/task/${taskId}/proof`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/task/${taskId}/proof`,
         { note, zipFile: fileUrl },
         {
           headers: {

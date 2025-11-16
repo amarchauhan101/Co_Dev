@@ -99,7 +99,7 @@ function ProjectUpdateForm() {
 
     try {
       await axios.put(
-        `http://localhost:8000/api/v1/updateproject/${projectId}`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/updateproject/${projectId}`,
         data,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -118,7 +118,7 @@ function ProjectUpdateForm() {
       if (loading) return;
 
       try {
-        const res = await axios.get(`http://localhost:8000/api/v1/getproject/${projectId}`, {
+        const res = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/getproject/${projectId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 

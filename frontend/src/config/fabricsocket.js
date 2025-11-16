@@ -6,7 +6,7 @@ export function getFabricSocket(token, projectId) {
   if (!token || !projectId) return null;
 
   if (!socket) {
-    socket = io("http://localhost:8000", {
+    socket = io(import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL, {
       transports: ["websocket"],
       autoConnect: false,
     });

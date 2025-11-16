@@ -97,7 +97,7 @@ function Home() {
       console.log("requestid", requestId);
       console.log("ressponse=>", response);
       const res = await axios.post(
-        "http://localhost:8000/api/v1/request/respond",
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/request/respond`,
         { requestId, response },
         { headers: { authorization: `Bearer ${token}` } }
       );
@@ -194,7 +194,7 @@ function Home() {
     try {
       // Update guide completion status
       const res = await axios.put(
-        `http://localhost:8000/api/v1/updateguide`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/updateguide`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -225,7 +225,7 @@ function Home() {
     const fetchProfile = async () => {
       console.log("userINfetchedprofile=>", token);
       try {
-        const res = await axios.get("http://localhost:8000/api/v1/getprofile", {
+        const res = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/getprofile`, {
           headers: { authorization: `Bearer ${token}` },
         });
         console.log("res in home=>", res.data);

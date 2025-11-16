@@ -319,7 +319,7 @@ const FileExplorer = ({ projectId, isMobile = false, containerHeight = "600px" }
       setLoading(true);
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/v1/project/${projectId}/files`
+          `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/project/${projectId}/files`
         );
 
         const codeFiles = res.data.files.filter(
@@ -348,7 +348,7 @@ const FileExplorer = ({ projectId, isMobile = false, containerHeight = "600px" }
     setLoading(true);
     try {
       const res = await axios.get(
-        `http://localhost:8000/api/v1/project/${projectId}/file?path=${encodeURIComponent(
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/project/${projectId}/file?path=${encodeURIComponent(
           filePath
         )}`
       );

@@ -88,7 +88,7 @@ function Chat() {
   useEffect(() => {
     const fetchUserProjects = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/v1/getproject", {
+        const res = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/getproject`, {
           headers: { authorization: `Bearer ${token}` },
         });
         if (res.data.newproject?.length) {
@@ -120,16 +120,16 @@ function Chat() {
       setLoading(true);
       try {
         const [msgRes, usrRes, taskRes] = await Promise.all([
-          axios.get(`http://localhost:8000/api/v1/getmessage/${projectId}`, {
+          axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/getmessage/${projectId}`, {
             headers: { authorization: `Bearer ${token}` },
           }),
           axios.get(
-            `http://localhost:8000/api/v1/getuserinproject/${projectId}`,
+            `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/getuserinproject/${projectId}`,
             {
               headers: { authorization: `Bearer ${token}` },
             }
           ),
-          axios.get(`http://localhost:8000/api/v1/gettask/${projectId}`, {
+          axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/gettask/${projectId}`, {
             headers: { authorization: `Bearer ${token}` },
           }),
         ]);
@@ -157,7 +157,7 @@ function Chat() {
 
     try {
       const res = await axios.get(
-        `http://localhost:8000/api/v1/gettask/${projectId}`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/gettask/${projectId}`,
         {
           headers: { authorization: `Bearer ${token}` },
         }
@@ -187,7 +187,7 @@ function Chat() {
 
     try {
       const res = await axios.get(
-        `http://localhost:8000/api/v1/gettask/${projectId}`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/gettask/${projectId}`,
         {
           headers: { authorization: `Bearer ${token}` },
         }
@@ -331,7 +331,7 @@ function Chat() {
 
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/v1/message/${projectId}`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/message/${projectId}`,
         formData,
         {
           headers: {
@@ -379,7 +379,7 @@ function Chat() {
         assignedTo,
       };
       const res = await axios.post(
-        `http://localhost:8000/api/v1/createtask/${projectId}`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/createtask/${projectId}`,
         finaldata,
         { headers: { authorization: `Bearer ${token}` } }
       );
@@ -401,7 +401,7 @@ function Chat() {
       reset();
       setIsModalOpen(false);
       const gettasks = await axios.get(
-        `http://localhost:8000/api/v1/gettask/${projectId}`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/gettask/${projectId}`,
         {
           headers: { authorization: `Bearer ${token}` },
         }
@@ -424,7 +424,7 @@ function Chat() {
       }
 
       const res = await axios.put(
-        `http://localhost:8000/api/v1/updatetask/${taskId}`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/updatetask/${taskId}`,
         payload,
         {
           headers: { authorization: `Bearer ${token}` },
@@ -432,7 +432,7 @@ function Chat() {
       );
 
       const gettasks = await axios.get(
-        `http://localhost:8000/api/v1/gettask/${projectId}`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/gettask/${projectId}`,
         {
           headers: { authorization: `Bearer ${token}` },
         }
@@ -449,7 +449,7 @@ function Chat() {
   useEffect(() => {
     if (!projectId || !token) return;
 
-    socketRef.current = io("http://localhost:8000", {
+    socketRef.current = io(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}`, {
       auth: { token },
       query: { projectId },
     });

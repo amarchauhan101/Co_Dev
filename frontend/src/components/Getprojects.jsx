@@ -32,7 +32,7 @@ function Getprojects() {
         const fetchData = async () => {
             console.log("my project token",token);
             try {
-                const res = await axios.get("http://localhost:8000/api/v1/getallproject", {
+                const res = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/getallproject`, {
                     headers: {
                         authorization: `Bearer ${token}`,
                     },

@@ -115,7 +115,7 @@ function Profile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/v1/getprofile", {
+        const res = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/getprofile`, {
           headers: { authorization: `Bearer ${token}` },
         });
         console.log("res=>", res.data);
@@ -144,7 +144,7 @@ function Profile() {
   const onSubmit = async (data) => {
     try {
       const res = await axios.put(
-        "http://localhost:8000/api/v1/updateprofile",
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/updateprofile`,
         data,
         { headers: { authorization: `Bearer ${token}` } }
       );

@@ -243,7 +243,7 @@ const VoiceChat = ({ projectId, token, onStatsChange }) => {
 
     console.log("🎤 VoiceChat: Initializing with projectId:", projectId);
 
-    const socket = io("http://localhost:8000", {
+    const socket = io(import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL, {
       auth: { token },
       query: { projectId },
       forceNew: true,

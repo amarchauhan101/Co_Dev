@@ -142,7 +142,7 @@ const Leaderboard = () => {
     (async () => {
       setLoading(true);
       try {
-        const res = await fetch("http://localhost:8000/api/v1/leaderboard", {
+        const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/api/v1/leaderboard`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
