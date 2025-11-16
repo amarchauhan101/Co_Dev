@@ -40,8 +40,14 @@ const { spawn } = require("child_process");
 
 const runWithOpenInterpreter = (prompt) => {
   return new Promise((resolve, reject) => {
+    // Disabled for Vercel serverless deployment
+    // Open Interpreter requires local Python installation and persistent processes
+    // which are not available in Vercel's serverless environment
+    reject(new Error("Open Interpreter is not available in serverless environment. Please use AI API endpoints instead."));
+    
+    /* Original implementation - only works locally
     const subprocess = spawn(
-      "C:\\Users\\Amar Chauhan\\AppData\\Local\\Programs\\Python\\Python310\\Scripts\\interpreter.exe",
+      "interpreter", // Use system PATH instead of hardcoded Windows path
       ["--profile", "local"],
       { stdio: ["pipe", "pipe", "pipe"] }
     );
@@ -66,12 +72,16 @@ const runWithOpenInterpreter = (prompt) => {
       }
     });
 
-    // Example prompt to test
-    subprocess.stdin.write("Write a Python program that prints 'Hello World'\n");
+    subprocess.stdin.write(prompt + "\n");
     subprocess.stdin.end();
+    */
   });
 };
 
+module.exports = runWithOpenInterpreter;
+
+// Don't auto-execute on module load - only export the function
+/* 
 runWithOpenInterpreter()
   .then((reply) => {
     console.log("✅ Interpreter Output:\n", reply);
@@ -79,4 +89,5 @@ runWithOpenInterpreter()
   .catch((err) => {
     console.error("❌ Error:", err.message);
   });
+*/
 
